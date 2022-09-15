@@ -1,12 +1,6 @@
 <?php
 include_once 'header.php';
 
-$user = new user('5f698997438e463a926e91fa6ccefead');
-error_log($user->getNickName());
-$user->setNickname('Josh Glaser');
-$user->MakePersistant($user);
-error_log($user->getNickName());
-
 
 ?>
 
