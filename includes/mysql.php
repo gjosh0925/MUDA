@@ -79,7 +79,6 @@ function PersistObject($obj){
         }
         array_push($objects, $obj->_ID);
         $query = vsprintf($query, $objects);
-        error_log($query);
         $result = data_query($query);
 
         if(!$result) {
