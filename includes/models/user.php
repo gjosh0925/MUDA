@@ -2,14 +2,13 @@
 
 class user extends base {
     public $_ID;
-    public $_Username;
+    public $_Email;
     public $_Password;
     public $_UserRole;
     public $_TeamID;
     public $_Tstamp;
     public $_Nickname;
     public $_Phone;
-    public $_Email;
     public $_Gender;
     public $_Jersey;
     public $_DOB;
@@ -40,12 +39,12 @@ class user extends base {
         $this->_ID = $id;
     }
 
-    function getUsername(){
-        return $this->_Username;
+    function getEmail(){
+        return $this->_Email;
     }
 
-    function setUsername($username){
-        $this->_Username = $username;
+    function setEmail($email){
+        $this->_Email = $email;
     }
 
     function getPassword(){
@@ -94,14 +93,6 @@ class user extends base {
 
     function setPhone($phone){
         $this->_Phone = $phone;
-    }
-
-    function getEmail(){
-        return $this->_Email;
-    }
-
-    function setEmail($email){
-        $this->_Email = $email;
     }
 
     function getGender(){
@@ -219,14 +210,13 @@ class user extends base {
 
     function Populate($post){
         $this->setID((isset($post['ID'])) ? $post['ID'] : $this->_ID);
-        $this->setUsername((isset($post['Username'])) ? $post['Username'] : $this->_Username);
+        $this->setEmail((isset($post['Email'])) ? $post['Email'] : $this->_Email);
         $this->setPassword((isset($post['Password'])) ? $post['Password'] : $this->_Password);
         $this->setUserRole((isset($post['UserRole'])) ? $post['UserRole'] : $this->_UserRole);
         $this->setTeamID((isset($post['TeamID'])) ? $post['TeamID'] : $this->_TeamID);
         $this->setTstamp((isset($post['Tstamp'])) ? $post['Tstamp'] : $this->_Tstamp);
         $this->setNickname((isset($post['Nickname'])) ? $post['Nickname'] : $this->_Nickname);
         $this->setPhone((isset($post['Phone'])) ? $post['Phone'] : $this->_Phone);
-        $this->setEmail((isset($post['Email'])) ? $post['Email'] : $this->_Email);
         $this->setGender((isset($post['Gender'])) ? $post['Gender'] : $this->_Gender);
         $this->setJersey((isset($post['Jersey'])) ? $post['Jersey'] : $this->_Jersey);
         $this->setDOB((isset($post['DOB'])) ? $post['DOB'] : $this->_DOB);
