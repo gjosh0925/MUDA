@@ -1,10 +1,11 @@
 <?php
 include_once 'header.php';
+global $pageUser;
 
 
 ?>
-
-<h1>MUDA</h1>
+<h1>Welcome<?php echo (isset($pageUser)) ? ' ' . $pageUser->getNickName() : '!'; ?></h1>
+<h3>MUDA Schedule</h3>
 
 <table class="table">
     <thead>
@@ -36,6 +37,12 @@ include_once 'header.php';
         </tr>
     </tbody>
 </table>
+<?php if (!isset($pageUser)) { ?>
+    <button onclick="location.href = 'login.php';">Login</button>
+<?php } else { ?>
+    <button onclick="location.href = 'logout.php';">Logout</button>
+<?php } ?>
+
 
 <?php
 include_once 'footer.php';

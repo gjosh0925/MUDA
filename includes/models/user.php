@@ -3,7 +3,7 @@
 class user extends base {
     public $_ID;
     public $_Email;
-    public $_Password;
+    public $_Pass;
     public $_UserRole;
     public $_TeamID;
     public $_Tstamp;
@@ -47,12 +47,12 @@ class user extends base {
         $this->_Email = $email;
     }
 
-    function getPassword(){
-        return $this->_Password;
+    function getPass(){
+        return $this->_Pass;
     }
 
-    function setPassword($password){
-        $this->_Password = $password;
+    function setPass($pass){
+        $this->_Pass = $pass;
     }
 
     function getUserRole(){
@@ -211,7 +211,7 @@ class user extends base {
     function Populate($post){
         $this->setID((isset($post['ID'])) ? $post['ID'] : $this->_ID);
         $this->setEmail((isset($post['Email'])) ? $post['Email'] : $this->_Email);
-        $this->setPassword((isset($post['Password'])) ? $post['Password'] : $this->_Password);
+        $this->setPass((isset($post['Pass'])) ? $post['Pass'] : $this->_Pass);
         $this->setUserRole((isset($post['UserRole'])) ? $post['UserRole'] : $this->_UserRole);
         $this->setTeamID((isset($post['TeamID'])) ? $post['TeamID'] : $this->_TeamID);
         $this->setTstamp((isset($post['Tstamp'])) ? $post['Tstamp'] : $this->_Tstamp);

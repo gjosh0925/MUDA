@@ -108,3 +108,32 @@ function PersistObject($obj){
     return $obj;
 }
 
+function login(){
+    session_start();
+
+    $query = sprintf("select * from user where Email='%s' and Pass='%s';", data_real_escape_string($_POST['email']), data_real_escape_string($_POST['password']));
+    $result = data_query($query);
+    $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+    if (!empty($row)) {
+        if ($row['Email'] === $_POST['email'] && $row['Pass'] === $_POST['password']) {
+            $_SESSION['PageUserID'] = $row['ID'];
+            header("Location: index.php");
+            exit();
+        }else{
+            session_destroy();
+            header("Location: login.php?error=Incorect User name or password");
+            exit();
+        }
+    }else{
+        session_destroy();
+        header("Location: login.php?error=Incorect User name or password");
+        exit();
+    }
+}
+
+function logout(){
+    session_unset();
+    session_destroy();
+    $_SESSION = NULL;
+}
+

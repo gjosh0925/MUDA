@@ -1,5 +1,14 @@
 <?php
 include_once '../includes/includes.php';
+
+if(session_start() !== null){
+    if (isset($_SESSION['PageUserID'])) {
+        $pageUser = new user($_SESSION['PageUserID']);
+    } else {
+        session_abort();
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
