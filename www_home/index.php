@@ -6,7 +6,7 @@ global $pageUser;
 ?>
 <h1>Welcome<?php echo (isset($pageUser)) ? ' ' . $pageUser->getNickName() : '!'; ?></h1>
 <h3>MUDA Schedule</h3>
-
+<! This is for you josh>
 <table class="table">
     <thead>
         <tr>
