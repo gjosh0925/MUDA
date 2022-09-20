@@ -1,0 +1,14 @@
+/*MUDA logo Color Scheme */
+:root {
+    --teal: #00b2a9;
+    --dark_blue: #0c2340;
+    --red: #e43c40;
+    --white: #ffffff;
+}
+/*
+Format for variable use.
+body {
+    background-color: var(--teal);
+}
+ */
+
