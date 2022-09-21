@@ -25,16 +25,41 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 
 ?>
 
-<form action="login.php" method="post">
-    <h2>LOGIN</h2>
-    <?php if (isset($_GET['error'])) { ?>
-        <p class="error"><?php echo $_GET['error']; ?></p>
-    <?php } ?>
-    <label>Email</label>
-    <input type="email" name="email" placeholder="Email"><br>
-    <label>Password</label>
-    <input type="password" name="password" placeholder="Password"><br>
-    <button type="submit">Login</button>
-</form>
+<style>
+    #loginForm{
+        display: flex;
+        flex-direction: column;
+        border: 3px solid #0c2340;
+        width: 400px;
+        padding: 30px;
+        background-color: #00b2a9;
+        border-radius: 30px;
+    }
+
+    .center{
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        align-items: center;
+    }
+</style>
+<div class="center">
+    <img style="width:700px; " src="images/muda_logo_black_horizontal.png">
+
+    <form id='loginForm' action="login.php" method="post">
+        <h2 style="padding:20px; text-align:center;">League Sign-In</h2>
+        <?php if (isset($_GET['error'])) { ?>
+            <div class="alert alert-danger" role="alert">
+                <?php echo $_GET['error']; ?>
+            </div>
+        <?php } ?>
+        <label>Email</label>
+        <input class="form-control" type="email" name="email"><br>
+        <label>Password</label>
+        <input class="form-control" type="password" name="password"><br>
+        <button type="submit" class="btn btn-secondary">Sign-In</button>
+    </form>
+    <a href="index.php" style="padding:10px; color: #00b2a9;">Back to home page</a>
+</div>
 
 

@@ -5,10 +5,29 @@
     --red: #e43c40;
     --white: #ffffff;
 }
-/*
-Format for variable use.
+
 body {
-    background-color: var(--teal);
 }
- */
+
+.form-control {
+    border-radius: 5px;
+    border: 2px solid #0c2340;
+}
+
+.form-control:focus {
+    /*border-radius: 5px;*/
+    border: 2px solid #0c2340;
+    box-shadow: 0px 0px 10px #0c2340;
+}
+
+.btn-primary {
+    border: 2px solid #0c2340;
+    background-color: #00b2a9;
+}
+
+.btn-primary:hover {
+    background-color: #0c2340;
+    border: 2px solid #0c2340;
+}
+
 

@@ -7,7 +7,6 @@ global $config;
 function DataConnection($whichdb = null){
     global $config, $conn;
     $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbName']);
-//    $conn = mysqli_connect($config['servername'], $config['username'], $config['password'], $config['dbName']);
 
     if (mysqli_connect_errno()){
         printf("Can't connect to MySQL server. Errorcode: %s\n", mysqli_connect_error());
@@ -121,12 +120,12 @@ function login(){
             exit();
         }else{
             session_destroy();
-            header("Location: login.php?error=Incorect User name or password");
+            header("Location: login.php?error=Incorect Email or Password");
             exit();
         }
     }else{
         session_destroy();
-        header("Location: login.php?error=Incorect User name or password");
+        header("Location: login.php?error=Incorect Email or Password");
         exit();
     }
 }
