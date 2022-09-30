@@ -45,7 +45,7 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
 
                     } else {
                         for (var i = 0; i < Object.keys(reply.availablePlayers).length; i++) {
-                            row += '<tr id="' + reply.availablePlayers[i]._ID + '" onclick="populatePickedPlayerModal(\'' + reply.availablePlayers[i]._ID + '\');">'
+                            row += '<tr id="' + reply.availablePlayers[i]._ID + '" onclick="populatePickedPlayerModal(\'' + reply.availablePlayers[i]._ID + '\', \'' + reply.availablePlayers[i]._Buddy + '\');">'
                                  + '<td>' + reply.availablePlayers[i]._Nickname + '</td>'
                                  + '<td>' + reply.availablePlayers[i]._Throwing + '</td>'
                                  + '<td>' + reply.availablePlayers[i]._Cutting + '</td>'
@@ -103,13 +103,16 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
     }
 
     function populatePickedPlayerModal(playerID, buddy){
-        var playerInfo = $('#' + playerID).children('td:first').html();;
+        $('#confirmPick .modal-body').html('');
+        var playerName = $('#' + playerID).children('td:first').html();
 
-        // $('#' + playerID + ' > td').each(function() {
-        //     playerInfo+= '<div style="border-bottom: 2px solid black; height: 50px; text-align:center;">' + $(this).html() + '</div>';
-        // });
+        if (buddy != '') {
+            var buddy = '<div class="alert alert-warning" role="alert">This player has <b>' + buddy + '</b> as their buddy. Please select them for your next pick.</div>';
+            $('#confirmPick .modal-body').append(buddy);
 
-        $('#confirmPick .modal-body').html("<b>" + playerInfo + "</b>");
+        }
+
+        $('#confirmPick .modal-body').append("<b><p style='font-size: 30px;text-align: center;'>" + playerName + "</p></b>");
         $('#pickPlayer').attr('onclick', 'getDraftablePlayers("' + playerID + '"); $("#confirmPick").modal("hide");');
         $('#confirmPick').modal('show');
     }
@@ -218,7 +221,7 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" style="font-size: 30px;text-align: center;">
+            <div class="modal-body" style="">
 
             </div>
             <div class="modal-footer" style="justify-content: space-between;">
