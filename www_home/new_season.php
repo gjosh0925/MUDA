@@ -7,7 +7,6 @@ $params['fld'] = 'UserRole';
 $params['val'] = 'admin';
 $admins = new user();
 $admins = $admins->FindAllByParams($params);
-error_log(print_r($admins, true));
 
 ?>
 
