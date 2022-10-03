@@ -36,15 +36,14 @@ function DB_Go($function, $obj, $arg1=''){
     switch($function) {
         case 'find':
             return FindObject($obj, $arg1);
-            break;
         case 'makepersistant':
             return PersistObject($obj);
         case 'findall':
             return FindAllObjects($obj, $arg1);
-            break;
+        case 'FindAllByParams':
+            return FindAllByParams($obj, $arg1, $arg2 = 'ID');
         default:
             return 'Function does not exist.';
-            break;
     }
 }
 
@@ -105,6 +104,51 @@ function PersistObject($obj){
     }
 
     return $obj;
+}
+
+function FindAllByParams($obj, $params, $orderby){
+    $objs = array();
+    $fld = $params["fld"];
+    $val = $params["val"];
+    $fld2 = isset($params["fld2"]) ? $params["fld2"] : "";
+    $val2 = isset($params["val2"]) ? $params["val2"] : "";
+    $fld3 = isset($params["fld3"]) ? $params["fld3"] : "";
+    $val3 = isset($params["val3"]) ? $params["val3"] : "";
+    $opp = isset($params["opp"]) ? $params["opp"] : "=";
+    $opp2 = isset($params["opp2"]) ? $params["opp2"] : "=";
+    $opp3 = isset($params["opp3"]) ? $params["opp3"] : "=";
+
+    $tablename = get_class($obj);
+    $query = "";
+
+    if ($fld3 != ""){
+        $query = sprintf("select * from %s where %s %s '%s' and %s %s '%s' and %s %s '%s' order by %s",
+        data_real_escape_string($tablename),
+        data_real_escape_string($fld), data_real_escape_string($opp), data_real_escape_string($val),
+        data_real_escape_string($fld2), data_real_escape_string($opp2), data_real_escape_string($val2),
+        data_real_escape_string($fld3), data_real_escape_string($opp3), data_real_escape_string($val3),
+        data_real_escape_string($orderby));
+    } else if ($fld2 != ""){
+        $query = sprintf("select * from %s where %s %s '%s' and %s %s '%s' order by %s",
+        data_real_escape_string($tablename),
+        data_real_escape_string($fld), data_real_escape_string($opp), data_real_escape_string($val),
+        data_real_escape_string($fld2), data_real_escape_string($opp2), data_real_escape_string($val2),
+        data_real_escape_string($orderby));
+    } else {
+        $query = sprintf("select * from %s where %s %s '%s' order by %s",
+        data_real_escape_string($tablename),
+        data_real_escape_string($fld), data_real_escape_string($opp), data_real_escape_string($val),
+        data_real_escape_string($orderby));
+    }
+
+    $result = data_query($query);
+
+    while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+        $newobj = new $tablename;
+        array_push($objs, $newobj->Populate($row));
+    }
+
+    return $objs;
 }
 
 function login(){
