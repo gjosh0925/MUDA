@@ -17,6 +17,10 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
 
 ?>
 
+<script
+        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script>
+
 <script>
     $(function(){
         getDraftablePlayers();
@@ -116,6 +120,8 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
         $('#pickPlayer').attr('onclick', 'getDraftablePlayers("' + playerID + '"); $("#confirmPick").modal("hide");');
         $('#confirmPick').modal('show');
     }
+
+
 </script>
 
 <style>
@@ -208,6 +214,7 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
 
     <div id="stats" style="width: 29%; height: 40vh; padding: .5%; margin:.5%; border: 4px solid #0c2340; border-radius: 15px;">
         <h3>Average Stats</h3>
+        <canvas id="myChart" style="width:100%;max-width:600px;"></canvas>
     </div>
 </div>
 
@@ -232,6 +239,28 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
     </div>
 </div>
 
+<script>
+    let xValues = ["Throwing", "Cutting", "Speed", "Conditioning", "Experience"];
+    let yValues = [5, 4, 4, 2, 5];
+    let barColors = ["red", "green","blue","orange","brown"];
+    new Chart("myChart", {
+        type: "bar",
+        data: {
+            labels: xValues,
+            datasets: [{
+                backgroundColor: barColors,
+                data: yValues
+            }]
+        },
+        options: {
+            legend: {display: false},
+            title: {
+                display: true,
+                text: ""
+            }
+        }
+    });
+</script>
 
 <?php
 include_once 'footer.php';
