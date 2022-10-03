@@ -27,19 +27,25 @@ if(session_start() !== null){
     <title>MUDA</title>
 </head>
 
+
+<?php if ($_SERVER['REQUEST_URI'] !== '/MUDA/www_home/login.php') { ?>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand nav-link" href="http://localhost:63342/MUDA/www_home/index.php?_ijt=ute0hc7roi2r2hmqdl3qv7evvn&_ij_reload=RELOAD_ON_SAVE"> MUDA <span class="sr-only">(current)</span></a>
+    <a class="navbar-brand nav-link" href="index.php"> MUDA <span class="sr-only">(current)</span></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-            <a class="nav-item nav-link" href="http://localhost:63342/MUDA/www_home/draft.php?_ijt=ute0hc7roi2r2hmqdl3qv7evvn&_ij_reload=RELOAD_ON_SAVE">Draft</a>
+            <a class="nav-item nav-link" href="draft.php">Draft</a>
             <a class="nav-item nav-link" href="">Teams</a>
             <a class="nav-item nav-link" href="">Another Webpage</a>
-            <a class="nav-item nav-link" href="http://localhost:63342/MUDA/www_home/login.php?_ijt=udcoa6s28fu9oddv1gnmi1oes7&_ij_reload=RELOAD_ON_SAVE">Log In</a>
-            <a class="nav-item nav-link" href="http://localhost:63342/MUDA/www_home/index.php">Log out</a>
+            <?php if (!isset($pageUser)) { ?>
+                <a class="nav-item nav-link" href="login.php">Login</a>
+            <?php } else { ?>
+                <a class="nav-item nav-link" href="logout.php">Log out</a>
+            <?php } ?>
         </div>
     </div>
 </nav>
+<?php } ?>
 
