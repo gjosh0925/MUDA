@@ -52,12 +52,20 @@ if(session_start() !== null){
                     <a class="nav-link" href="index.php">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Teams <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="#">Teams</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="draft.php">Draft <span class="sr-only">(current)</span></a>
-                </li>
+                <?php if (isset($pageUser)) { ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="draft.php">Draft</a>
+                    </li>
+                <?php } ?>
+                <?php if (isset($pageUser) && $pageUser->getUserRole() == "admin") { ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="new_season.php">New Season</a>
+                    </li>
+                <?php } ?>
             </ul>
+
             <?php if (!isset($pageUser)) { ?>
                 <span class="navbar-text loginlogout" onclick="window.location='login.php'" style="padding-right: 40px; color: rgba(0,0,0,.5);">Login</span>
             <?php } else { ?>
