@@ -10,7 +10,7 @@ global $pageUser;
 </div>
 -->
 
-<div class="info-blurb">
+<div style="padding-top: 5%; padding-left: 33%; text-align: left;">
     <b><u>Season Info</u></b>
     <p>
         This season we are excited to be playing at Overton Park in Memphis!<br>
@@ -106,13 +106,6 @@ global $pageUser;
         </div>
     </div>
 </div>
-<!--
-<?php if (!isset($pageUser)) { ?>
-    <button onclick="location.href = 'login.php';">Login</button>
-<?php } else { ?>
-    <button onclick="location.href = 'logout.php';">Logout</button>
-<?php } ?>
--->
 
 <?php
 include_once 'footer.php';
