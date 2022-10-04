@@ -73,90 +73,88 @@ $admins = $admins->FindAllByParams($params);
     }
 </style>
 
-<!--<div style="display:flex;">-->
-    <div id="progressDiv" style="background: #0c2340; width: 20%; color: white; position:fixed; top: 0; height: 100%; z-index: -1;padding-top:50px;">
-        <div class="progressSteps" style="padding-top: 30px;">
-            <i class="fa-2x fa-regular fa-circle-check check" style="background:#00b2a9; border-radius: 100%;"></i><h1>Step 1</h1>
+<div id="progressDiv" style="background: #0c2340; width: 20%; color: white; position:fixed; top: 0; height: 100%; z-index: -1;padding-top:50px;">
+    <div class="progressSteps" style="padding-top: 25%;">
+        <i class="fa-2x fa-regular fa-circle-check check" style="background:#00b2a9; border-radius: 100%;"></i><h1>Step 1</h1>
+    </div>
+    <div class="progressSteps">
+        <i class="fa-2x fa-regular fa-circle-check check" style="border-radius: 100%;"></i><h1>Step 2</h1>
+    </div>
+    <div class="progressSteps">
+        <i class="fa-2x fa-regular fa-circle-check check" style="border-radius: 100%;"></i><h1>Step 3</h1>
+    </div>
+    <div class="progressSteps">
+        <i class="fa-2x fa-regular fa-circle-check check" style="border-radius: 100%;"></i><h1>Step 4</h1>
+    </div>
+</div>
+
+<form id='seasonForm' action="new_season.php" method="post" style="position: absolute; width:80%; left: 20%;">
+    <h1 style="text-align:center;">Create New Season</h1>
+    <h3>Step 1: Season Info</h3>
+    <div id="step1" class="step">
+        <label>Season Name</label>
+        <input class="form-control" type="text" name="season_name"><br>
+        <div style="display:flex; justify-content: space-between;">
+            <div style="display:flex; flex-direction: column">
+                <label>Start Date</label>
+                <input class="form-control" type="date" name="start_date"><br>
+            </div>
+            <div style="display:flex; flex-direction: column">
+                <label>End Date</label>
+                <input class="form-control" type="date" name="end_date"><br>
+            </div>
+            <div style="display:flex; flex-direction: column">
+                <label>Playoff Date</label>
+                <input class="form-control" type="date" name="playoff_date"><br>
+            </div>
         </div>
-        <div class="progressSteps">
-            <i class="fa-2x fa-regular fa-circle-check check" style="border-radius: 100%;"></i><h1>Step 2</h1>
-        </div>
-        <div class="progressSteps">
-            <i class="fa-2x fa-regular fa-circle-check check" style="border-radius: 100%;"></i><h1>Step 3</h1>
-        </div>
-        <div class="progressSteps">
-            <i class="fa-2x fa-regular fa-circle-check check" style="border-radius: 100%;"></i><h1>Step 4</h1>
-        </div>
+        <label>Season Info</label>
+        <textarea class="form-control" id=""></textarea>
     </div>
 
-    <form id='seasonForm' action="new_season.php" method="post" style="position: absolute; width:80%; left: 20%;">
-        <h1 style="text-align:center;">Create New Season</h1>
-        <h3>Step 1: Season Info</h3>
-        <div id="step1" class="step">
-            <label>Season Name</label>
-            <input class="form-control" type="text" name="season_name"><br>
-            <div style="display:flex; justify-content: space-between;">
-                <div style="display:flex; flex-direction: column">
-                    <label>Start Date</label>
-                    <input class="form-control" type="date" name="start_date"><br>
-                </div>
-                <div style="display:flex; flex-direction: column">
-                    <label>End Date</label>
-                    <input class="form-control" type="date" name="end_date"><br>
-                </div>
-                <div style="display:flex; flex-direction: column">
-                    <label>Playoff Date</label>
-                    <input class="form-control" type="date" name="playoff_date"><br>
-                </div>
-            </div>
-            <label>Season Info</label>
-            <textarea class="form-control" id=""></textarea>
-        </div>
+    <h3>Step 2: Upload Players</h3>
+    <div id="step2" class="step">
 
-        <h3>Step 2: Upload Players</h3>
-        <div id="step2" class="step">
+        <input type="file" id="fileUpload">
+        <input type="button" id="upload" value="Upload">
+        <hr />
+        <div id="dvCSV"></div>
+    </div>
 
-            <input type="file" id="fileUpload">
-            <input type="button" id="upload" value="Upload">
-            <hr />
-            <div id="dvCSV"></div>
-        </div>
+    <h3>Step 3: Choose League Coordinators playing this season</h3>
+    <div id="step3" class="step">
+        <table style="width:100%;">
+            <thead>
+                <tr>
+                    <th>Nickname</th>
+                    <th>Not Playing</th>
+                    <th>Playing</th>
+                </tr>
+            </thead>
+            <?php
+            $rows = '';
+            foreach($admins as $admin) {
+                $rows .= '<tr>'
+                       . '<td>' . $admin->getNickname() . '</td>'
+                       . '<td><div class="form-check">'
+                       . '<input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">'
+                       . '</div></td>'
+                       . '<td><div class="form-check">'
+                       . '<input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">'
+                       . '</div></td>'
+                       . '</tr>';
+            }
+            echo $rows;
+            ?>
+        </table>
+    </div>
 
-        <h3>Step 3: Choose League Coordinators playing this season</h3>
-        <div id="step3" class="step">
-            <table style="width:100%;">
-                <thead>
-                    <tr>
-                        <th>Nickname</th>
-                        <th>Not Playing</th>
-                        <th>Playing</th>
-                    </tr>
-                </thead>
-                <?php
-                $rows = '';
-                foreach($admins as $admin) {
-                    $rows .= '<tr>'
-                           . '<td>' . $admin->getNickname() . '</td>'
-                           . '<td><div class="form-check">'
-                           . '<input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">'
-                           . '</div></td>'
-                           . '<td><div class="form-check">'
-                           . '<input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">'
-                           . '</div></td>'
-                           . '</tr>';
-                }
-                echo $rows;
-                ?>
-            </table>
-        </div>
+    <h3>Step 4: Choose Captains</h3>
+    <div id="step4" class="step">
+        Please complete Step 3 first
+    </div>
 
-        <h3>Step 4: Choose Captains</h3>
-        <div id="step4" class="step">
-            Please complete Step 3 first
-        </div>
-
-        <button type="submit" class="btn btn-secondary" style="    margin: 50px;position: relative;left: 25%;width: 40%;padding: 30px; font-size: 24px;">Create Season</button>
-    </form>
-<!--</div>-->
+    <button type="submit" class="btn btn-secondary" style="    margin: 50px;position: relative;left: 25%;width: 40%;padding: 30px; font-size: 24px;">Create Season</button>
+</form>
 
 <?php include_once 'footer.php'; ?>
