@@ -3,14 +3,11 @@
 include_once 'header.php';
 global $pageUser;
 
-$user = new user('86d16a2b08a9479fba6edd0927ff755a');
-
 //find the page users team ID
 $params = null;
 $params['fld'] = 'CaptainID';
 $params['opp'] = '=';
-//$params['val'] = $pageUser->getID();
-$params['val'] = $user->getID();
+$params['val'] = $pageUser->getID();
 $pageUserTeam = new teams();
 $pageUserTeam = $pageUserTeam->FindAllByParams($params);
 
@@ -59,7 +56,8 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
                                  + '<td>' + reply.availablePlayers[i]._Buddy + '</td>'
                                  + '<td>' + reply.availablePlayers[i]._Height + '</td>'
                                  + '<td>' + reply.availablePlayers[i]._Gender + '</td>'
-                                 + '<td>' + reply.availablePlayers[i]._Playoffs + '</td>'
+                                 + '<td>' + reply.availablePlayers[i]._Absence + '</td>'
+                                 + '<td>' + (reply.availablePlayers[i]._Playoffs == '1' ? 'Yes' : 'No') + '</td>'
                                  + '</td>';
                         }
                         $('#available-players').append(row);
@@ -83,7 +81,8 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
                                  + '<td>' + reply.pickedPlayers[i]._Buddy + '</td>'
                                  + '<td>' + reply.pickedPlayers[i]._Height + '</td>'
                                  + '<td>' + reply.pickedPlayers[i]._Gender + '</td>'
-                                 + '<td>' + reply.pickedPlayers[i]._Playoffs + '</td>'
+                                 + '<td>' + reply.pickedPlayers[i]._Absence + '</td>'
+                                 + '<td>' + (reply.availablePlayers[i]._Playoffs == '1' ? 'Yes' : 'No') + '</td>'
                                  + '</td>';
 
 
@@ -159,7 +158,7 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
 
 <h1 style="text-align:center;">The Draft</h1>
 <div style="display: flex; flex-direction: row; flex-wrap: wrap; align-items:flex-start;">
-    <div id="players" style="width: 69%; height:80vh; overflow:auto; padding: .5%; margin:.5%; border: 4px solid #0c2340; border-radius: 15px;">
+    <div id="players" style="width: 69%; height:40vh; overflow:auto; padding: .5%; margin:.5%; border: 4px solid #0c2340; border-radius: 15px;">
         <div style='display: flex; justify-content: space-between;'>
             <h3>Available Players</h3>
             <h3 id="playersLeft">Players Left: </h3>
@@ -176,6 +175,7 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
                     <th scope="col" style="width:14%">Buddy</th>
                     <th scope="col" style="width:9%">Height</th>
                     <th scope="col" style="width:9%">Gender</th>
+                    <th scope="col" style="width:9%">Absence</th>
                     <th scope="col" style="width:8%">Playoffs</th>
                 </tr>
             </thead>
@@ -184,7 +184,7 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
         </table>
     </div>
 
-    <div style="width: 29%; height: 80vh; padding: .5%; margin:.5%; border: 4px solid #0c2340; border-radius: 15px;">
+    <div style="width: 29%; height: 40vh; padding: .5%; margin:.5%; border: 4px solid #0c2340; border-radius: 15px;">
         <h3>Picked Players</h3>
         <div id="picked-players">
         </div>
@@ -204,6 +204,7 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
                 <th scope="col" style="width:14%">Buddy</th>
                 <th scope="col" style="width:9%">Height</th>
                 <th scope="col" style="width:9%">Gender</th>
+                <th scope="col" style="width:9%">Absence</th>
                 <th scope="col" style="width:8%">Playoffs</th>
             </tr>
             </thead>
@@ -240,23 +241,44 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
 </div>
 
 <script>
-    let xValues = ["Throwing", "Cutting", "Speed", "Conditioning", "Experience"];
-    let yValues = [5, 4, 4, 2, 5];
-    let barColors = ["red", "green","blue","orange","brown"];
-    new Chart("myChart", {
-        type: "bar",
-        data: {
-            labels: xValues,
-            datasets: [{
-                backgroundColor: barColors,
-                data: yValues
-            }]
-        },
+    var ctx = document.getElementById("myChart").getContext("2d");
+
+    var data = {
+        labels: ["Throwing", "Cutting", "Speed", "Conditioning", "Experience"],
+        datasets: [{
+            label: "Team1",
+            backgroundColor: "blue",
+            data: [3, 2, 4, 5, 4]
+        }, {
+            label: "Team2",
+            backgroundColor: "red",
+            data: [4, 3, 5, 2, 2]
+        }, {
+            label: "Team3",
+            backgroundColor: "green",
+            data: [5, 2, 1, 4, 3]
+        }, {
+            label: "Team4",
+            backgroundColor: "purple",
+            data: [2, 2, 5, 3, 4]
+        }, {
+            label: "Team5",
+            backgroundColor: "pink",
+            data: [1, 2, 5, 3, 3]
+        }]
+    };
+
+    var myBarChart = new Chart(ctx, {
+        type: 'bar',
+        data: data,
         options: {
-            legend: {display: false},
-            title: {
-                display: true,
-                text: ""
+            barValueSpacing: 20,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        min: 0,
+                    }
+                }]
             }
         }
     });
