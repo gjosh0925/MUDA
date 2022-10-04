@@ -1,6 +1,23 @@
 <?php
 include_once 'header.php';
 global $pageUser;
+$schedule1 = new schedule('1');
+$schedule1->setField(1);
+$schedule2 = new schedule('2');
+$schedule2->setField(2);
+$schedule3 = new schedule('3');
+$schedule3->setField(3);
+$schedule4 = new schedule('4');
+$schedule4->setField(4);
+$schedule5 = new schedule('5');
+$schedule5->setField(1);
+$schedule6 = new schedule('6');
+$schedule6->setField(2);
+$schedule7 = new schedule('6');
+$schedule7->setField(3);
+$schedule8 = new schedule('6');
+$schedule8->setField(4);
+
 
 
 ?>
@@ -31,28 +48,28 @@ global $pageUser;
                 </thead>
                 <tbody>
                 <tr>
-                    <th scope="row" style="text-align: center">1</th>
+                    <th scope="row" style="text-align: center"><?php echo $schedule1->getField(); ?></th>
                     <td>Andrew (Blue)</td>
                     <td>VS</td>
                     <td>Justin (Purple)</td>
                     <td colspan="2" style="text-align: right">6-5</td>
                 </tr>
                 <tr>
-                    <th scope="row" style="text-align: center">2</th>
+                    <th scope="row" style="text-align: center"><?php echo $schedule2->getField(); ?></th>
                     <td>Evan (Black)</td>
                     <td>VS</td>
                     <td>Eric (Pink)</td>
                     <td colspan="2" style="text-align: right">6-9</td>
                 </tr>
                 <tr>
-                    <th scope="row" style="text-align: center">3</th>
+                    <th scope="row" style="text-align: center"><?php echo $schedule3->getField(); ?></th>
                     <td>Mary (Green)</td>
                     <td>VS</td>
                     <td>Walls (Orange)</td>
                     <td colspan="2" style="text-align: right">2-6</td>
                 </tr>
                 <tr>
-                    <th scope="row" style="text-align: center">4</th>
+                    <th scope="row" style="text-align: center"><?php echo $schedule4->getField(); ?></th>
                     <td>Andre (White)</td>
                     <td>VS</td>
                     <td>Kathleen (Red)</td>
@@ -74,28 +91,28 @@ global $pageUser;
                 </thead>
                 <tbody>
                 <tr>
-                    <th scope="row" style="text-align: center">1</th>
+                    <th scope="row" style="text-align: center"><?php echo $schedule5->getField(); ?></th>
                     <td>Andrew (Blue)</td>
                     <td>VS</td>
                     <td>Evan (Black)</td>
                     <td colspan="2" style="text-align: right">8-6</td>
                 </tr>
                 <tr>
-                    <th scope="row" style="text-align: center">2</th>
+                    <th scope="row" style="text-align: center"><?php echo $schedule6->getField(); ?></th>
                     <td>Andre (White)</td>
                     <td>VS</td>
                     <td>Eric (Pink)</td>
                     <td colspan="2" style="text-align: right">9-7</td>
                 </tr>
                 <tr>
-                    <th scope="row" style="text-align: center">3</th>
+                    <th scope="row" style="text-align: center"><?php echo $schedule7->getField(); ?></th>
                     <td>Mary (Green)</td>
                     <td>VS</td>
                     <td>Justin (Purple)</td>
                     <td colspan="2" style="text-align: right">6-10</td>
                 </tr>
                 <tr>
-                    <th scope="row" style="text-align: center">4</th>
+                    <th scope="row" style="text-align: center"><?php echo $schedule8->getField(); ?></th>
                     <td>Walls (Orange)</td>
                     <td>VS</td>
                     <td>Kathleen (Red)</td>
