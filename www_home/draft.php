@@ -38,7 +38,7 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
                 } else {
                     $('#available-players').html('');
                     var row = '';
-                    if (reply.availablePlayers == undefined) {
+                    if (jQuery.isEmptyObject(reply.availablePlayers)) {
 
                     } else {
                         for (var i = 0; i < Object.keys(reply.availablePlayers).length; i++) {
@@ -63,7 +63,7 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
                     $('#picked-players').html('');
                     var row = '';
                     var div = '';
-                    if (reply.pickedPlayers == undefined) {
+                    if (jQuery.isEmptyObject(reply.pickedPlayers)) {
 
                     } else {
                         for (var i = 0; i < Object.keys(reply.pickedPlayers).length; i++) {
@@ -78,7 +78,7 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
                                  + '<td>' + reply.pickedPlayers[i]._Height + '</td>'
                                  + '<td>' + reply.pickedPlayers[i]._Gender + '</td>'
                                  + '<td>' + reply.pickedPlayers[i]._Absence + '</td>'
-                                 + '<td>' + (reply.availablePlayers[i]._Playoffs == '1' ? 'Yes' : 'No') + '</td>'
+                                 + '<td>' + (reply.pickedPlayers[i]._Playoffs == '1' ? 'Yes' : 'No') + '</td>'
                                  + '</td>';
 
 
