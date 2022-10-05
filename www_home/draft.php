@@ -67,23 +67,22 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
 
                     } else {
                         for (var i = 0; i < Object.keys(reply.pickedPlayers).length; i++) {
-                            row += '<tr id="' + reply.pickedPlayers[i]._ID + '">'
-                                 + '<td>' + reply.pickedPlayers[i]._Nickname + '</td>'
-                                 + '<td>' + reply.pickedPlayers[i]._Throwing + '</td>'
-                                 + '<td>' + reply.pickedPlayers[i]._Cutting + '</td>'
-                                 + '<td>' + reply.pickedPlayers[i]._Speed + '</td>'
-                                 + '<td>' + reply.pickedPlayers[i]._Conditioning + '</td>'
-                                 + '<td>' + reply.pickedPlayers[i]._Experience + '</td>'
-                                 + '<td>' + reply.pickedPlayers[i]._Buddy + '</td>'
-                                 + '<td>' + reply.pickedPlayers[i]._Height + '</td>'
-                                 + '<td>' + reply.pickedPlayers[i]._Gender + '</td>'
-                                 + '<td>' + reply.pickedPlayers[i]._Absence + '</td>'
-                                 + '<td>' + (reply.pickedPlayers[i]._Playoffs == '1' ? 'Yes' : 'No') + '</td>'
-                                 + '</td>';
-
+                            div += '<div>' + reply.pickedPlayers[i]._Nickname + '</div>';
 
                             if (reply.pickedPlayers[i]._TeamID == '<?php echo $pageUser->getTeamID(); ?>') {
-                                div += '<div>' + reply.pickedPlayers[i]._Nickname + '</div>';
+                                row += '<tr id="' + reply.pickedPlayers[i]._ID + '">'
+                                    + '<td>' + reply.pickedPlayers[i]._Nickname + '</td>'
+                                    + '<td>' + reply.pickedPlayers[i]._Throwing + '</td>'
+                                    + '<td>' + reply.pickedPlayers[i]._Cutting + '</td>'
+                                    + '<td>' + reply.pickedPlayers[i]._Speed + '</td>'
+                                    + '<td>' + reply.pickedPlayers[i]._Conditioning + '</td>'
+                                    + '<td>' + reply.pickedPlayers[i]._Experience + '</td>'
+                                    + '<td>' + reply.pickedPlayers[i]._Buddy + '</td>'
+                                    + '<td>' + reply.pickedPlayers[i]._Height + '</td>'
+                                    + '<td>' + reply.pickedPlayers[i]._Gender + '</td>'
+                                    + '<td>' + reply.pickedPlayers[i]._Absence + '</td>'
+                                    + '<td>' + (reply.pickedPlayers[i]._Playoffs == '1' ? 'Yes' : 'No') + '</td>'
+                                    + '</td>';
                             }
                         }
                         $('#yourTeam').append(row);
