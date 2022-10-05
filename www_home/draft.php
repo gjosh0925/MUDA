@@ -14,10 +14,6 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
 
 ?>
 
-<script
-        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
-</script>
-
 <script>
     $(function(){
         getDraftablePlayers();
@@ -28,7 +24,7 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
         var datapacket = {
             TODO: 'draftPlayers',
             pickedPlayer: player,
-            TeamID: '<?php echo $user->getTeamID(); ?>'
+            TeamID: '<?php echo $pageUser->getTeamID(); ?>'
         };
         $.ajax({
             type:"POST",
@@ -86,7 +82,7 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
                                  + '</td>';
 
 
-                            if (reply.pickedPlayers[i]._TeamID == '<?php echo $user->getTeamID(); ?>') {
+                            if (reply.pickedPlayers[i]._TeamID == '<?php echo $pageUser->getTeamID(); ?>') {
                                 div += '<div>' + reply.pickedPlayers[i]._Nickname + '</div>';
                             }
                         }
