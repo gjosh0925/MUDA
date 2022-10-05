@@ -19,7 +19,7 @@ if(session_start() !== null){
         color: rgba(0,0,0,.9) !important;
     }
 
-    a, span {
+    .links {
         font-size: 20px;
     }
 
@@ -43,33 +43,30 @@ if(session_start() !== null){
 <?php if ($_SERVER['REQUEST_URI'] !== '/MUDA/www_home/login.php') { ?>
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #00b2a9; height: 80px;">
         <img src="images/muda_logo_black_horizontal.png" width="18%" style="position:relative;">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php">Home</a>
+                    <a class="nav-link links" href="index.php">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Teams</a>
+                    <a class="nav-link links" href="#">Teams</a>
                 </li>
                 <?php if (isset($pageUser)) { ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="draft.php">Draft</a>
+                        <a class="nav-link links" href="draft.php">Draft</a>
                     </li>
                 <?php } ?>
                 <?php if (isset($pageUser) && $pageUser->getUserRole() == "admin") { ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="new_season.php">New Season</a>
+                        <a class="nav-link links" href="new_season.php">New Season</a>
                     </li>
                 <?php } ?>
             </ul>
 
             <?php if (!isset($pageUser)) { ?>
-                <span class="navbar-text loginlogout" onclick="window.location='login.php'" style="padding-right: 40px; color: rgba(0,0,0,.5);">Login</span>
+                <span class="navbar-text loginlogout links" onclick="window.location='login.php'" style="padding-right: 40px; color: rgba(0,0,0,.5);">Login</span>
             <?php } else { ?>
-                <span class="navbar-text loginlogout" onclick="window.location='logout.php'" style="padding-right: 40px; color: rgba(0,0,0,.5);">Logout</span>
+                <span class="navbar-text loginlogout links" onclick="window.location='logout.php'" style="padding-right: 40px; color: rgba(0,0,0,.5);">Logout</span>
             <?php } ?>
         </div>
     </nav>

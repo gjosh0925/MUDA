@@ -1,42 +1,42 @@
 <?php //include_once 'header.php'; ?>
 
-    <style>
+<style>
 
-        h1 {text-align: center;}
+    h1 {text-align: center;}
 
-        code {
-            font-family: Consolas,"courier new";
-            color: crimson;
-            background-color: #f1f1f1;
-            padding: 2px;
-            font-size: 105%;
-        }
+    code {
+        font-family: Consolas,"courier new";
+        color: crimson;
+        background-color: #f1f1f1;
+        padding: 2px;
+        font-size: 105%;
+    }
 
-        table, th, td {
-            border: 1px solid black;
-            border-radius: 10px;
+    table, th, td {
+        border: 1px solid black;
+        border-radius: 10px;
 
-            padding-top: 10px;
-            padding-bottom: 20px;
-            padding-left: 30px;
-            padding-right: 40px;
-            border-spacing: 100px;
+        padding-top: 10px;
+        padding-bottom: 20px;
+        padding-left: 30px;
+        padding-right: 40px;
+        border-spacing: 100px;
 
-            color: white;
-            font-size: 105%;
-        }
+        color: white;
+        font-size: 105%;
+    }
 
-        tr{
-            style: width:150%;
-            style: height:200px;
-        }
+    tr{
+        style: width:150%;
+        style: height:200px;
+    }
 
-        table.center {
-            margin-left: auto;
-            margin-right: auto;
-        }
+    table.center {
+        margin-left: auto;
+        margin-right: auto;
+    }
 
-    </style>
+</style>
 
 
 <h1>League's Teams</h1>
