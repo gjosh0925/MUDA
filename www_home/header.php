@@ -49,7 +49,7 @@ if(session_start() !== null){
                     <a class="nav-link links" href="index.php">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link links" href="#">Teams</a>
+                    <a class="nav-link links" href="teams.php">Teams</a>
                 </li>
                 <?php if (isset($pageUser)) { ?>
                     <li class="nav-item">
