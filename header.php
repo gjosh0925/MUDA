@@ -1,5 +1,5 @@
 <?php
-include_once '../includes/includes.php';
+include_once 'includes/includes.php';
 
 global $config;
 
@@ -40,7 +40,7 @@ if(session_start() !== null){
 </head>
 
 
-<?php if ($_SERVER['REQUEST_URI'] !== '/MUDA/www_home/login.php') { ?>
+<?php if ($_SERVER['REQUEST_URI'] !== '/MUDA/login.php') { ?>
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #00b2a9; height: 80px;">
         <img src="images/muda_logo_black_horizontal.png" width="18%" style="position:relative;">
         <div class="collapse navbar-collapse" id="navbarText">
