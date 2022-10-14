@@ -6,7 +6,6 @@ global $pageUser;
 //find the page users team ID
 $params = null;
 $params['fld'] = 'CaptainID';
-$params['opp'] = '=';
 $params['val'] = $pageUser->getID();
 $pageUserTeam = new teams();
 $pageUserTeam = $pageUserTeam->FindAllByParams($params);
@@ -54,7 +53,7 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
                                  + '<td>' + reply.availablePlayers[i]._Gender + '</td>'
                                  + '<td>' + reply.availablePlayers[i]._Absence + '</td>'
                                  + '<td>' + (reply.availablePlayers[i]._Playoffs == '1' ? 'Yes' : 'No') + '</td>'
-                                 + '</td>';
+                                 + '</tr>';
                         }
                         $('#available-players').append(row);
                     }
