@@ -52,7 +52,20 @@ $teams = $teams->FindAllByParams($params);
     <tbody>
         <td>
             <th>
+                <p>Josh</p>
             </th>
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+            <th>
+
+             </th>
         </td>
     </tbody>
 </table>
