@@ -10,17 +10,25 @@ $params['val2'] = 'adminPlayer';
 $admins = new user();
 $admins = $admins->FindAllByParams($params);
 
-
-if ($_POST['season_name'] !== '' && $_POST['start_date'] !== '' && $_POST['end_date'] !== '' && $_POST['playoff_date'] !== '' && $_POST['info'] !== '') {
-    $season = new season();
-    $season->setName($_POST['season_name']);
-    $season->setStartDate($_POST['start_date']);
-    $season->setEndDate($_POST['end_date']);
-    $season->setPlayoffDate($_POST['playoff_date']);
-    $season->setInfo($_POST['info']);
-    //$season->MakePersistant($season);
+if (isset($_POST['season_name'])) {
+    if ($_POST['season_name'] !== '' && $_POST['start_date'] !== '' && $_POST['end_date'] !== '' && $_POST['playoff_date'] !== '' && $_POST['info'] !== '') {
+        $season = new season();
+        $season->setName($_POST['season_name']);
+        $season->setStartDate($_POST['start_date']);
+        $season->setEndDate($_POST['end_date']);
+        $season->setPlayoffDate($_POST['playoff_date']);
+        $season->setInfo($_POST['info']);
+        //$season->MakePersistant($season);
+    }
 }
 
+//submit button needs to
+// - remove all players, captains, teams, schedules
+// - create new season and make it active
+// - add new players
+// - update admin users (remove teamID, modify user role)
+// - generate schedule
+// - create drafting order
 
 
 ?>
@@ -73,6 +81,11 @@ if ($_POST['season_name'] !== '' && $_POST['start_date'] !== '' && $_POST['end_d
                                         var cell = $("<td />");
                                         cell.html(cells[j]);
                                         row.append(cell);
+                                        if (j == 10) {
+                                            if(cell.html() == 'Yes'){
+                                                row.addClass('captain');
+                                            }
+                                        }
                                     }
                                     table.append(row);
                                 }
@@ -84,6 +97,11 @@ if ($_POST['season_name'] !== '' && $_POST['start_date'] !== '' && $_POST['end_d
                     reader.readAsText($("#fileUpload")[0].files[0]);
                     $('#fileUploader').hide();
                     $('#step2icon').css('background', '#00b2a9');
+                    setTimeout(function() {
+                        $('.captain td:nth-child(2)').each(function(){
+                            potentialCaptains.push($(this).html());
+                        });
+                    }, 3000);
                     areSteps123Done();
                 } else {
                     alert("This browser does not support HTML5.");
@@ -94,6 +112,13 @@ if ($_POST['season_name'] !== '' && $_POST['start_date'] !== '' && $_POST['end_d
         });
     });
 
+    function populateCaptains(){
+        console.log("Running");
+        $('.captain').each(function(){
+            console.log('hit');
+        });
+    }
+
     function isStep1Done(){
         if ($('[name="season_name"]').val() !== '' && $('[name="start_date"]').val() !== '' && $('[name="end_date"]').val() !== '' && $('[name="playoff_date"]').val() !== '' && $('[name="info"]').val() !== '') {
             $('#step1icon').css('background', '#00b2a9');
@@ -103,10 +128,13 @@ if ($_POST['season_name'] !== '' && $_POST['start_date'] !== '' && $_POST['end_d
         areSteps123Done();
     }
 
-    function uncheckCheckbox(checked, id){
+    function uncheckCheckbox(checked, id, name = ''){
         $("input[id$='" + id + "']").each(function() {
             if (!checked.is(this)) {
                 $(this).prop('checked', false);
+            } else if (name != ''){
+                console.log(name);
+                potentialCaptains.push(name);
             }
         });
         isStep3Done();
@@ -129,7 +157,21 @@ if ($_POST['season_name'] !== '' && $_POST['start_date'] !== '' && $_POST['end_d
     }
 
     function populateStep4(){
-        $('#step4').html("Success!");
+        $('#step4text').hide();
+        $('#captainsDiv').show();
+        for (var i = 0; i < potentialCaptains.length; i++){
+            let tr = '<tr style="padding: 20px;">'
+                + '<td>' + potentialCaptains[i] + '</td>'
+                + '<td><div class="form-check" style="text-align:center;">'
+                + '<input onchange="teamCount();" class="form-check-input position-static" style="width: 20px; height: 20px;" type="checkbox" name="teamCaptains" value="captain" aria-label="...">'
+                + '</div></td>'
+            $('#step4 tbody').append(tr);
+        }
+    }
+
+    function teamCount(){
+        let num = $('input[name="teamCaptains"]:checked').length;
+        $('#numOfTeams').html(num);
     }
 
 </script>
@@ -181,6 +223,10 @@ if ($_POST['season_name'] !== '' && $_POST['start_date'] !== '' && $_POST['end_d
     #leagCoodTable td{
         padding: 10px;
     }
+
+    #captainsTable td{
+        padding: 10px;
+    }
 </style>
 
 <div id="progressDiv" style="background: #0c2340; width: 20%; color: white; position:fixed; top: 0; height: 100%; z-index: -1;padding-top:50px;">
@@ -228,7 +274,8 @@ if ($_POST['season_name'] !== '' && $_POST['start_date'] !== '' && $_POST['end_d
             <input type="file" id="fileUpload">
             <input type="button" id="upload" value="Upload">
         </div>
-        <div id="dvCSV" class="uploadedPlayers"></div>
+        <div id="dvCSV" class="uploadedPlayers">
+        </div>
     </div>
 
     <h3>Step 3: Choose League Coordinators playing this season</h3>
@@ -250,7 +297,7 @@ if ($_POST['season_name'] !== '' && $_POST['start_date'] !== '' && $_POST['end_d
                        . '<input id="' . $admin->getID() . '" class="form-check-input position-static" onchange="uncheckCheckbox($(this), \'' . $admin->getID() . '\');" style="width: 20px; height: 20px;" type="checkbox" name="adminPlayingStatus" value="notPlaying" aria-label="...">'
                        . '</div></td>'
                        . '<td><div class="form-check" style="text-align:center;">'
-                       . '<input id="' . $admin->getID() . '" class="form-check-input position-static" onchange="uncheckCheckbox($(this), \'' . $admin->getID() . '\');" style="width: 20px; height: 20px;" type="checkbox" name="adminPlayingStatus" value="playing" aria-label="...">'
+                       . '<input id="' . $admin->getID() . '" class="form-check-input position-static" onchange="uncheckCheckbox($(this), \'' . $admin->getID() . '\', \'' . $admin->getNickName() . '\');" style="width: 20px; height: 20px;" type="checkbox" name="adminPlayingStatus" value="playing" aria-label="...">'
                        . '</div></td>'
                        . '</tr>';
             }
@@ -261,7 +308,19 @@ if ($_POST['season_name'] !== '' && $_POST['start_date'] !== '' && $_POST['end_d
 
     <h3>Step 4: Choose Captains</h3>
     <div id="step4" class="step">
-        Please complete steps 2 and 3 first
+        <p id="step4text">Please complete all above steps first</p>
+        <div id="captainsDiv" style="display:none;">
+            <table id="captainsTable" style="width:100%; border-collapse: inherit;">
+                <thead>
+                <th>Name</th>
+                <th style="text-align:center;">Captain</th>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+            <h4 style="display:flex; justify-content: center;">Number of Teams =  <div id="numOfTeams">0</div></h4>
+        </div>
     </div>
 
     <button type="submit" class="btn btn-secondary" style="    margin: 50px;position: relative;left: 25%;width: 40%;padding: 30px; font-size: 24px;">Create Season</button>

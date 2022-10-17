@@ -6,7 +6,7 @@ global $config;
 
 function DataConnection($whichdb = null){
     global $config, $conn;
-    $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbName']);
+    $conn = new mysqli($config['servername'] . ":" . $config['portnum'], $config['username'], $config['password'], $config['dbName']);
 
     if (mysqli_connect_errno()){
         printf("Can't connect to MySQL server. Errorcode: %s\n", mysqli_connect_error());
