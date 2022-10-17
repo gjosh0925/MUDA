@@ -139,15 +139,13 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
         background-color: #00b2a9;
         color: #0c2340;
         cursor: pointer;
+        border-bottom: 3px solid #0c2340 !important;
     }
 
     table {
         border: 3px solid #0c2340 !important;
     }
 
-    th {
-        border-bottom: 3px solid #0c2340 !important;
-    }
 </style>
 
 <h1 style="text-align:center;">The Draft</h1>

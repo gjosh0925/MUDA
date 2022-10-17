@@ -10,34 +10,81 @@ $params['val2'] = 'adminPlayer';
 $admins = new user();
 $admins = $admins->FindAllByParams($params);
 
+
+if ($_POST['season_name'] !== '' && $_POST['start_date'] !== '' && $_POST['end_date'] !== '' && $_POST['playoff_date'] !== '' && $_POST['info'] !== '') {
+    $season = new season();
+    $season->setName($_POST['season_name']);
+    $season->setStartDate($_POST['start_date']);
+    $season->setEndDate($_POST['end_date']);
+    $season->setPlayoffDate($_POST['playoff_date']);
+    $season->setInfo($_POST['info']);
+    //$season->MakePersistant($season);
+}
+
+
+
 ?>
 
 <script>
+
+    let potentialCaptains = [];
+
     $(function () {
+        //player uploader
         $("#upload").bind("click", function () {
             var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
             if (regex.test($("#fileUpload").val().toLowerCase())) {
                 if (typeof (FileReader) != "undefined") {
                     var reader = new FileReader();
                     reader.onload = function (e) {
-                        var table = $("<table />");
+                        var table = $("<table id='allPlayersTable' class='table' />");
                         var rows = e.target.result.split("\n");
                         for (var i = 0; i < rows.length; i++) {
-                            var row = $("<tr />");
-                            var cells = rows[i].split(",");
-                            if (cells.length > 1) {
-                                for (var j = 0; j < cells.length; j++) {
-                                    var cell = $("<td />");
-                                    cell.html(cells[j]);
-                                    row.append(cell);
-                                }
+                            if (i == 0) {
+                                var row = '<thead style="position: sticky; top: 0px;">'
+                                    + '<tr>'
+                                    + '<th>TimeStamp</th>'
+                                    + '<th>Name</th>'
+                                    + '<th>Phone Number</th>'
+                                    + '<th>Email</th>'
+                                    + '<th>Gender</th>'
+                                    + '<th>Jersey</th>'
+                                    + '<th>DOB</th>'
+                                    + '<th>Absenses</th>'
+                                    + '<th>Attending Playoffs</th>'
+                                    + '<th>Buddy</th>'
+                                    + '<th>Captain</th>'
+                                    + '<th>Terms</th>'
+                                    + '<th>TimeStamp</th>'
+                                    + '<th>Throwing</th>'
+                                    + '<th>Cutting</th>'
+                                    + '<th>Speed</th>'
+                                    + '<th>Conditioning</th>'
+                                    + '<th>Height</th>'
+                                    + '<th>Comments</th>'
+                                    + '</tr>'
+                                    + '</thead>';
                                 table.append(row);
+                            } else {
+                                var row = $("<tr />");
+                                var cells = rows[i].split(",");
+                                if (cells.length > 1) {
+                                    for (var j = 0; j < cells.length; j++) {
+                                        var cell = $("<td />");
+                                        cell.html(cells[j]);
+                                        row.append(cell);
+                                    }
+                                    table.append(row);
+                                }
                             }
                         }
                         $("#dvCSV").html('');
                         $("#dvCSV").append(table);
                     }
                     reader.readAsText($("#fileUpload")[0].files[0]);
+                    $('#fileUploader').hide();
+                    $('#step2icon').css('background', '#00b2a9');
+                    areSteps123Done();
                 } else {
                     alert("This browser does not support HTML5.");
                 }
@@ -46,6 +93,45 @@ $admins = $admins->FindAllByParams($params);
             }
         });
     });
+
+    function isStep1Done(){
+        if ($('[name="season_name"]').val() !== '' && $('[name="start_date"]').val() !== '' && $('[name="end_date"]').val() !== '' && $('[name="playoff_date"]').val() !== '' && $('[name="info"]').val() !== '') {
+            $('#step1icon').css('background', '#00b2a9');
+        } else {
+            $('#step1icon').css('background', '');
+        }
+        areSteps123Done();
+    }
+
+    function uncheckCheckbox(checked, id){
+        $("input[id$='" + id + "']").each(function() {
+            if (!checked.is(this)) {
+                $(this).prop('checked', false);
+            }
+        });
+        isStep3Done();
+    }
+
+    function isStep3Done(){
+        let checkedNum = $('input[name="adminPlayingStatus"]:checked').length;
+        if (checkedNum == '<?php echo count($admins); ?>'){
+            $('#step3icon').css('background', '#00b2a9');
+        } else {
+            $('#step3icon').css('background', '');
+        }
+        areSteps123Done();
+    }
+
+    function areSteps123Done(){
+        if ($('#step1icon').css('background') == 'rgb(0, 178, 169) none repeat scroll 0% 0% / auto padding-box border-box' && $('#step2icon').css('background') == 'rgb(0, 178, 169) none repeat scroll 0% 0% / auto padding-box border-box' && $('#step3icon').css('background') == 'rgb(0, 178, 169) none repeat scroll 0% 0% / auto padding-box border-box') {
+            populateStep4();
+        }
+    }
+
+    function populateStep4(){
+        $('#step4').html("Success!");
+    }
+
 </script>
 
 <style>
@@ -71,20 +157,44 @@ $admins = $admins->FindAllByParams($params);
         top: 45px;
         right: 45px;
     }
+
+    .uploadedPlayers {
+        overflow: auto;
+        max-height: 800px;
+    }
+
+    #allPlayersTable td, tr {
+        border: 2px solid #0c2340;
+    }
+
+    #allPlayersTable th {
+        background-color: #00b2a9;
+        color: #0c2340;
+        cursor: pointer;
+        border-bottom: 3px solid #0c2340 !important;
+    }
+
+    #allPlayersTable table {
+        border: 3px solid #0c2340 !important;
+    }
+
+    #leagCoodTable td{
+        padding: 10px;
+    }
 </style>
 
 <div id="progressDiv" style="background: #0c2340; width: 20%; color: white; position:fixed; top: 0; height: 100%; z-index: -1;padding-top:50px;">
     <div class="progressSteps" style="padding-top: 25%;">
-        <i class="fa-2x fa-regular fa-circle-check check" style="background:#00b2a9; border-radius: 100%;"></i><h1>Step 1</h1>
+        <i id="step1icon" class="fa-2x fa-regular fa-circle-check check" style="border-radius: 100%;"></i><h1>Step 1</h1>
     </div>
     <div class="progressSteps">
-        <i class="fa-2x fa-regular fa-circle-check check" style="border-radius: 100%;"></i><h1>Step 2</h1>
+        <i id="step2icon" class="fa-2x fa-regular fa-circle-check check" style="border-radius: 100%;"></i><h1>Step 2</h1>
     </div>
     <div class="progressSteps">
-        <i class="fa-2x fa-regular fa-circle-check check" style="border-radius: 100%;"></i><h1>Step 3</h1>
+        <i id="step3icon" class="fa-2x fa-regular fa-circle-check check" style="border-radius: 100%;"></i><h1>Step 3</h1>
     </div>
     <div class="progressSteps">
-        <i class="fa-2x fa-regular fa-circle-check check" style="border-radius: 100%;"></i><h1>Step 4</h1>
+        <i id="step4icon" class="fa-2x fa-regular fa-circle-check check" style="border-radius: 100%;"></i><h1>Step 4</h1>
     </div>
 </div>
 
@@ -93,54 +203,54 @@ $admins = $admins->FindAllByParams($params);
     <h3>Step 1: Season Info</h3>
     <div id="step1" class="step">
         <label>Season Name</label>
-        <input class="form-control" type="text" name="season_name"><br>
-        <div style="display:flex; justify-content: space-between;">
+        <input class="form-control" type="text" name="season_name" onchange="isStep1Done();"><br>
+        <div style="display:flex; justify-content: space-between; flex-wrap: wrap;">
             <div style="display:flex; flex-direction: column">
                 <label>Start Date</label>
-                <input class="form-control" type="date" name="start_date"><br>
+                <input class="form-control" type="date" name="start_date" onchange="isStep1Done();"><br>
             </div>
             <div style="display:flex; flex-direction: column">
                 <label>End Date</label>
-                <input class="form-control" type="date" name="end_date"><br>
+                <input class="form-control" type="date" name="end_date" onchange="isStep1Done();"><br>
             </div>
             <div style="display:flex; flex-direction: column">
                 <label>Playoff Date</label>
-                <input class="form-control" type="date" name="playoff_date"><br>
+                <input class="form-control" type="date" name="playoff_date" onchange="isStep1Done();"><br>
             </div>
         </div>
         <label>Season Info</label>
-        <textarea class="form-control" id=""></textarea>
+        <textarea class="form-control" id="" name="info" onchange="isStep1Done();"></textarea>
     </div>
 
     <h3>Step 2: Upload Players</h3>
     <div id="step2" class="step">
-
-        <input type="file" id="fileUpload">
-        <input type="button" id="upload" value="Upload">
-        <hr />
-        <div id="dvCSV"></div>
+        <div id="fileUploader">
+            <input type="file" id="fileUpload">
+            <input type="button" id="upload" value="Upload">
+        </div>
+        <div id="dvCSV" class="uploadedPlayers"></div>
     </div>
 
     <h3>Step 3: Choose League Coordinators playing this season</h3>
     <div id="step3" class="step">
-        <table style="width:100%;">
+        <table style="width:100%; border-collapse: inherit;" id="leagCoodTable">
             <thead>
                 <tr>
-                    <th>Nickname</th>
-                    <th>Not Playing</th>
-                    <th>Playing</th>
+                    <th style="padding-left: 10px;">Name</th>
+                    <th style="text-align: center;">Not Playing</th>
+                    <th style="text-align: center;">Playing</th>
                 </tr>
             </thead>
             <?php
             $rows = '';
             foreach($admins as $admin) {
-                $rows .= '<tr>'
+                $rows .= '<tr style="padding: 20px;">'
                        . '<td>' . $admin->getNickname() . '</td>'
-                       . '<td><div class="form-check">'
-                       . '<input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">'
+                       . '<td><div class="form-check" style="text-align:center;">'
+                       . '<input id="' . $admin->getID() . '" class="form-check-input position-static" onchange="uncheckCheckbox($(this), \'' . $admin->getID() . '\');" style="width: 20px; height: 20px;" type="checkbox" name="adminPlayingStatus" value="notPlaying" aria-label="...">'
                        . '</div></td>'
-                       . '<td><div class="form-check">'
-                       . '<input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">'
+                       . '<td><div class="form-check" style="text-align:center;">'
+                       . '<input id="' . $admin->getID() . '" class="form-check-input position-static" onchange="uncheckCheckbox($(this), \'' . $admin->getID() . '\');" style="width: 20px; height: 20px;" type="checkbox" name="adminPlayingStatus" value="playing" aria-label="...">'
                        . '</div></td>'
                        . '</tr>';
             }
@@ -151,7 +261,7 @@ $admins = $admins->FindAllByParams($params);
 
     <h3>Step 4: Choose Captains</h3>
     <div id="step4" class="step">
-        Please complete Step 3 first
+        Please complete steps 2 and 3 first
     </div>
 
     <button type="submit" class="btn btn-secondary" style="    margin: 50px;position: relative;left: 25%;width: 40%;padding: 30px; font-size: 24px;">Create Season</button>
