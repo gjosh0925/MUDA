@@ -10,6 +10,13 @@ $params['val'] = $pageUser->getID();
 $pageUserTeam = new teams();
 $pageUserTeam = $pageUserTeam->FindAllByParams($params);
 
+//get all captains
+$params = null;
+$params['fld'] = 'UserRole';
+$params['val'] = 'captain';
+$captains = new user();
+$captains = $captains->FindAllByParams($params, "DraftOrder");
+
 
 ?>
 
@@ -146,9 +153,45 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
         border: 3px solid #0c2340 !important;
     }
 
+    #draftOrderDiv {
+        background-color: #0c2340;
+        color: white;
+        border-radius: 15px;
+        margin: 10px;
+        display: flex;
+        justify-content: space-around;
+        flex-direction: row;
+        align-items: center;
+        height: 10%;
+    }
+
+    .turn {
+        background-color: #00b2a9;
+        border-radius: 10px;
+        border: 3px solid white;
+        padding: 10px;
+    }
+
 </style>
 
 <h1 style="text-align:center;">The Draft</h1>
+
+<div id="draftOrderDiv">
+    <?php $captainNames = '';
+    foreach ($captains as $captain) {
+        $captainNames = "<p id='draftOrder'" . $captain->getID() . ">" . $captain->getName . "</p>";
+    }
+    echo $captainNames;
+    ?>
+    <p class="turn">John Doe</p>
+    <p>John Doe</p>
+    <p>John Doe</p>
+    <p>John Doe</p>
+    <p>John Doe</p>
+    <p>John Doe</p>
+    <p>John Doe</p>
+</div>
+
 <div style="display: flex; flex-direction: row; flex-wrap: wrap; align-items:flex-start;">
     <div id="players" style="width: 69%; height:40vh; overflow:auto; padding: .5%; margin:.5%; border: 4px solid #0c2340; border-radius: 15px;">
         <div style='display: flex; justify-content: space-between;'>

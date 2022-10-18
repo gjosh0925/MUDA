@@ -69,6 +69,7 @@ if(session_start() !== null){
             <?php if (!isset($pageUser)) { ?>
                 <span class="navbar-text loginlogout links" onclick="window.location='login.php'" style="padding-right: 40px; color: rgba(0,0,0,.5);">Login</span>
             <?php } else { ?>
+                <span class="navbar-text ">Welcome <?php echo $pageUser->getNickname(); ?></span>
                 <span class="navbar-text loginlogout links" onclick="window.location='logout.php'" style="padding-right: 40px; color: rgba(0,0,0,.5);">Logout</span>
             <?php } ?>
         </div>
