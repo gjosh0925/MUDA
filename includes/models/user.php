@@ -23,6 +23,7 @@ class user extends base {
     public $_Experience;
     public $_Height;
     public $_Comments;
+    public $_DraftOrder;
 
     public function __construct($id = ''){
         if ($id != ''){
@@ -207,6 +208,13 @@ class user extends base {
         $this->_Comments = $comments;
     }
 
+    function getDraftOrder(){
+        return $this->_DraftOrder;
+    }
+
+    function setDraftOrder($draftorder){
+        $this->_DraftOrder = $draftorder;
+    }
 
     function Populate($post){
         $this->setID((isset($post['ID'])) ? $post['ID'] : $this->_ID);
@@ -231,6 +239,7 @@ class user extends base {
         $this->setExperience((isset($post['Experience'])) ? $post['Experience'] : $this->_Experience);
         $this->setHeight((isset($post['Height'])) ? $post['Height'] : $this->_Height);
         $this->setComments((isset($post['Comments'])) ? $post['Comments'] : $this->_Comments);
+        $this->setDraftOrder((isset($post['DraftOrder'])) ? $post['DraftOrder'] : $this->_DraftOrder);
         return $this;
     }
 }

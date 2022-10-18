@@ -6,29 +6,205 @@ include_once 'header.php';
 $params = null;
 $params['fld'] = 'UserRole';
 $params['val'] = 'admin';
-$params['val2'] = 'adminPlayer';
 $admins = new user();
 $admins = $admins->FindAllByParams($params);
 
-if (isset($_POST['season_name'])) {
-    if ($_POST['season_name'] !== '' && $_POST['start_date'] !== '' && $_POST['end_date'] !== '' && $_POST['playoff_date'] !== '' && $_POST['info'] !== '') {
+$params = null;
+$params['fld'] = 'UserRole';
+$params['val'] = 'adminPlaying';
+$adminPlayers = new user();
+$adminPlayers = $adminPlayers->FindAllByParams($params);
+
+$adminCount = count($admins + $adminPlayers);
+
+if (isset($_POST['season_name'])
+    && isset($_POST['start_date'])
+    && isset($_POST['end_date'])
+    && isset($_POST['playoff_date'])
+    && isset($_POST['info'])
+    && isset($_POST['timestamp'])
+    && isset($_POST['nickname'])
+    && isset($_POST['phone'])
+    && isset($_POST['email'])
+    && isset($_POST['gender'])
+    && isset($_POST['jersey'])
+    && isset($_POST['dob'])
+    && isset($_POST['absences'])
+    && isset($_POST['playoffs'])
+    && isset($_POST['buddy'])
+    && isset($_POST['willingcaptain'])
+    && isset($_POST['terms'])
+    && isset($_POST['experience'])
+    && isset($_POST['throwing'])
+    && isset($_POST['cutting'])
+    && isset($_POST['speed'])
+    && isset($_POST['conditioning'])
+    && isset($_POST['height'])
+    && isset($_POST['comments'])
+    ) {
+
+
+    // remove all players, captains, teams, schedules
+    $params = null;
+    $params['fld'] = 'UserRole';
+    $params['val'] = 'player';
+    $removePlayers = new user();
+    $removePlayers = $removePlayers->FindAllByParams($params);
+    foreach($removePlayers as $player){
+        $player->Delete($player);
+    }
+
+    $params = null;
+    $params['fld'] = 'UserRole';
+    $params['val'] = 'captain';
+    $removeCaptains = new user();
+    $removeCaptains = $removeCaptains->FindAllByParams($params);
+    foreach ($removeCaptains as $captain) {
+        $captain->Delete($captain);
+    }
+
+    $params = null;
+    $params['fld'] = 'ID';
+    $params['opp'] = '!=';
+    $params['val'] = '';
+    $removeTeams = new teams();
+    $removeTeams = $removeTeams->FindAllByParams($params);
+    foreach($removeTeams as $team){
+        $team->Delete($team);
+    }
+    $params = null;
+    $params['fld'] = 'ID';
+    $params['opp'] = '!=';
+    $params['val'] = '';
+    $removeSchedule = new schedule();
+    $removeSchedule = $removeSchedule->FindAllByParams($params);
+    foreach($removeSchedule as $schedule){
+        $schedule->Delete($schedule);
+    }
+
+    //set old season inactive
+    $params = null;
+    $params['fld'] = 'Active';
+    $params['val'] = '0';
+    $activeSeasons = new season();
+    $activeSeasons = $activeSeasons->FindAllByParams($params);
+    foreach ($activeSeasons as $season) {
+        $season->setActive('0');
+        $season->MakePersistant($season);
+    }
+
+    // create new season and make it active
+    if (!empty($_POST['season_name']) && !empty($_POST['start_date']) && !empty($_POST['end_date']) && !empty($_POST['playoff_date']) && !empty($_POST['info'])) {
         $season = new season();
         $season->setName($_POST['season_name']);
         $season->setStartDate($_POST['start_date']);
         $season->setEndDate($_POST['end_date']);
         $season->setPlayoffDate($_POST['playoff_date']);
         $season->setInfo($_POST['info']);
-        //$season->MakePersistant($season);
+        $season->setActive('1');
+        $season->MakePersistant($season);
     }
-}
 
-//submit button needs to
-// - remove all players, captains, teams, schedules
-// - create new season and make it active
-// - add new players
+
+    // add new players
+    if (isset($_POST['nickname'])){
+        $playerCount = count($_POST['nickname']);
+        for ($i = 0; $i < $playerCount; $i++){
+            if ($i < 20) {
+                if (isset($_POST['timestamp'][$i])
+                    && isset($_POST['nickname'][$i])
+                    && isset($_POST['phone'][$i])
+                    && isset($_POST['email'][$i])
+                    && isset($_POST['gender'][$i])
+                    && isset($_POST['jersey'][$i])
+                    && isset($_POST['dob'][$i])
+                    && isset($_POST['absences'][$i])
+                    && isset($_POST['playoffs'][$i])
+                    && isset($_POST['buddy'][$i])
+                    && isset($_POST['willingcaptain'][$i])
+                    && isset($_POST['terms'][$i])
+                    && isset($_POST['experience'][$i])
+                    && isset($_POST['throwing'][$i])
+                    && isset($_POST['cutting'][$i])
+                    && isset($_POST['speed'][$i])
+                    && isset($_POST['conditioning'][$i])
+                    && isset($_POST['height'][$i])
+                    && isset($_POST['comments'][$i])
+                ) {
+                    $player = new user();
+                    $player->setTstamp($_POST['timestamp'][$i]);
+                    $player->setNickname($_POST['nickname'][$i]);
+                    $player->setPhone($_POST['phone'][$i]);
+                    $player->setEmail($_POST['email'][$i]);
+                    $player->setGender($_POST['gender'][$i]);
+                    $player->setJersey($_POST['jersey'][$i]);
+                    $player->setDOB($_POST['dob'][$i]);
+                    $player->setAbsence($_POST['absences'][$i]);
+                    $player->setPlayoffs($_POST['playoffs'][$i]);
+                    $player->setBuddy($_POST['buddy'][$i]);
+                    $player->setVerified($_POST['terms'][$i]);
+                    $player->setExperience($_POST['experience'][$i]);
+                    $player->setThrowing($_POST['throwing'][$i]);
+                    $player->setCutting($_POST['cutting'][$i]);
+                    $player->setSpeed($_POST['speed'][$i]);
+                    $player->setConditioning($_POST['conditioning'][$i]);
+                    $player->setHeight($_POST['height'][$i]);
+                    //$player->setComments((isset($_POST['comments'][$i])) ? $_POST['comments'][$i] : '');
+                    $player->setBuddy($_POST['comments'][$i]);
+
+                    if (isset($_POST['captain'][$i])) {
+                        $player->setUserRole('captain');
+                    } else {
+                        $player->setUserRole('player');
+                    }
+                    $player->MakePersistant($player);
+
+                }
+            }
+        }
+    }
+
+
+//if (isset($_POST['adminPlayingStatus'])) {
+//    error_log(print_r($_POST['adminPlayingStatus'], true));
+//}
+
 // - update admin users (remove teamID, modify user role)
-// - generate schedule
+    if (isset($_POST['adminPlayingStatus'])) {
+        foreach($admins as $admin){
+            if ($_POST['adminPlayingStatus'][$admin->getID()]) {
+                if($_POST['adminPlayingStatus'] == 'notPlaying'){
+                    $admin->setUserRole('admin');
+                    $admin->MakePersistant();
+                } else {
+                    $admin->setUserRole('adminPlaying');
+                    $admin->MakePersistant();
+                }
+            }
+        }
+
+        foreach($adminPlayers as $adminPlayer) {
+            if ($_POST['adminPlayingStatus'][$adminPlayer->getID()]) {
+                if ($_POST['adminPlayingStatus'] == 'notPlaying') {
+                    $adminPlayer->setUserRole('admin');
+                    $admin->MakePersistant();
+                } else {
+                    $adminPlayer->setUserRole('adminPlaying');
+                    $admin->MakePersistant();
+                }
+            }
+        }
+    }
+
 // - create drafting order
+
+
+
+// - generate schedule
+
+} else {
+    
+}
 
 
 ?>
@@ -63,7 +239,7 @@ if (isset($_POST['season_name'])) {
                                     + '<th>Buddy</th>'
                                     + '<th>Captain</th>'
                                     + '<th>Terms</th>'
-                                    + '<th>TimeStamp</th>'
+                                    + '<th>Experience</th>'
                                     + '<th>Throwing</th>'
                                     + '<th>Cutting</th>'
                                     + '<th>Speed</th>'
@@ -78,11 +254,133 @@ if (isset($_POST['season_name'])) {
                                 var cells = rows[i].split(",");
                                 if (cells.length > 1) {
                                     for (var j = 0; j < cells.length; j++) {
-                                        var cell = $("<td />");
-                                        cell.html(cells[j]);
+                                        var cell;
+                                        var input;
+                                        switch(j){
+                                            case 0:
+                                                cell = $("<td />");
+                                                input = $("<input name='timestamp[]'/>").val(cells[j]);
+                                                input.appendTo(cell);
+                                                cell.append();
+                                                break;
+                                            case 1:
+                                                cell = $("<td />");
+                                                input = $("<input id='" + i + "' name='nickname[]'/>").val(cells[j]);
+                                                input.appendTo(cell);
+                                                cell.append();
+                                                break;
+                                            case 2:
+                                                cell = $("<td />");
+                                                input = $("<input name='phone[]'/>").val(cells[j]);
+                                                input.appendTo(cell);
+                                                cell.append();
+                                                break;
+                                            case 3:
+                                                cell = $("<td />");
+                                                input = $("<input name='email[]'/>").val(cells[j]);
+                                                input.appendTo(cell);
+                                                cell.append();
+                                                break;
+                                            case 4:
+                                                cell = $("<td />");
+                                                input = $("<input name='gender[]'/>").val(cells[j]);
+                                                input.appendTo(cell);
+                                                cell.append();
+                                                break;
+                                            case 5:
+                                                cell = $("<td />");
+                                                input = $("<input name='jersey[]'/>").val(cells[j]);
+                                                input.appendTo(cell);
+                                                cell.append();
+                                                break;
+                                            case 6:
+                                                cell = $("<td />");
+                                                input = $("<input name='dob[]'/>").val(cells[j]);
+                                                input.appendTo(cell);
+                                                cell.append();
+                                                break;
+                                            case 7:
+                                                cell = $("<td />");
+                                                input = $("<input name='absences[]'/>").val(cells[j]);
+                                                input.appendTo(cell);
+                                                cell.append();
+                                                break;
+                                            case 8:
+                                                cell = $("<td />");
+                                                input = $("<input name='playoffs[]'/>").val(cells[j]);
+                                                input.appendTo(cell);
+                                                cell.append();
+                                                break;
+                                            case 9:
+                                                cell = $("<td />");
+                                                input = $("<input name='buddy[]'/>").val(cells[j]);
+                                                input.appendTo(cell);
+                                                cell.append();
+                                                break;
+                                            case 10:
+                                                cell = $("<td />");
+                                                input = $("<input name='willingcaptain[]'/>").val(cells[j]);
+                                                input.appendTo(cell);
+                                                cell.append();
+                                                break;
+                                            case 11:
+                                                cell = $("<td />");
+                                                input = $("<input name='terms[]'/>").val(cells[j]);
+                                                input.appendTo(cell);
+                                                cell.append();
+                                                break;
+                                            case 12:
+                                                cell = $("<td />");
+                                                input = $("<input name='experience[]'/>").val(cells[j]);
+                                                input.appendTo(cell);
+                                                cell.append();
+                                                break;
+                                            case 13:
+                                                cell = $("<td />");
+                                                input = $("<input name='throwing[]'/>").val(cells[j]);
+                                                input.appendTo(cell);
+                                                cell.append();
+                                                break;
+                                            case 14:
+                                                cell = $("<td />");
+                                                input = $("<input name='cutting[]'/>").val(cells[j]);
+                                                input.appendTo(cell);
+                                                cell.append();
+                                                break;
+                                            case 15:
+                                                cell = $("<td />");
+                                                input = $("<input name='speed[]'/>").val(cells[j]);
+                                                input.appendTo(cell);
+                                                cell.append();
+                                                break;
+                                            case 16:
+                                                cell = $("<td />");
+                                                input = $("<input name='conditioning[]'/>").val(cells[j]);
+                                                input.appendTo(cell);
+                                                cell.append();
+                                                break;
+                                            case 17:
+                                                cell = $("<td />");
+                                                input = $("<input name='height[]'/>").val(cells[j]);
+                                                input.appendTo(cell);
+                                                cell.append();
+                                                break;
+                                            case 18:
+                                                cell = $("<td />");
+                                                input = $("<input name='comments[]'/>").val(cells[j]);
+                                                input.appendTo(cell);
+                                                cell.append();
+                                                break;
+                                            default:
+                                                cell = $("<td />");
+                                                cell.append(cells[j]);
+                                                break;
+
+                                        }
+
                                         row.append(cell);
                                         if (j == 10) {
-                                            if(cell.html() == 'Yes'){
+                                            if(cells[j] == 'Yes'){
                                                 row.addClass('captain');
                                             }
                                         }
@@ -98,8 +396,8 @@ if (isset($_POST['season_name'])) {
                     $('#fileUploader').hide();
                     $('#step2icon').css('background', '#00b2a9');
                     setTimeout(function() {
-                        $('.captain td:nth-child(2)').each(function(){
-                            potentialCaptains.push($(this).html());
+                        $('.captain [name="nickname[]"]').each(function(){
+                            potentialCaptains.push([$(this).val(), $(this).attr('id')]);
                         });
                     }, 3000);
                     areSteps123Done();
@@ -111,13 +409,6 @@ if (isset($_POST['season_name'])) {
             }
         });
     });
-
-    function populateCaptains(){
-        console.log("Running");
-        $('.captain').each(function(){
-            console.log('hit');
-        });
-    }
 
     function isStep1Done(){
         if ($('[name="season_name"]').val() !== '' && $('[name="start_date"]').val() !== '' && $('[name="end_date"]').val() !== '' && $('[name="playoff_date"]').val() !== '' && $('[name="info"]').val() !== '') {
@@ -133,16 +424,15 @@ if (isset($_POST['season_name'])) {
             if (!checked.is(this)) {
                 $(this).prop('checked', false);
             } else if (name != ''){
-                console.log(name);
-                potentialCaptains.push(name);
+                potentialCaptains.push([name, id]);
             }
         });
         isStep3Done();
     }
 
     function isStep3Done(){
-        let checkedNum = $('input[name="adminPlayingStatus"]:checked').length;
-        if (checkedNum == '<?php echo count($admins); ?>'){
+        let checkedNum = $('input[value="notPlaying"]:checked').length + $('input[value="playing"]:checked').length;
+        if (checkedNum == '<?php echo $adminCount; ?>'){
             $('#step3icon').css('background', '#00b2a9');
         } else {
             $('#step3icon').css('background', '');
@@ -161,17 +451,36 @@ if (isset($_POST['season_name'])) {
         $('#captainsDiv').show();
         for (var i = 0; i < potentialCaptains.length; i++){
             let tr = '<tr style="padding: 20px;">'
-                + '<td>' + potentialCaptains[i] + '</td>'
+                + '<td>' + potentialCaptains[i][0] + '</td>'
                 + '<td><div class="form-check" style="text-align:center;">'
-                + '<input onchange="teamCount();" class="form-check-input position-static" style="width: 20px; height: 20px;" type="checkbox" name="teamCaptains" value="captain" aria-label="...">'
+                + '<input name="captain[' + potentialCaptains[i][1] +']" onchange="teamCount();" class="form-check-input position-static" style="width: 20px; height: 20px;" type="checkbox" value="captain" aria-label="...">'
                 + '</div></td>'
             $('#step4 tbody').append(tr);
         }
     }
 
     function teamCount(){
-        let num = $('input[name="teamCaptains"]:checked').length;
+        let num = $('input[value="captain"]:checked').length;
         $('#numOfTeams').html(num);
+        isStep4Done();
+    }
+
+    function isStep4Done(){
+        if($('#numOfTeams').html() >= '5' ){
+            $('#step4icon').css('background', '#00b2a9');
+        } else {
+            $('#step4icon').css('background', '');
+        }
+        showSubmitButton();
+    }
+
+    function showSubmitButton(){
+        if($('#step1icon').css('background') == 'rgb(0, 178, 169) none repeat scroll 0% 0% / auto padding-box border-box'
+        && $('#step2icon').css('background') == 'rgb(0, 178, 169) none repeat scroll 0% 0% / auto padding-box border-box'
+        && $('#step3icon').css('background') == 'rgb(0, 178, 169) none repeat scroll 0% 0% / auto padding-box border-box'
+        && $('#step4icon').css('background') == 'rgb(0, 178, 169) none repeat scroll 0% 0% / auto padding-box border-box') {
+            $('#submitButton').show();
+        }
     }
 
 </script>
@@ -294,15 +603,30 @@ if (isset($_POST['season_name'])) {
                 $rows .= '<tr style="padding: 20px;">'
                        . '<td>' . $admin->getNickname() . '</td>'
                        . '<td><div class="form-check" style="text-align:center;">'
-                       . '<input id="' . $admin->getID() . '" class="form-check-input position-static" onchange="uncheckCheckbox($(this), \'' . $admin->getID() . '\');" style="width: 20px; height: 20px;" type="checkbox" name="adminPlayingStatus" value="notPlaying" aria-label="...">'
+                       . '<input id="' . $admin->getID() . '" class="form-check-input position-static" onchange="uncheckCheckbox($(this), \'' . $admin->getID() . '\');" style="width: 20px; height: 20px;" type="checkbox" name="adminPlayingStatus[' . $admin->getID() . ']" value="notPlaying" aria-label="...">'
                        . '</div></td>'
                        . '<td><div class="form-check" style="text-align:center;">'
-                       . '<input id="' . $admin->getID() . '" class="form-check-input position-static" onchange="uncheckCheckbox($(this), \'' . $admin->getID() . '\', \'' . $admin->getNickName() . '\');" style="width: 20px; height: 20px;" type="checkbox" name="adminPlayingStatus" value="playing" aria-label="...">'
+                       . '<input id="' . $admin->getID() . '" class="form-check-input position-static" onchange="uncheckCheckbox($(this), \'' . $admin->getID() . '\', \'' . $admin->getNickName() . '\');" style="width: 20px; height: 20px;" type="checkbox" name="adminPlayingStatus[' . $admin->getID() . ']" value="playing" aria-label="...">'
                        . '</div></td>'
                        . '</tr>';
             }
+
+            foreach($adminPlayers as $adminPlayer) {
+                $rows .= '<tr style="padding: 20px;">'
+                    . '<td>' . $adminPlayer->getNickname() . '</td>'
+                    . '<td><div class="form-check" style="text-align:center;">'
+                    . '<input id="' . $adminPlayer->getID() . '" class="form-check-input position-static" onchange="uncheckCheckbox($(this), \'' . $adminPlayer->getID() . '\');" style="width: 20px; height: 20px;" type="checkbox" name="adminPlayingStatus[' . $adminPlayer->getID() . ']" value="notPlaying" aria-label="...">'
+                    . '</div></td>'
+                    . '<td><div class="form-check" style="text-align:center;">'
+                    . '<input id="' . $adminPlayer->getID() . '" class="form-check-input position-static" onchange="uncheckCheckbox($(this), \'' . $adminPlayer->getID() . '\', \'' . $adminPlayer->getNickName() . '\');" style="width: 20px; height: 20px;" type="checkbox" name="adminPlayingStatus[' . $adminPlayer->getID() . ']" value="playing" aria-label="...">'
+                    . '</div></td>'
+                    . '</tr>';
+            }
             echo $rows;
+
             ?>
+
+
         </table>
     </div>
 
@@ -323,7 +647,7 @@ if (isset($_POST['season_name'])) {
         </div>
     </div>
 
-    <button type="submit" class="btn btn-secondary" style="    margin: 50px;position: relative;left: 25%;width: 40%;padding: 30px; font-size: 24px;">Create Season</button>
+    <button id="submitButton" type="submit" class="btn btn-secondary" style="display: none; margin: 50px;position: relative;left: 25%;width: 40%;padding: 30px; font-size: 24px;">Create Season</button>
 </form>
 
 <?php include_once 'footer.php'; ?>
