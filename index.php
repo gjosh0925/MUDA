@@ -1,37 +1,30 @@
 <?php
 include_once 'header.php';
 global $pageUser;
-$schedule1 = new schedule('1');
-$schedule1->setField(1);
-$schedule2 = new schedule('2');
-$schedule2->setField(2);
-$schedule3 = new schedule('3');
-$schedule3->setField(3);
-$schedule4 = new schedule('4');
-$schedule4->setField(4);
-$schedule5 = new schedule('5');
-$schedule5->setField(1);
-$schedule6 = new schedule('6');
-$schedule6->setField(2);
-$schedule7 = new schedule('6');
-$schedule7->setField(3);
-$schedule8 = new schedule('6');
-$schedule8->setField(4);
 
+
+$params = null;
+$params['fld'] = 'Active';
+$params['val'] = '1';
+$season = new season();
+$season = $season->FindAllByParams($params);
+
+
+
+foreach($season as $s) {
+    $currseason = new season($s->getID());
+}
 
 
 ?>
-<!--
-<div class="a">
-    <img src="images/muda_logo_black_horizontal.png" width="40%" height="40%">
-</div>
--->
+<h1 style="text-align:center"><?php echo $currseason->getName(); ?></h1>
+<h2 style="text-align:center"><?php echo $currseason->getStartDate() .  " - " . $currseason->getEndDate();?></h2>
 
 <div style="padding-top: 5%; padding-left: 33%; text-align: left;">
     <b><u>Season Info</u></b>
     <p>
-        This season we are excited to be playing at Overton Park in Memphis!<br>
-        <b>Address:</b> 1914 Poplar Ave #202, Memphis, TN 38104
+        <?php echo $currseason->getInfo()?><br>
+        <b></b>
     </p>
 </div>
 
@@ -48,28 +41,28 @@ $schedule8->setField(4);
                 </thead>
                 <tbody>
                 <tr>
-                    <th scope="row" style="text-align: center"><?php echo $schedule1->getField(); ?></th>
+                    <th scope="row" style="text-align: center"></th>
                     <td>Andrew (Blue)</td>
                     <td>VS</td>
                     <td>Justin (Purple)</td>
                     <td colspan="2" style="text-align: right">6-5</td>
                 </tr>
                 <tr>
-                    <th scope="row" style="text-align: center"><?php echo $schedule2->getField(); ?></th>
+                    <th scope="row" style="text-align: center"></th>
                     <td>Evan (Black)</td>
                     <td>VS</td>
                     <td>Eric (Pink)</td>
                     <td colspan="2" style="text-align: right">6-9</td>
                 </tr>
                 <tr>
-                    <th scope="row" style="text-align: center"><?php echo $schedule3->getField(); ?></th>
+                    <th scope="row" style="text-align: center"></th>
                     <td>Mary (Green)</td>
                     <td>VS</td>
                     <td>Walls (Orange)</td>
                     <td colspan="2" style="text-align: right">2-6</td>
                 </tr>
                 <tr>
-                    <th scope="row" style="text-align: center"><?php echo $schedule4->getField(); ?></th>
+                    <th scope="row" style="text-align: center"></th>
                     <td>Andre (White)</td>
                     <td>VS</td>
                     <td>Kathleen (Red)</td>
@@ -91,28 +84,28 @@ $schedule8->setField(4);
                 </thead>
                 <tbody>
                 <tr>
-                    <th scope="row" style="text-align: center"><?php echo $schedule5->getField(); ?></th>
+                    <th scope="row" style="text-align: center"></th>
                     <td>Andrew (Blue)</td>
                     <td>VS</td>
                     <td>Evan (Black)</td>
                     <td colspan="2" style="text-align: right">8-6</td>
                 </tr>
                 <tr>
-                    <th scope="row" style="text-align: center"><?php echo $schedule6->getField(); ?></th>
+                    <th scope="row" style="text-align: center"></th>
                     <td>Andre (White)</td>
                     <td>VS</td>
                     <td>Eric (Pink)</td>
                     <td colspan="2" style="text-align: right">9-7</td>
                 </tr>
                 <tr>
-                    <th scope="row" style="text-align: center"><?php echo $schedule7->getField(); ?></th>
+                    <th scope="row" style="text-align: center"></th>
                     <td>Mary (Green)</td>
                     <td>VS</td>
                     <td>Justin (Purple)</td>
                     <td colspan="2" style="text-align: right">6-10</td>
                 </tr>
                 <tr>
-                    <th scope="row" style="text-align: center"><?php echo $schedule8->getField(); ?></th>
+                    <th scope="row" style="text-align: center"></th>
                     <td>Walls (Orange)</td>
                     <td>VS</td>
                     <td>Kathleen (Red)</td>
