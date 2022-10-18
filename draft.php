@@ -219,11 +219,18 @@ $captains = $captains->FindAllByParams($params, "DraftOrder");
         </table>
     </div>
 
-    <div style="width: 29%; height: 40vh; padding: .5%; margin:.5%; border: 4px solid #0c2340; border-radius: 15px;">
+    <div style="width: 14%; height: 40vh; padding: .5%; margin:.5%; border: 4px solid #0c2340; border-radius: 15px;">
         <h3>Picked Players</h3>
         <div id="picked-players">
         </div>
     </div>
+
+    <div style="width: 14%; height: 40vh; padding: .5%; margin:.5%; border: 4px solid #0c2340; border-radius: 15px;">
+        <h3>Reserved Players</h3>
+        <div id="reserved-players">
+        </div>
+    </div>
+
 
     <div style="width: 69%; height: 40vh; padding: .5%; margin:.5%; overflow:auto; border: 4px solid #0c2340; border-radius: 15px;">
         <h3>Your Team</h3>
