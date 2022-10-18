@@ -42,6 +42,8 @@ function DB_Go($function, $obj, $arg1=''){
             return FindAllObjects($obj, $arg1);
         case 'FindAllByParams':
             return FindAllByParams($obj, $arg1, $arg2 = 'ID');
+        case 'delete':
+            return DeleteObject($obj);
         default:
             return 'Function does not exist.';
     }
@@ -96,6 +98,7 @@ function PersistObject($obj){
         }
         $query .= ");";
         $result = data_query($query);
+        error_log($query);
 
         if(!$result) {
             error_log(data_error(null));
@@ -172,6 +175,12 @@ function login(){
         header("Location: login.php?error=Incorect Email or Password");
         exit();
     }
+}
+
+function DeleteObject($obj){
+    $tablename = get_class($obj);
+    $query = sprintf("delete from %s where ID = '%s';", data_real_escape_string($tablename), data_real_escape_string($obj->getID()));
+    $result = data_query($query);
 }
 
 function logout(){
