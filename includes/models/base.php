@@ -16,4 +16,8 @@ class base {
     public function FindAllByParams($params = array(), $orderby='ID'){
         return DB_Go('FindAllByParams', $this, $params, $orderby);
     }
+
+    public function Delete($obj){
+        return DB_Go('delete', $obj);
+    }
 }
