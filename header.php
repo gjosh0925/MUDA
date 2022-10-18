@@ -53,6 +53,9 @@ if(session_start() !== null){
                 </li>
                 <?php if (isset($pageUser)) { ?>
                     <li class="nav-item">
+                        <a class="nav-link links" href="playerpage.php">Player Page</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link links" href="draft.php">Draft</a>
                     </li>
                 <?php } ?>
