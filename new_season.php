@@ -9,10 +9,11 @@ $params['val'] = 'admin';
 $admins = new user();
 $admins = $admins->FindAllByParams($params);
 
-//$params = null;
-//$params['fld'] = 'UserRole';
-//$params['val'] = 'adminPlayer';
-
+$params = null;
+$params['fld'] = 'UserRole';
+$params['val'] = 'adminPlaying';
+$adminPlayers = new user();
+$adminPlayers = $adminPlayers->FindAllByParams($params);
 
 //submit button needs to
 // remove all players, captains, teams, schedules
@@ -124,13 +125,44 @@ if (isset($_POST['nickname'])){
 }
 
 
-if (isset($_POST['adminPlayingStatus'])) {
-    error_log(print_r($_POST['adminPlayingStatus'], true));
-}
+//if (isset($_POST['adminPlayingStatus'])) {
+//    error_log(print_r($_POST['adminPlayingStatus'], true));
+//}
 
 // - update admin users (remove teamID, modify user role)
-// - generate schedule
+if (isset($_POST['adminPlayingStatus'])) {
+    foreach($admins as $admin){
+        if ($_POST['adminPlayingStatus'][$admin->getID()]) {
+            if($_POST['adminPlayingStatus'] == 'notPlaying'){
+                $admin->setUserRole('admin');
+                //$admin->MakePersistant();
+            } else {
+                $admin->setUserRole('adminPlaying');
+                //$admin->MakePersistant();
+            }
+            error_log(print_r($admin, true));
+        }
+    }
+
+    foreach($adminPlayers as $adminPlayer) {
+        if ($_POST['adminPlayingStatus'][$adminPlayer->getID()]) {
+            if ($_POST['adminPlayingStatus'] == 'notPlaying') {
+                $adminPlayer->setUserRole('admin');
+                //$admin->MakePersistant();
+            } else {
+                $adminPlayer->setUserRole('adminPlaying');
+                //$admin->MakePersistant();
+            }
+            error_log(print_r($adminPlayer, true));
+        }
+    }
+}
+
 // - create drafting order
+
+
+
+// - generate schedule
 
 
 ?>
@@ -323,7 +355,6 @@ if (isset($_POST['adminPlayingStatus'])) {
                     $('#step2icon').css('background', '#00b2a9');
                     setTimeout(function() {
                         $('.captain [name="nickname[]"]').each(function(){
-                            //potentialCaptains.push($(this).val());
                             potentialCaptains.push([$(this).val(), $(this).attr('id')]);
                         });
                     }, 3000);
@@ -518,8 +549,23 @@ if (isset($_POST['adminPlayingStatus'])) {
                        . '</div></td>'
                        . '</tr>';
             }
+
+            foreach($adminPlayers as $adminPlayer) {
+                $rows .= '<tr style="padding: 20px;">'
+                    . '<td>' . $adminPlayer->getNickname() . '</td>'
+                    . '<td><div class="form-check" style="text-align:center;">'
+                    . '<input id="' . $adminPlayer->getID() . '" class="form-check-input position-static" onchange="uncheckCheckbox($(this), \'' . $adminPlayer->getID() . '\');" style="width: 20px; height: 20px;" type="checkbox" name="adminPlayingStatus[' . $adminPlayer->getID() . ']" value="notPlaying" aria-label="...">'
+                    . '</div></td>'
+                    . '<td><div class="form-check" style="text-align:center;">'
+                    . '<input id="' . $adminPlayer->getID() . '" class="form-check-input position-static" onchange="uncheckCheckbox($(this), \'' . $adminPlayer->getID() . '\', \'' . $adminPlayer->getNickName() . '\');" style="width: 20px; height: 20px;" type="checkbox" name="adminPlayingStatus[' . $adminPlayer->getID() . ']" value="playing" aria-label="...">'
+                    . '</div></td>'
+                    . '</tr>';
+            }
             echo $rows;
+
             ?>
+
+
         </table>
     </div>
 
