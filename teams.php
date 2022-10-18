@@ -7,6 +7,15 @@ $params['val'] = '';
 $teams = new teams();
 $teams = $teams->FindAllByParams($params);
 
+if (isset($_GET['teamid'])) {
+    $params = null;
+    $params['fld'] = 'TeamID';
+    $params['val'] = $_GET['teamid'];
+    $players = new user();
+    $players = $players->FindAllByParams($params);
+}
+
+
 ?>
 
 <style>
@@ -66,8 +75,6 @@ $teams = $teams->FindAllByParams($params);
         <?php foreach($teams as $team) {
             $teamDiv = '<div class="teamNames" onclick="window.location.href = \'teams.php?teamid=' . $team->getID() . '\'">' . $team->getName() . '</div>';
             echo $teamDiv;
-            echo $teamDiv;
-            echo $teamDiv;
         } ?>
     </div>
 
@@ -76,6 +83,13 @@ $teams = $teams->FindAllByParams($params);
     <div>
         <button class="btn btn-secondary" style="float:left; margin: 20px;" onclick="window.location.href='teams.php'"><i class="fa-solid fa-arrow-left"></i>Back</button>
         <h1>Team <?php echo $team->getName(); ?></h1>
+    </div>
+
+    <div style="display: flex;flex-direction: column;">
+        <h3>Players</h3>
+        <?php foreach ($players as $player){
+            echo $player->getNickname();
+        } ?>
     </div>
 <?php } ?>
 
