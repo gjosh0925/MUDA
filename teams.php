@@ -88,7 +88,12 @@ if (isset($_GET['teamid'])) {
     <div style="display: flex;flex-direction: column;">
         <h3>Players</h3>
         <?php foreach ($players as $player){
-            echo $player->getNickname();
+            if ($team->getCaptainID() == $player->getID()){
+                echo "<p>". "Team Captain: ", $player->getNickname(). "</p>";
+            }
+            else{
+                echo "<p>". $player->getNickname(). "</p>";
+            }
         } ?>
     </div>
 <?php } ?>
