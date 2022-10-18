@@ -35,6 +35,28 @@ $schedule8->setField(4);
     </p>
 </div>
 
+<div class="row" style="padding-bottom: 1%; padding-top: 1%">
+    <div class="column">
+
+    </div>
+    <div class="column" style="text-align: center">
+        <h3> 10/16/2022 - Monday</h3>
+    </div>
+    <div class="column" style="padding-left: 6.5%">
+        <label for="weeks"></label>
+        <select name="weeks" id="weeks">
+            <option value="week1">10/02</option>
+            <option value="week2">10/09</option>
+            <option value="week3">10/16</option>
+            <option value="week4">10/23</option>
+            <option value="week5">10/30</option>
+            <option value="week6">11/06</option>
+            <option value="week7">11/13</option>
+            <option value="week8">11/20</option>
+        </select>
+    </div>
+</div>
+
 <div style="display:flex; justify-content: center;">
     <div style="justify-content: center" class="tble1-spacing">
         <div class="card">
