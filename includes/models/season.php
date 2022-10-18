@@ -8,6 +8,7 @@ class season extends base {
     public $_EndDate;
     public $_PlayoffDate;
     public $_Info;
+    public $_Active;
 
     public function __construct($id = ''){
         if ($id != '') {
@@ -64,6 +65,14 @@ class season extends base {
         $this->_Info = $info;
     }
 
+    function getActive(){
+        return $this->_Active;
+    }
+
+    function setActive($active){
+        $this->_Active = $active;
+    }
+
     function Populate($post){
         $this->setID((isset($post['ID'])) ? $post['ID'] : $this->_ID);
         $this->setName((isset($post['Name'])) ? $post['Name'] : $this->_Name);
@@ -71,6 +80,7 @@ class season extends base {
         $this->setEndDate((isset($post['EndDate'])) ? $post['EndDate'] : $this->_EndDate);
         $this->setPlayoffDate((isset($post['PlayoffDate'])) ? $post['PlayoffDate'] : $this->_PlayoffDate);
         $this->setInfo((isset($post['Info'])) ? $post['Info'] : $this->_Info);
+        $this->setActive((isset($post['Active'])) ? $post['Active'] : $this->_Active);
         return $this;
     }
 
