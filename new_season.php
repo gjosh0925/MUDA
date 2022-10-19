@@ -15,7 +15,7 @@ $params['val'] = 'adminPlaying';
 $adminPlayers = new user();
 $adminPlayers = $adminPlayers->FindAllByParams($params);
 
-$adminCount = count($admins + $adminPlayers);
+$adminCount = count($admins) + count($adminPlayers);
 
 if (isset($_POST['season_name'])
     && isset($_POST['start_date'])
@@ -85,7 +85,7 @@ if (isset($_POST['season_name'])
     //set old season inactive
     $params = null;
     $params['fld'] = 'Active';
-    $params['val'] = '0';
+    $params['val'] = '1';
     $activeSeasons = new season();
     $activeSeasons = $activeSeasons->FindAllByParams($params);
     foreach ($activeSeasons as $season) {
@@ -110,98 +110,81 @@ if (isset($_POST['season_name'])
     if (isset($_POST['nickname'])){
         $playerCount = count($_POST['nickname']);
         for ($i = 0; $i < $playerCount; $i++){
-            if ($i < 20) {
-                if (isset($_POST['timestamp'][$i])
-                    && isset($_POST['nickname'][$i])
-                    && isset($_POST['phone'][$i])
-                    && isset($_POST['email'][$i])
-                    && isset($_POST['gender'][$i])
-                    && isset($_POST['jersey'][$i])
-                    && isset($_POST['dob'][$i])
-                    && isset($_POST['absences'][$i])
-                    && isset($_POST['playoffs'][$i])
-                    && isset($_POST['buddy'][$i])
-                    && isset($_POST['willingcaptain'][$i])
-                    && isset($_POST['terms'][$i])
-                    && isset($_POST['experience'][$i])
-                    && isset($_POST['throwing'][$i])
-                    && isset($_POST['cutting'][$i])
-                    && isset($_POST['speed'][$i])
-                    && isset($_POST['conditioning'][$i])
-                    && isset($_POST['height'][$i])
-                    && isset($_POST['comments'][$i])
-                ) {
-                    $player = new user();
-                    $player->setTstamp($_POST['timestamp'][$i]);
-                    $player->setNickname($_POST['nickname'][$i]);
-                    $player->setPhone($_POST['phone'][$i]);
-                    $player->setEmail($_POST['email'][$i]);
-                    $player->setGender($_POST['gender'][$i]);
-                    $player->setJersey($_POST['jersey'][$i]);
-                    $player->setDOB($_POST['dob'][$i]);
-                    $player->setAbsence($_POST['absences'][$i]);
-                    $player->setPlayoffs($_POST['playoffs'][$i]);
-                    $player->setBuddy($_POST['buddy'][$i]);
-                    $player->setVerified($_POST['terms'][$i]);
-                    $player->setExperience($_POST['experience'][$i]);
-                    $player->setThrowing($_POST['throwing'][$i]);
-                    $player->setCutting($_POST['cutting'][$i]);
-                    $player->setSpeed($_POST['speed'][$i]);
-                    $player->setConditioning($_POST['conditioning'][$i]);
-                    $player->setHeight($_POST['height'][$i]);
-                    //$player->setComments((isset($_POST['comments'][$i])) ? $_POST['comments'][$i] : '');
-                    $player->setBuddy($_POST['comments'][$i]);
+            if (isset($_POST['timestamp'][$i])
+                && isset($_POST['nickname'][$i])
+                && isset($_POST['phone'][$i])
+                && isset($_POST['email'][$i])
+                && isset($_POST['gender'][$i])
+                && isset($_POST['jersey'][$i])
+                && isset($_POST['dob'][$i])
+                && isset($_POST['absences'][$i])
+                && isset($_POST['playoffs'][$i])
+                && isset($_POST['willingcaptain'][$i])
+                && isset($_POST['terms'][$i])
+                && isset($_POST['experience'][$i])
+                && isset($_POST['throwing'][$i])
+                && isset($_POST['cutting'][$i])
+                && isset($_POST['speed'][$i])
+                && isset($_POST['conditioning'][$i])
+                && isset($_POST['height'][$i])
+            ) {
+                $player = new user();
+                $player->setTstamp($_POST['timestamp'][$i]);
+                $player->setNickname($_POST['nickname'][$i]);
+                $player->setPhone($_POST['phone'][$i]);
+                $player->setEmail($_POST['email'][$i]);
+                $player->setGender($_POST['gender'][$i]);
+                $player->setJersey($_POST['jersey'][$i]);
+                $player->setDOB($_POST['dob'][$i]);
+                $player->setAbsence($_POST['absences'][$i]);
+                $player->setPlayoffs($_POST['playoffs'][$i]);
+                $player->setBuddy($_POST['buddy'][$i]);
+                $player->setVerified($_POST['terms'][$i]);
+                $player->setExperience($_POST['experience'][$i]);
+                $player->setThrowing($_POST['throwing'][$i]);
+                $player->setCutting($_POST['cutting'][$i]);
+                $player->setSpeed($_POST['speed'][$i]);
+                $player->setConditioning($_POST['conditioning'][$i]);
+                $player->setHeight($_POST['height'][$i]);
+                $player->setComments($_POST['comments'][$i]);
 
-                    if (isset($_POST['captain'][$i])) {
-                        $player->setUserRole('captain');
-                    } else {
-                        $player->setUserRole('player');
-                    }
-                    $player->MakePersistant($player);
+                $player->setDraftOrder('-1');
 
+                if (isset($_POST['captain'][$i])) {
+                    $player->setUserRole('captain');
+                } else {
+                    $player->setUserRole('player');
                 }
+
+                $player->MakePersistant($player);
             }
         }
     }
 
-
-//if (isset($_POST['adminPlayingStatus'])) {
-//    error_log(print_r($_POST['adminPlayingStatus'], true));
-//}
-
-// - update admin users (remove teamID, modify user role)
+    // update admin users (remove teamID, modify user role)
     if (isset($_POST['adminPlayingStatus'])) {
         foreach($admins as $admin){
-            if ($_POST['adminPlayingStatus'][$admin->getID()]) {
-                if($_POST['adminPlayingStatus'] == 'notPlaying'){
-                    $admin->setUserRole('admin');
-                    $admin->MakePersistant();
-                } else {
-                    $admin->setUserRole('adminPlaying');
-                    $admin->MakePersistant();
-                }
-            }
+            $admin->setTeamID('');
+            $admin->setUserRole(($_POST['adminPlayingStatus'][$admin->getID()] == 'notPlaying') ? 'admin' : 'adminPlaying');
+            $admin->MakePersistant($admin);
         }
 
         foreach($adminPlayers as $adminPlayer) {
-            if ($_POST['adminPlayingStatus'][$adminPlayer->getID()]) {
-                if ($_POST['adminPlayingStatus'] == 'notPlaying') {
-                    $adminPlayer->setUserRole('admin');
-                    $admin->MakePersistant();
-                } else {
-                    $adminPlayer->setUserRole('adminPlaying');
-                    $admin->MakePersistant();
-                }
-            }
+            $adminPlayer->setTeamID('');
+            $adminPlayer->setUserRole(($_POST['adminPlayingStatus'][$adminPlayer->getID()] == 'notPlaying') ? 'admin' : 'adminPlaying');
+            $adminPlayer->MakePersistant($adminPlayer);
         }
     }
 
-// - create drafting order
+    // create drafting order
 
 
 
-// - generate schedule
+    // generate schedule
 
+
+
+    unset($_POST); $_POST = array();
 } else {
     
 }
@@ -259,115 +242,169 @@ if (isset($_POST['season_name'])
                                         switch(j){
                                             case 0:
                                                 cell = $("<td />");
-                                                input = $("<input name='timestamp[]'/>").val(cells[j]);
+                                                input = $("<input name='timestamp[]' onchange='checkLength($(this), " + i + ", 32);' maxlength='32'/>").val(cells[j]);
                                                 input.appendTo(cell);
+                                                if(cells[j].length > '32'){
+                                                    cell.addClass('error');
+                                                }
                                                 cell.append();
                                                 break;
                                             case 1:
                                                 cell = $("<td />");
-                                                input = $("<input id='" + i + "' name='nickname[]'/>").val(cells[j]);
+                                                input = $("<input id='" + i + "' name='nickname[]' onchange='checkLength($(this), " + i + ", 45);' maxlength='45'/>").val(cells[j]);
                                                 input.appendTo(cell);
+                                                if(cells[j].length > '45'){
+                                                    cell.addClass('error');
+                                                }
                                                 cell.append();
                                                 break;
                                             case 2:
                                                 cell = $("<td />");
-                                                input = $("<input name='phone[]'/>").val(cells[j]);
+                                                input = $("<input name='phone[]' onchange='checkLength($(this), " + i + ", 45);; 'maxlength='45'/>").val(cells[j]);
                                                 input.appendTo(cell);
+                                                if(cells[j].length > '45'){
+                                                    cell.addClass('error');
+                                                }
                                                 cell.append();
                                                 break;
                                             case 3:
                                                 cell = $("<td />");
-                                                input = $("<input name='email[]'/>").val(cells[j]);
+                                                input = $("<input name='email[]' onchange='checkLength($(this), " + i + ", 45);' maxlength='45'/>").val(cells[j]);
                                                 input.appendTo(cell);
+                                                if(cells[j].length > '45'){
+                                                    cell.addClass('error');
+                                                }
                                                 cell.append();
                                                 break;
                                             case 4:
                                                 cell = $("<td />");
-                                                input = $("<input name='gender[]'/>").val(cells[j]);
+                                                input = $("<input name='gender[]' onchange='checkLength($(this), " + i + ", 45);' maxlength='45'/>").val(cells[j]);
                                                 input.appendTo(cell);
+                                                if(cells[j].length > '45'){
+                                                    cell.addClass('error');
+                                                }
                                                 cell.append();
                                                 break;
                                             case 5:
                                                 cell = $("<td />");
-                                                input = $("<input name='jersey[]'/>").val(cells[j]);
+                                                input = $("<input name='jersey[]' onchange='checkLength($(this), " + i + ", 45);' maxlength='45'/>").val(cells[j]);
                                                 input.appendTo(cell);
+                                                if(cells[j].length > '45'){
+                                                    cell.addClass('error');
+                                                }
                                                 cell.append();
                                                 break;
                                             case 6:
                                                 cell = $("<td />");
-                                                input = $("<input name='dob[]'/>").val(cells[j]);
+                                                input = $("<input name='dob[]' onchange='checkLength($(this), " + i + ", 45);' maxlength='45'/>").val(cells[j]);
                                                 input.appendTo(cell);
+                                                if(cells[j].length > '45'){
+                                                    cell.addClass('error');
+                                                }
                                                 cell.append();
                                                 break;
                                             case 7:
                                                 cell = $("<td />");
-                                                input = $("<input name='absences[]'/>").val(cells[j]);
+                                                input = $("<input name='absences[]' onchange='checkLength($(this), " + i + ", 3);' maxlength='3'/>").val(cells[j]);
                                                 input.appendTo(cell);
+                                                if(cells[j].length > '3'){
+                                                    cell.addClass('error');
+                                                }
                                                 cell.append();
                                                 break;
                                             case 8:
                                                 cell = $("<td />");
-                                                input = $("<input name='playoffs[]'/>").val(cells[j]);
+                                                input = $("<input name='playoffs[]' onchange='checkLength($(this), " + i + ", 45);' maxlength='45'/>").val(cells[j]);
                                                 input.appendTo(cell);
+                                                if(cells[j].length > '45'){
+                                                    cell.addClass('error');
+                                                }
                                                 cell.append();
                                                 break;
                                             case 9:
                                                 cell = $("<td />");
-                                                input = $("<input name='buddy[]'/>").val(cells[j]);
+                                                input = $("<input name='buddy[]' onchange='checkLength($(this), " + i + ", 45);' maxlength='45'/>").val(cells[j]);
                                                 input.appendTo(cell);
+                                                if(cells[j].length > '45'){
+                                                    cell.addClass('error');
+                                                }
                                                 cell.append();
                                                 break;
                                             case 10:
                                                 cell = $("<td />");
-                                                input = $("<input name='willingcaptain[]'/>").val(cells[j]);
+                                                input = $("<input name='willingcaptain[]' onchange='checkLength($(this), " + i + ", 30);' maxlength='30'/>").val(cells[j]);
                                                 input.appendTo(cell);
+                                                if(cells[j].length > '30'){
+                                                    cell.addClass('error');
+                                                }
                                                 cell.append();
                                                 break;
                                             case 11:
                                                 cell = $("<td />");
-                                                input = $("<input name='terms[]'/>").val(cells[j]);
+                                                input = $("<input name='terms[]' onchange='checkLength($(this), " + i + ", 45);' maxlength='45'/>").val(cells[j]);
                                                 input.appendTo(cell);
+                                                if(cells[j].length > '45'){
+                                                    cell.addClass('error');
+                                                }
                                                 cell.append();
                                                 break;
                                             case 12:
                                                 cell = $("<td />");
-                                                input = $("<input name='experience[]'/>").val(cells[j]);
+                                                input = $("<input name='experience[]' onchange='checkLength($(this), " + i + ", 1);' maxlength='1'/>").val(cells[j]);
                                                 input.appendTo(cell);
+                                                if(cells[j].length > '1'){
+                                                    cell.addClass('error');
+                                                }
                                                 cell.append();
                                                 break;
                                             case 13:
                                                 cell = $("<td />");
-                                                input = $("<input name='throwing[]'/>").val(cells[j]);
+                                                input = $("<input name='throwing[]' onchange='checkLength($(this), " + i + ", 1);' maxlength='1'/>").val(cells[j]);
                                                 input.appendTo(cell);
+                                                if(cells[j].length > '1'){
+                                                    cell.addClass('error');
+                                                }
                                                 cell.append();
                                                 break;
                                             case 14:
                                                 cell = $("<td />");
-                                                input = $("<input name='cutting[]'/>").val(cells[j]);
+                                                input = $("<input name='cutting[]' onchange='checkLength($(this), " + i + ", 1);' maxlength='1'/>").val(cells[j]);
                                                 input.appendTo(cell);
+                                                if(cells[j].length > '1'){
+                                                    cell.addClass('error');
+                                                }
                                                 cell.append();
                                                 break;
                                             case 15:
                                                 cell = $("<td />");
-                                                input = $("<input name='speed[]'/>").val(cells[j]);
+                                                input = $("<input name='speed[]' onchange='checkLength($(this), " + i + ", 1);' maxlength='1'/>").val(cells[j]);
                                                 input.appendTo(cell);
+                                                if(cells[j].length > '1'){
+                                                    cell.addClass('error');
+                                                }
                                                 cell.append();
                                                 break;
                                             case 16:
                                                 cell = $("<td />");
-                                                input = $("<input name='conditioning[]'/>").val(cells[j]);
+                                                input = $("<input name='conditioning[]' onchange='checkLength($(this), " + i + ", 1);' maxlength='1'/>").val(cells[j]);
                                                 input.appendTo(cell);
+                                                if(cells[j].length > '1'){
+                                                    cell.addClass('error');
+                                                }
                                                 cell.append();
                                                 break;
                                             case 17:
                                                 cell = $("<td />");
-                                                input = $("<input name='height[]'/>").val(cells[j]);
+                                                input = $("<input name='height[]' onchange='checkLength($(this), " + i + ", 10);' maxlength='10'/>").val(cells[j]);
                                                 input.appendTo(cell);
+                                                if(cells[j].length > '10'){
+                                                    cell.addClass('error');
+                                                }
                                                 cell.append();
                                                 break;
                                             case 18:
                                                 cell = $("<td />");
-                                                input = $("<input name='comments[]'/>").val(cells[j]);
+                                                input = $("<input name='comments[]' />").val(cells[j]);
                                                 input.appendTo(cell);
                                                 cell.append();
                                                 break;
@@ -391,15 +428,17 @@ if (isset($_POST['season_name'])
                         }
                         $("#dvCSV").html('');
                         $("#dvCSV").append(table);
+                        $('#numErrors').css('display', 'flex');
+                        $('#numOfErrors').html($(".error").length);
                     }
                     reader.readAsText($("#fileUpload")[0].files[0]);
                     $('#fileUploader').hide();
-                    $('#step2icon').css('background', '#00b2a9');
                     setTimeout(function() {
+                        isStep2Done();
                         $('.captain [name="nickname[]"]').each(function(){
                             potentialCaptains.push([$(this).val(), $(this).attr('id')]);
                         });
-                    }, 3000);
+                    }, 1000);
                     areSteps123Done();
                 } else {
                     alert("This browser does not support HTML5.");
@@ -409,6 +448,14 @@ if (isset($_POST['season_name'])
             }
         });
     });
+
+    function checkLength(elem, id, maxLength) {
+        if (elem.val().length <= maxLength){
+            elem.parent().removeClass('error');
+        }
+        $('#numOfErrors').html($(".error").length);
+        isStep2Done();
+    }
 
     function isStep1Done(){
         if ($('[name="season_name"]').val() !== '' && $('[name="start_date"]').val() !== '' && $('[name="end_date"]').val() !== '' && $('[name="playoff_date"]').val() !== '' && $('[name="info"]').val() !== '') {
@@ -430,6 +477,12 @@ if (isset($_POST['season_name'])
         isStep3Done();
     }
 
+    function isStep2Done(){
+        if ($('.error').length == '0'){
+            $('#step2icon').css('background', '#00b2a9');
+        }
+    }
+
     function isStep3Done(){
         let checkedNum = $('input[value="notPlaying"]:checked').length + $('input[value="playing"]:checked').length;
         if (checkedNum == '<?php echo $adminCount; ?>'){
@@ -449,6 +502,7 @@ if (isset($_POST['season_name'])
     function populateStep4(){
         $('#step4text').hide();
         $('#captainsDiv').show();
+        $('#step4 tbody').html('');
         for (var i = 0; i < potentialCaptains.length; i++){
             let tr = '<tr style="padding: 20px;">'
                 + '<td>' + potentialCaptains[i][0] + '</td>'
@@ -536,6 +590,10 @@ if (isset($_POST['season_name'])
     #captainsTable td{
         padding: 10px;
     }
+
+    .error{
+        background-color: red;
+    }
 </style>
 
 <div id="progressDiv" style="background: #0c2340; width: 20%; color: white; position:fixed; top: 0; height: 100%; z-index: -1;padding-top:50px;">
@@ -583,8 +641,10 @@ if (isset($_POST['season_name'])
             <input type="file" id="fileUpload">
             <input type="button" id="upload" value="Upload">
         </div>
+        <h4 id="numErrors" style="display:none; justify-content: center;">Number of Errors: <div id="numOfErrors"></div></h4>
         <div id="dvCSV" class="uploadedPlayers">
         </div>
+        <h4 id="numErrors" style="display:none; justify-content: center;">Number of Errors: <div id="numOfErrors"></div></h4>
     </div>
 
     <h3>Step 3: Choose League Coordinators playing this season</h3>

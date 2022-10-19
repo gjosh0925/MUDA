@@ -98,7 +98,6 @@ function PersistObject($obj){
         }
         $query .= ");";
         $result = data_query($query);
-        error_log($query);
 
         if(!$result) {
             error_log(data_error(null));
