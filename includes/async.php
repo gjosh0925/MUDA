@@ -6,6 +6,8 @@ global $conn;
 switch ($_POST['TODO']) {
     case 'draftPlayers':
         return draftPlayers();
+    case 'populateSchedule':
+        return populateSchedule();
     default:
         echo "Function does not exist.\n";
         break;
@@ -42,4 +44,35 @@ function draftPlayers(){
         $reply['error'] = true;
     }
 
+}
+
+function populateSchedule(){
+    try {
+
+        $params = null;
+        $params['fld'] = 'ID';
+        $params['opp'] = '!=';
+        $params['val'] = '';
+        $schedules = new schedule();
+        $schedules = $schedules->FindAllByParams($params);
+
+        $teamOne = array();
+        $teamTwo = array();
+        foreach($schedules as $schedule){
+            $one = new teams($schedule->getTeamOneID());
+            $two = new teams($schedule->getTeamTwoID());
+
+            $teamOne[] = $one->getName();
+            $teamTwo[] = $two->getName();
+        }
+
+
+        $reply['schedules'] = $schedules;
+        $reply['teamOneName'] = $teamOne;
+        $reply['teamTwoName'] = $teamTwo;
+
+        echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
+    } catch (Exception $ex){
+        $reply['error'] = true;
+    }
 }
