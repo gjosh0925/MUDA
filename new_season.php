@@ -182,8 +182,8 @@ if (isset($_POST['season_name'])
 
     // generate schedule
 
-
-
+    header('Location: index.php?success=new_season_created');
+    $_SESSION['success'] = '1';
     unset($_POST); $_POST = array();
 } else {
     

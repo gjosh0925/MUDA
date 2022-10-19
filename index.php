@@ -17,6 +17,21 @@ foreach($season as $s) {
 
 
 ?>
+
+<script>
+
+    $(function () {
+        <?php if(isset($_GET['success']) && isset($_SESSION['success'])){ ?>
+            <?php if($_GET['success'] == "new_season_created" && $_SESSION['success'] == '1') { unset($_SESSION['success']); ?>
+                seasonCreated();
+            <?php } else if($_GET['success'] == "logged_in" && $_SESSION['success'] == '1') { unset($_SESSION['success']); ?>
+                loggedIn();
+            <?php } ?>
+        <?php } ?>
+    });
+
+</script>
+
 <h1 style="text-align:center"><?php echo $currseason->getName(); ?></h1>
 <h2 style="text-align:center"><?php echo $currseason->getStartDate() .  " - " . $currseason->getEndDate();?></h2>
 

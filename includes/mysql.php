@@ -162,7 +162,8 @@ function login(){
     if (!empty($row)) {
         if ($row['Email'] === $_POST['email'] && $row['Pass'] === $_POST['password']) {
             $_SESSION['PageUserID'] = $row['ID'];
-            header("Location: index.php");
+            header("Location: index.php?success=logged_in");
+            $_SESSION['success'] = '1';
             exit();
         }else{
             session_destroy();

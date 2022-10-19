@@ -13,6 +13,24 @@ if(session_start() !== null){
 
 ?>
 
+<script>
+
+    function seasonCreated(){
+        $('#seasonCreatedSuccess').show();
+        setTimeout(function() {
+            $('#seasonCreatedSuccess').slideUp(1000);
+        }, 4000);
+    }
+
+    function loggedIn(){
+        $('#loggedIn').show();
+        setTimeout(function() {
+            $('#loggedIn').slideUp(1000);
+        }, 4000);
+    }
+
+</script>
+
 <style>
     .loginlogout:hover{
         cursor: pointer;
@@ -23,7 +41,21 @@ if(session_start() !== null){
         font-size: 20px;
     }
 
-
+    .success-alert {
+        position: absolute !important;
+        z-index: 1;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        width: 25%;
+        height: 10%;
+        font-size: 24px;
+        top: 90px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 </style>
 
 <!DOCTYPE html>
@@ -40,6 +72,13 @@ if(session_start() !== null){
     <title>MUDA</title>
 </head>
 
+<div id="seasonCreatedSuccess" class="alert alert-success success-alert" role="alert" style="display:none;">
+    New season created successfully!
+</div>
+
+<div id="loggedIn" class="alert alert-success success-alert" role="alert" style="display:none;">
+    Logged in successfully!
+</div>
 
 <?php if ($_SERVER['REQUEST_URI'] !== '/MUDA/login.php') { ?>
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #00b2a9; height: 80px;">
