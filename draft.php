@@ -17,7 +17,6 @@ $params['val'] = 'captain';
 $captains = new user();
 $captains = $captains->FindAllByParams($params, "DraftOrder");
 
-
 ?>
 
 <script>
@@ -177,19 +176,11 @@ $captains = $captains->FindAllByParams($params, "DraftOrder");
 <h1 style="text-align:center;">The Draft</h1>
 
 <div id="draftOrderDiv">
-    <?php $captainNames = '';
-    foreach ($captains as $captain) {
-        $captainNames = "<p id='draftOrder'" . $captain->getID() . ">" . $captain->getName . "</p>";
+    <?php foreach ($captains as $captain) {
+        echo "<p id='draftOrder'" . $captain->getID() . ">" . $captain->getNickName() . "</p>";
     }
-    echo $captainNames;
     ?>
     <p class="turn">John Doe</p>
-    <p>John Doe</p>
-    <p>John Doe</p>
-    <p>John Doe</p>
-    <p>John Doe</p>
-    <p>John Doe</p>
-    <p>John Doe</p>
 </div>
 
 <div style="display: flex; flex-direction: row; flex-wrap: wrap; align-items:flex-start;">

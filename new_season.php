@@ -481,6 +481,7 @@ if (isset($_POST['season_name'])
         if ($('.error').length == '0'){
             $('#step2icon').css('background', '#00b2a9');
         }
+        areSteps123Done();
     }
 
     function isStep3Done(){
