@@ -147,6 +147,7 @@ if (isset($_POST['season_name'])
                 $player->setConditioning($_POST['conditioning'][$i]);
                 $player->setHeight($_POST['height'][$i]);
                 $player->setComments($_POST['comments'][$i]);
+                $player->setPaid('0');
 
                 $player->setDraftOrder('-1');
 
@@ -207,7 +208,8 @@ if (isset($_POST['season_name'])
         });
 
         //player uploader
-        $("#upload").bind("click", function () {
+        //$("#upload").bind("click", function () {
+        $("#fileUpload").change(function () {
             var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
             if (regex.test($("#fileUpload").val().toLowerCase())) {
                 if (typeof (FileReader) != "undefined") {
@@ -605,6 +607,67 @@ if (isset($_POST['season_name'])
     .error{
         background-color: red;
     }
+    /*  test  */
+    .drop-container {
+        position: relative;
+        display: flex;
+        gap: 10px;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+        padding: 20px;
+        border-radius: 10px;
+        border: 2px dashed #555;
+        color: #444;
+        cursor: pointer;
+        transition: background .2s ease-in-out, border .2s ease-in-out;
+    }
+
+    .drop-container:hover {
+        background: #eee;
+        border-color: #111;
+    }
+
+    .drop-container:hover .drop-title {
+        color: #222;
+    }
+
+    .drop-title {
+        color: #444;
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+        transition: color .2s ease-in-out;
+    }
+
+    input[type=file] {
+        width: 350px;
+        max-width: 100%;
+        color: #444;
+        padding: 5px;
+        background: #fff;
+        border-radius: 10px;
+        border: 1px solid #555;
+    }
+
+    input[type=file]::file-selector-button {
+        margin-right: 20px;
+        border: none;
+        background: #00b2a9;
+        border: 3px solid #0c2340;
+        padding: 10px 20px;
+        border-radius: 10px;
+        color: #fff;
+        cursor: pointer;
+        transition: background .2s ease-in-out;
+    }
+
+    input[type=file]::file-selector-button:hover {
+        background: #0c2340;
+    }
+    /*  test  */
+
 </style>
 
 <div id="progressDiv" style="background: #0c2340; width: 20%; color: white; position:fixed; top: 0; height: 100%; z-index: -1;padding-top:50px;">
@@ -649,9 +712,16 @@ if (isset($_POST['season_name'])
     <h3>Step 2: Upload Players</h3>
     <div id="step2" class="step">
         <div id="fileUploader">
-            <input type="file" id="fileUpload">
-            <input type="button" id="upload" value="Upload">
+<!--            <input type="file" id="fileUpload">-->
+<!--            <input type="button" id="upload" value="Upload">-->
+<!--            <label id="dropZone" class="drop-container">-->
+<!--                <span class="drop-title">Drop CSV file here</span>-->
+<!--                or-->
+                <input type="file" id="fileUpload" accept="csv/*" required>
+<!--            </label>-->
         </div>
+
+
         <div id="numErrors" class="alert alert-danger" style="display:none; flex-direction: column; align-items: center; margin-bottom: 20px; width: 40%; left: 0; right: 0; margin-left: auto; margin-right: auto;">
             <div style="display:flex;">
                 <h4 style="">Errors Found: </h4>
@@ -663,6 +733,7 @@ if (isset($_POST['season_name'])
         </div>
         <div id="dvCSV" class="uploadedPlayers">
         </div>
+
     </div>
 
     <h3>Step 3: Choose League Coordinators playing this season</h3>
