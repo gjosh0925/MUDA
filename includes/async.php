@@ -41,6 +41,8 @@ function draftPlayers(){
         $pickedPlayers = $pickedPlayers->FindAllByParams($params);
         $reply['pickedPlayers'] = $pickedPlayers;
 
+        //error_log(utf8_encode(json_encode($reply, JSON_FORCE_OBJECT)));
+
         echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
     } catch (Exception $ex){
         $reply['error'] = true;
