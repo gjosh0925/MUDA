@@ -93,13 +93,13 @@ if(session_start() !== null){
                 </li>
                 <?php if (isset($pageUser)) { ?>
                     <li class="nav-item">
-                        <a class="nav-link links" href="playerpage.php">Player Page</a>
+                        <a class="nav-link links" href="playerpage.php">Players</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link links" href="draft.php">Draft</a>
                     </li>
                 <?php } ?>
-                <?php if (isset($pageUser) && $pageUser->getUserRole() == "admin") { ?>
+                <?php if (isset($pageUser) && $pageUser->getUserRole() == "admin" || isset($pageUser) && $pageUser->getUserRole() == "adminPlaying") { ?>
                     <li class="nav-item">
                         <a class="nav-link links" href="new_season.php">New Season</a>
                     </li>

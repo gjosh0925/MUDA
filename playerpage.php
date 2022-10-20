@@ -4,10 +4,39 @@ $params = null;
 $params['fld'] = 'ID';
 $params['opp'] = '!=';
 $params['val'] = '';
-$teams = new teams();
-$teams = $teams->FindAllByParams($params);
+$users = new user();
+$users = $users->FindAllByParams($params);
 
 ?>
+
+<script>
+
+    function userPaidStatus(elem){
+        let paid = '';
+        if (elem.is(':checked')) {
+            paid = '1';
+        } else {
+            paid = '0';
+        }
+        let id = $(elem).parent().parent().parent().attr('id');
+
+        var datapacket = {
+            TODO: 'userPaidStatus',
+            UserID: id,
+            Paid: paid
+        };
+        $.ajax({
+            type:"POST",
+            url: SiteURL,
+            data:datapacket,
+            dataType:"json",
+            crossDomain: true,
+
+        });
+
+    }
+</script>
+
 <style>
 
     h1 {
@@ -35,7 +64,7 @@ $teams = $teams->FindAllByParams($params);
 
 <h1>Players</h1>
 
-<table id='playerTable' class="table sortable">
+<table id='playerTable' class="table sortable" style="width: 98%; margin: 1%;">
     <thead>
         <tr>
             <th scope="col" style="width:14%">Name</th>
@@ -48,78 +77,51 @@ $teams = $teams->FindAllByParams($params);
             <!-- Place a checkbox/button here -->
             <th scope="col" style="width:9%">Have They Paid</th>
             <!-- Place a checkbox/button here -->
-            <th scope="col" style="width:14%">Anticipated Days Missed</th>
+            <th scope="col" style="width:14%">Absences</th>
             <th scope="col" style="width:9%">Playoffs</th>
-            <th scope="col" style="width:9%">Buddy Request</th>
-            <th scope="col" style="width:9%">Willing to be Captain?</th>
+            <th scope="col" style="width:9%">Buddy</th>
+            <th scope="col" style="width:9%">User Role</th>
             <th scope="col" style="width:8%">Waiver Agreement</th>
             <th scope="col" style="width:8%">Conditions/Illness/Injuries</th>
-            <th scope="col" style="width:8%">Experience</th>
             <th scope="col" style="width:8%">Throwing</th>
             <th scope="col" style="width:8%">Cutting</th>
             <th scope="col" style="width:8%">Speed</th>
             <th scope="col" style="width:8%">Conditioning</th>
+            <th scope="col" style="width:8%">Experience</th>
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>
-                <p>Josh</p>
-            </td>
-            <td>
-                <p>901-XXX-XXXX</p>
-            </td>
-            <td>
-                <p>XXXX@XXXXX.XXX</p>
-            </td>
-            <td>
-                <p>Helicopter</p>
-            </td>
-            <td>
-                <p>6"</p>
-            </td>
-            <td>
-                <p>02/29/2000</p>
-            </td>
-                <td>
-                    <input type="checkbox" id="jersey1" name="jersey1" value="YesJ">
-                </td>
-                <td>
-                    <input type="checkbox" id="paid1" name="paid1" value="YesP">
-                </td>
-            <td>
-                <p>3</p>
-            </td>
-            <td>
-                <input type="checkbox" id="answer1" name="answer1" value="YesY">
-            </td>
-            <td>
-                <p>Josh Glaser</p>
-            </td>
-            <td>
-                <input type="checkbox" id="answer1" name="answer1" value="YesY">
-            </td>
-            <td>
-                <p>Yes</p>
-            </td>
-            <td>
-                <p>Asthma</p>
-            </td>
-            <td>
-                <p>0</p>
-            </td>
-            <td>
-                <p>4</p>
-            </td>
-            <td>
-                <p>3</p>
-            </td>
-            <td>
-                <p>1</p>
-            </td>
-            <td>
-                <p>2</p>
-            </td>
-        </tr>
+        <?php
+            $tbody = '';
+            foreach($users as $user) {
+                $paid = '';
+                if($user->getPaid() == '1'){
+                    $paid = 'checked';
+                }
+
+                $tbody .= '<tr id="' . $user->getID() . '">'
+                    . '<td>' . $user->getNickName() . '</td>'
+                    . '<td>' . $user->getPhone() . '</td>'
+                    . '<td>' . $user->getEmail() . '</td>'
+                    . '<td>' . $user->getGender() . '</td>'
+                    . '<td>' . $user->getHeight() . '</td>'
+                    . '<td>' . $user->getDOB() . '</td>'
+                    . '<td>' . $user->getJersey() . '</td>'
+                    . '<td><div class="form-check" style="display: flex; justify-content: center;"><input onchange="userPaidStatus($(this));" class="form-check-input" style="width: 20px; height: 20px;" type="checkbox" ' . $paid . '></div></td>'
+                    . '<td>' . $user->getAbsence() . '</td>'
+                    . '<td>' . $user->getPlayoffs() . '</td>'
+                    . '<td>' . $user->getBuddy() . '</td>'
+                    . '<td>' . $user->getUserRole() . '</td>'
+                    . '<td>' . $user->getVerified() . '</td>'
+                    . '<td>' . $user->getComments() . '</td>'
+                    . '<td>' . $user->getThrowing() . '</td>'
+                    . '<td>' . $user->getCutting() . '</td>'
+                    . '<td>' . $user->getSpeed() . '</td>'
+                    . '<td>' . $user->getConditioning() . '</td>'
+                    . '<td>' . $user->getExperience() . '</td>'
+                    . '</tr>';
+            }
+            echo $tbody;
+        ?>
     </tbody>
 </table>

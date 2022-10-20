@@ -197,6 +197,15 @@ if (isset($_POST['season_name'])
     let potentialCaptains = [];
 
     $(function () {
+
+        $('form').bind("keypress", function(e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                //isStep2Done();
+                return false;
+            }
+        });
+
         //player uploader
         $("#upload").bind("click", function () {
             var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
@@ -480,6 +489,7 @@ if (isset($_POST['season_name'])
     function isStep2Done(){
         if ($('.error').length == '0'){
             $('#step2icon').css('background', '#00b2a9');
+            $('#numErrors').slideUp();
         }
         areSteps123Done();
     }
@@ -642,10 +652,17 @@ if (isset($_POST['season_name'])
             <input type="file" id="fileUpload">
             <input type="button" id="upload" value="Upload">
         </div>
-        <h4 id="numErrors" style="display:none; justify-content: center;">Number of Errors: <div id="numOfErrors"></div></h4>
+        <div id="numErrors" class="alert alert-danger" style="display:none; flex-direction: column; align-items: center; margin-bottom: 20px; width: 40%; left: 0; right: 0; margin-left: auto; margin-right: auto;">
+            <div style="display:flex;">
+                <h4 style="">Errors Found: </h4>
+                <h4 id="numOfErrors" style="padding-left: 10px;"></h4>
+            </div>
+            <div>
+                <p style="text-align:center;">One or more of your fields are too long, please find the field with a red background and shorten the text.</p>
+            </div>
+        </div>
         <div id="dvCSV" class="uploadedPlayers">
         </div>
-        <h4 id="numErrors" style="display:none; justify-content: center;">Number of Errors: <div id="numOfErrors"></div></h4>
     </div>
 
     <h3>Step 3: Choose League Coordinators playing this season</h3>
@@ -704,7 +721,7 @@ if (isset($_POST['season_name'])
 
                 </tbody>
             </table>
-            <h4 style="display:flex; justify-content: center;">Number of Teams =  <div id="numOfTeams">0</div></h4>
+            <h4 style="display:flex; justify-content: center;">Number of Teams =  <div id="numOfTeams" style="padding-left: 10px;">0</div></h4>
         </div>
     </div>
 

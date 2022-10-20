@@ -8,6 +8,8 @@ switch ($_POST['TODO']) {
         return draftPlayers();
     case 'populateSchedule':
         return populateSchedule();
+    case 'userPaidStatus':
+        return userPaidStatus();
     default:
         echo "Function does not exist.\n";
         break;
@@ -72,6 +74,19 @@ function populateSchedule(){
         $reply['teamTwoName'] = $teamTwo;
 
         echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
+    } catch (Exception $ex){
+        $reply['error'] = true;
+    }
+}
+
+function userPaidStatus(){
+    try {
+
+        $user = new user($_POST['UserID']);
+        $user->setPaid($_POST['Paid']);
+        $user = $user->MakePersistant($user);
+
+        //echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
     } catch (Exception $ex){
         $reply['error'] = true;
     }
