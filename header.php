@@ -99,9 +99,12 @@ if(session_start() !== null){
                         <a class="nav-link links" href="draft.php">Draft</a>
                     </li>
                 <?php } ?>
-                <?php if (isset($pageUser) && $pageUser->getUserRole() == "admin" || isset($pageUser) && $pageUser->getUserRole() == "adminPlaying") { ?>
+                <?php if (isset($pageUser) && $pageUser->getUserRole() == "admin" || isset($pageUser) && $pageUser->getUserRole() == "adminPlaying" || isset($pageUser) && $pageUser->getUserRole() == "adminCaptain") { ?>
                     <li class="nav-item">
                         <a class="nav-link links" href="new_season.php">New Season</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link links" href="settings.php">Settings</a>
                     </li>
                 <?php } ?>
             </ul>

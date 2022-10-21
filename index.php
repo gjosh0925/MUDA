@@ -7,13 +7,7 @@ $params = null;
 $params['fld'] = 'Active';
 $params['val'] = '1';
 $season = new season();
-$season = $season->FindAllByParams($params);
-
-
-foreach($season as $s) {
-    $currseason = new season($s->getID());
-}
-
+$season = $season->FindByParams($params);
 
 ?>
 
@@ -87,13 +81,13 @@ foreach($season as $s) {
 
 </script>
 
-<h1 style="text-align:center"><?php echo $currseason->getName(); ?></h1>
-<h2 style="text-align:center"><?php echo date('m/d/Y',strtotime($currseason->getStartDate())) .  " - " . date('m/d/Y',strtotime($currseason->getEndDate()));?></h2>
+<h1 style="text-align:center"><?php echo $season->getName(); ?></h1>
+<h2 style="text-align:center"><?php echo date('m/d/Y',strtotime($season->getStartDate())) .  " - " . date('m/d/Y',strtotime($season->getEndDate()));?></h2>
 
 <div id="seasonInfo" style="padding-top: 5%; padding-left: 33%; text-align: left;">
     <b><u>Season Info</u></b>
     <p>
-        <?php echo $currseason->getInfo()?><br>
+        <?php echo $season->getInfo()?><br>
         <b></b>
     </p>
 </div>

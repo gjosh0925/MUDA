@@ -15,7 +15,17 @@ $params['val'] = 'adminPlaying';
 $adminPlayers = new user();
 $adminPlayers = $adminPlayers->FindAllByParams($params);
 
-$adminCount = count($admins) + count($adminPlayers);
+$allAdmins = array_merge($admins, $adminPlayers);
+
+$params = null;
+$params['fld'] = 'UserRole';
+$params['val'] = 'adminCaptain';
+$adminCaptains = new user();
+$adminCaptains = $adminCaptains->FindAllByParams($params);
+
+$allAdmins = array_merge($allAdmins, $adminCaptains);
+
+$adminCount = count($allAdmins);
 
 if (isset($_POST['season_name'])
     && isset($_POST['start_date'])
@@ -164,24 +174,65 @@ if (isset($_POST['season_name'])
 
     // update admin users (remove teamID, modify user role)
     if (isset($_POST['adminPlayingStatus'])) {
-        foreach($admins as $admin){
+        foreach($allAdmins as $admin){
             $admin->setTeamID('');
-            $admin->setUserRole(($_POST['adminPlayingStatus'][$admin->getID()] == 'notPlaying') ? 'admin' : 'adminPlaying');
+            $admin->setDraftOrder('-1');
+            if (isset($_POST['captain'][$admin->getID()])) {
+                $admin->setUserRole('adminCaptain');
+            } else if (isset($_POST['adminPlayingStatus'][$admin->getID()]) == 'playing') {
+                if ($_POST['adminPlayingStatus'][$admin->getID()] == 'playing'){
+                    $admin->setUserRole('adminPlaying');
+                }
+            } else {
+                $admin->setUserRole('admin');
+            }
             $admin->MakePersistant($admin);
-        }
-
-        foreach($adminPlayers as $adminPlayer) {
-            $adminPlayer->setTeamID('');
-            $adminPlayer->setUserRole(($_POST['adminPlayingStatus'][$adminPlayer->getID()] == 'notPlaying') ? 'admin' : 'adminPlaying');
-            $adminPlayer->MakePersistant($adminPlayer);
         }
     }
 
     // create drafting order
+    $params = null;
+    $params['fld'] = 'UserRole';
+    $params['val'] = 'captain';
+    $captains = new user();
+    $captains = $captains->FindAllByParams($params, 'random()');
+
+    $params = null;
+    $params['fld'] = 'UserRole';
+    $params['val'] = 'adminCaptain';
+    $adminCaptains = new user();
+    $adminCaptains = $adminCaptains->FindAllByParams($params, 'random()');
+
+    $allCaptains = array_merge($captains, $adminCaptains);
+
+    $draftNum = count($allCaptains);
+
+    foreach($allCaptains as $captain){
+        $captain->setDraftOrder($draftNum);
+        $captain->MakePersistant($captain);
+        $draftNum--;
+    }
 
 
+    // create teams
+    $params = null;
+    $params['fld'] = 'UserRole';
+    $params['val'] = 'adminCaptain';
+    $admins = new user();
+    $admins = $admins->FindAllByParams($params);
+
+    $allCaptains = array_merge($captains, $admins);
+
+    foreach ($allCaptains as $captain){
+        $team = new teams();
+        $team->setName($captain->getNickName() . "'s Team");
+        $team->setCaptainID($captain->getID());
+        $team->MakePersistant($team);
+    }
 
     // generate schedule
+
+
 
     header('Location: index.php?success=new_season_created');
     $_SESSION['success'] = '1';
@@ -533,7 +584,7 @@ if (isset($_POST['season_name'])
     }
 
     function isStep4Done(){
-        if($('#numOfTeams').html() >= '5' ){
+        if($('#numOfTeams').html() >= '2' ){
             $('#step4icon').css('background', '#00b2a9');
         } else {
             $('#step4icon').css('background', '');
@@ -748,26 +799,14 @@ if (isset($_POST['season_name'])
             </thead>
             <?php
             $rows = '';
-            foreach($admins as $admin) {
+            foreach($allAdmins as $admin) {
                 $rows .= '<tr style="padding: 20px;">'
-                       . '<td>' . $admin->getNickname() . '</td>'
-                       . '<td><div class="form-check" style="text-align:center;">'
-                       . '<input id="' . $admin->getID() . '" class="form-check-input position-static" onchange="uncheckCheckbox($(this), \'' . $admin->getID() . '\');" style="width: 20px; height: 20px;" type="checkbox" name="adminPlayingStatus[' . $admin->getID() . ']" value="notPlaying" aria-label="...">'
-                       . '</div></td>'
-                       . '<td><div class="form-check" style="text-align:center;">'
-                       . '<input id="' . $admin->getID() . '" class="form-check-input position-static" onchange="uncheckCheckbox($(this), \'' . $admin->getID() . '\', \'' . $admin->getNickName() . '\');" style="width: 20px; height: 20px;" type="checkbox" name="adminPlayingStatus[' . $admin->getID() . ']" value="playing" aria-label="...">'
-                       . '</div></td>'
-                       . '</tr>';
-            }
-
-            foreach($adminPlayers as $adminPlayer) {
-                $rows .= '<tr style="padding: 20px;">'
-                    . '<td>' . $adminPlayer->getNickname() . '</td>'
+                    . '<td>' . $admin->getNickname() . '</td>'
                     . '<td><div class="form-check" style="text-align:center;">'
-                    . '<input id="' . $adminPlayer->getID() . '" class="form-check-input position-static" onchange="uncheckCheckbox($(this), \'' . $adminPlayer->getID() . '\');" style="width: 20px; height: 20px;" type="checkbox" name="adminPlayingStatus[' . $adminPlayer->getID() . ']" value="notPlaying" aria-label="...">'
+                    . '<input id="' . $admin->getID() . '" class="form-check-input position-static" onchange="uncheckCheckbox($(this), \'' . $admin->getID() . '\');" style="width: 20px; height: 20px;" type="checkbox" name="adminPlayingStatus[' . $admin->getID() . ']" value="notPlaying" aria-label="...">'
                     . '</div></td>'
                     . '<td><div class="form-check" style="text-align:center;">'
-                    . '<input id="' . $adminPlayer->getID() . '" class="form-check-input position-static" onchange="uncheckCheckbox($(this), \'' . $adminPlayer->getID() . '\', \'' . $adminPlayer->getNickName() . '\');" style="width: 20px; height: 20px;" type="checkbox" name="adminPlayingStatus[' . $adminPlayer->getID() . ']" value="playing" aria-label="...">'
+                    . '<input id="' . $admin->getID() . '" class="form-check-input position-static" onchange="uncheckCheckbox($(this), \'' . $admin->getID() . '\', \'' . $admin->getNickName() . '\');" style="width: 20px; height: 20px;" type="checkbox" name="adminPlayingStatus[' . $admin->getID() . ']" value="playing" aria-label="...">'
                     . '</div></td>'
                     . '</tr>';
             }

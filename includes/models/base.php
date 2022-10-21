@@ -13,6 +13,10 @@ class base {
         return DB_Go('makepersistant', $obj);
     }
 
+    public function FindByParams($params = array()){
+        return DB_Go('FindByParams', $this, $params);
+    }
+
     public function FindAllByParams($params = array(), $orderby='ID'){
         return DB_Go('FindAllByParams', $this, $params, $orderby);
     }

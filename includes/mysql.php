@@ -32,7 +32,7 @@ function data_query($query){
     return $conn->query($query);
 }
 
-function DB_Go($function, $obj, $arg1=''){
+function DB_Go($function, $obj, $arg1 = '', $arg2 = ''){
     switch($function) {
         case 'find':
             return FindObject($obj, $arg1);
@@ -40,8 +40,10 @@ function DB_Go($function, $obj, $arg1=''){
             return PersistObject($obj);
         case 'findall':
             return FindAllObjects($obj, $arg1);
+        case 'FindByParams':
+            return FindByParams($obj, $arg1);
         case 'FindAllByParams':
-            return FindAllByParams($obj, $arg1, $arg2 = 'ID');
+            return FindAllByParams($obj, $arg1, $arg2);
         case 'delete':
             return DeleteObject($obj);
         default:
@@ -106,6 +108,43 @@ function PersistObject($obj){
     }
 
     return $obj;
+}
+
+function FindByParams($obj, $params) {
+    $fld = $params["fld"];
+    $val = $params["val"];
+    $fld2 = isset($params["fld2"]) ? $params["fld2"] : "";
+    $val2 = isset($params["val2"]) ? $params["val2"] : "";
+    $fld3 = isset($params["fld3"]) ? $params["fld3"] : "";
+    $val3 = isset($params["val3"]) ? $params["val3"] : "";
+    $opp = isset($params["opp"]) ? $params["opp"] : "=";
+    $opp2 = isset($params["opp2"]) ? $params["opp2"] : "=";
+    $opp3 = isset($params["opp3"]) ? $params["opp3"] : "=";
+
+    $tablename = get_class($obj);
+    $query = "";
+
+    if ($fld3 != ""){
+        $query = sprintf("select * from %s where %s %s '%s' and %s %s '%s' and %s %s '%s'",
+            data_real_escape_string($tablename),
+            data_real_escape_string($fld), data_real_escape_string($opp), data_real_escape_string($val),
+            data_real_escape_string($fld2), data_real_escape_string($opp2), data_real_escape_string($val2),
+            data_real_escape_string($fld3), data_real_escape_string($opp3), data_real_escape_string($val3));
+    } else if ($fld2 != ""){
+        $query = sprintf("select * from %s where %s %s '%s' and %s %s '%s'",
+            data_real_escape_string($tablename),
+            data_real_escape_string($fld), data_real_escape_string($opp), data_real_escape_string($val),
+            data_real_escape_string($fld2), data_real_escape_string($opp2), data_real_escape_string($val2));
+    } else {
+        $query = sprintf("select * from %s where %s %s '%s'",
+            data_real_escape_string($tablename),
+            data_real_escape_string($fld), data_real_escape_string($opp), data_real_escape_string($val));
+    }
+
+    $result = data_query($query);
+
+    $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+    return $obj->Populate($row);
 }
 
 function FindAllByParams($obj, $params, $orderby){
