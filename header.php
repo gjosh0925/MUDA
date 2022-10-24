@@ -18,7 +18,7 @@ if(session_start() !== null){
     function showSuccessBanner(){
         $('#successBanner').show();
         setTimeout(function() {
-            $('#loggedIn').slideUp(1000);
+            $('#successBanner').slideUp(1000);
         }, 4000);
     }
 
