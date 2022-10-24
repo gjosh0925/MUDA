@@ -16,9 +16,11 @@ $season = $season->FindByParams($params);
     $(function () {
         <?php if(isset($_GET['success']) && isset($_SESSION['success'])){ ?>
             <?php if($_GET['success'] == "new_season_created" && $_SESSION['success'] == '1') { unset($_SESSION['success']); ?>
-                seasonCreated();
+                $('#successBanner').html("New season created successfully!")
+                showSuccessBanner();
             <?php } else if($_GET['success'] == "logged_in" && $_SESSION['success'] == '1') { unset($_SESSION['success']); ?>
-                loggedIn();
+                $('#successBanner').html("Logged in successfully!")
+                showSuccessBanner();
             <?php } ?>
         <?php } ?>
 

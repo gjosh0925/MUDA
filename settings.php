@@ -17,6 +17,75 @@ $captains = $captains->FindAllByParams($params, 'DraftOrder');
 
 ?>
 
+<script>
+    function updateDraftOrder(elem){
+        let input = $(elem).val();
+        let clone = '';
+        if (input < '1' || input > $(".order").length) {
+            console.log('input too big or too small');
+            $('.order input').each(function(i, val){
+                $(val).val(i + 1);
+            });
+        } else {
+            clone = $(elem).parent();
+            $(elem).parent().remove();
+            let newOrder = '';
+
+            if (input == ($('.order').length + 1)) {
+                $('#draftOrderDiv').append('<div class="order">' + $(clone).html() + '</div>');
+            } else {
+                $('#draftOrderDiv .order').each(function(i, val){
+                    if ((i + 1) == input){
+                        newOrder += '<div class="order" onclick="">' + $(clone).html() + '</div>';
+                    }
+                    newOrder += '<div class="order">' + $(val).html() + '</div>';
+                });
+                $('#draftOrderDiv').html(newOrder);
+            }
+            $('.order input').each(function(i, val){
+                $(val).val(i + 1);
+            });
+        }
+    }
+
+    function submitDraftOrder(){
+
+        let captainIDs = [];
+
+        $('.order input').each(function(i){
+           captainIDs.push($(this).attr('id'));
+        });
+
+        console.log(captainIDs);
+
+        var datapacket = {
+            TODO: 'submitDraftOrder',
+            NewOrder: captainIDs
+        };
+        $.ajax({
+            type:"POST",
+            url: SiteURL,
+            data:datapacket,
+            dataType:"json",
+            crossDomain: true,
+            success: function(reply){
+                if (reply.error === true){
+                    console.log(reply.error);
+                } else {
+                    // seasonCreated();
+                    $('#successBanner').html("Draft order updated successfully!");
+                    showSuccessBanner();
+                }
+            },
+            error: function(message, obj, error){
+                console.log('Message: ' + message);
+                console.log('Obj: ' + obj);
+                console.log('Error: ' + error);
+            }
+        });
+    }
+</script>
+
 <style>
 
     .section{
@@ -27,12 +96,15 @@ $captains = $captains->FindAllByParams($params, 'DraftOrder');
 
     .order{
         display:flex;
+        justify-content: space-between;
+        align-items: center;
         gap: 15px;
         padding: 15px;
         border: 3px solid #0c2340;
         border-radius: 10px;
         margin: 10px;
         background-color: #00b2a9;
+        color: white;
     }
 
 </style>
@@ -61,23 +133,26 @@ $captains = $captains->FindAllByParams($params, 'DraftOrder');
             </div>
             <label>Season Info</label>
             <textarea class="form-control" id="" name="info"><?php echo $season->getInfo(); ?></textarea>
-            <button id="" type="submit" class="btn btn-secondary" style="">Update Season</button>
+            <div style="display: flex; justify-content: center; padding-top: 20px;">
+                <button id="" type="submit" class="btn btn-secondary" style="">Update Season</button>
+            </div>
         </form>
     </div>
     <div id="scheduleInfo" class="section" style="width: 50%;">
         <h4 style="text-align: center;">Schedule</h4>
     </div>
-    <div id="draftOrder" class="section" style="width: 15%;">
+    <div id="draftOrder" class="section" style="width: 15%; display:flex;  flex-direction: column; align-items: center;">
         <h4 style="text-align:center;">Draft Order</h4>
-        <div>
+        <div id="draftOrderDiv" style="display:flex; flex-direction: column;">
             <?php
             $draftOrder = '';
             foreach ($captains as $captain){
-                $draftOrder .= '<div class="order"><div>' . $captain->getDraftOrder() . '</div>' . $captain->getNickName() . '</div>';
+                $draftOrder .= '<div class="order"><input id="' . $captain->getID() . '" class="form-control" onchange="updateDraftOrder($(this));" style="width: 15%; height: 30px; text-align: center; padding: 0px !important;" value="' . $captain->getDraftOrder() . '"></input>' . $captain->getNickName() . '</div>';
             }
 
             echo $draftOrder;
             ?>
         </div>
+        <button class="btn btn-secondary" style="margin-bottom: 10px;" onclick="submitDraftOrder();">Update Order</button>
     </div>
 </div>

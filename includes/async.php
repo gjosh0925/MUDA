@@ -10,6 +10,8 @@ switch ($_POST['TODO']) {
         return populateSchedule();
     case 'userPaidStatus':
         return userPaidStatus();
+    case 'submitDraftOrder':
+        return submitDraftOrder();
     default:
         echo "Function does not exist.\n";
         break;
@@ -89,6 +91,25 @@ function userPaidStatus(){
         $user = $user->MakePersistant($user);
 
         //echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
+    } catch (Exception $ex){
+        $reply['error'] = true;
+    }
+}
+
+function submitDraftOrder(){
+    try {
+
+        $draftOrder = $_POST['NewOrder'];
+        $num = 1;
+        foreach ($draftOrder as $id){
+            $captain = new user($id);
+            $captain->setDraftOrder($num);
+            $captain->MakePersistant($captain);
+            $num++;
+        }
+
+        $reply['success'] = true;
+        echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
     } catch (Exception $ex){
         $reply['error'] = true;
     }

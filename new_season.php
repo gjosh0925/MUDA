@@ -250,17 +250,18 @@ if (isset($_POST['season_name'])
 
     $(function () {
 
-        $('form').bind("keypress", function(e) {
-            if (e.keyCode == 13) {
-                e.preventDefault();
-                //isStep2Done();
-                return false;
-            }
-        });
+        // $('form').bind("keypress", function(e) {
+        //     if (e.keyCode == 13) {
+        //         e.preventDefault();
+        //         //isStep2Done();
+        //         return false;
+        //     }
+        // });
 
         //player uploader
-        //$("#upload").bind("click", function () {
-        $("#fileUpload").change(function () {
+        $("#upload").bind("click", function () {
+        // $("#fileUpload").change(function () {
+            console.log("hit");
             var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
             if (regex.test($("#fileUpload").val().toLowerCase())) {
                 if (typeof (FileReader) != "undefined") {
@@ -659,38 +660,38 @@ if (isset($_POST['season_name'])
         background-color: red;
     }
     /*  test  */
-    .drop-container {
-        position: relative;
-        display: flex;
-        gap: 10px;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 200px;
-        padding: 20px;
-        border-radius: 10px;
-        border: 2px dashed #555;
-        color: #444;
-        cursor: pointer;
-        transition: background .2s ease-in-out, border .2s ease-in-out;
-    }
+    /*.drop-container {*/
+    /*    position: relative;*/
+    /*    display: flex;*/
+    /*    gap: 10px;*/
+    /*    flex-direction: column;*/
+    /*    justify-content: center;*/
+    /*    align-items: center;*/
+    /*    height: 200px;*/
+    /*    padding: 20px;*/
+    /*    border-radius: 10px;*/
+    /*    border: 2px dashed #555;*/
+    /*    color: #444;*/
+    /*    cursor: pointer;*/
+    /*    transition: background .2s ease-in-out, border .2s ease-in-out;*/
+    /*}*/
 
-    .drop-container:hover {
-        background: #eee;
-        border-color: #111;
-    }
+    /*.drop-container:hover {*/
+    /*    background: #eee;*/
+    /*    border-color: #111;*/
+    /*}*/
 
-    .drop-container:hover .drop-title {
-        color: #222;
-    }
+    /*.drop-container:hover .drop-title {*/
+    /*    color: #222;*/
+    /*}*/
 
-    .drop-title {
-        color: #444;
-        font-size: 20px;
-        font-weight: bold;
-        text-align: center;
-        transition: color .2s ease-in-out;
-    }
+    /*.drop-title {*/
+    /*    color: #444;*/
+    /*    font-size: 20px;*/
+    /*    font-weight: bold;*/
+    /*    text-align: center;*/
+    /*    transition: color .2s ease-in-out;*/
+    /*}*/
 
     input[type=file] {
         width: 350px;
@@ -768,12 +769,13 @@ if (isset($_POST['season_name'])
 <!--            <label id="dropZone" class="drop-container">-->
 <!--                <span class="drop-title">Drop CSV file here</span>-->
 <!--                or-->
-                <input type="file" id="fileUpload" accept="csv/*" required>
+                <input type="file" id="fileUpload">
+                <input class="btn btn-secondary" type="button" id="upload" value="Upload">
 <!--            </label>-->
         </div>
 
 
-        <div id="numErrors" class="alert alert-danger" style="display:none; flex-direction: column; align-items: center; margin-bottom: 20px; width: 40%; left: 0; right: 0; margin-left: auto; margin-right: auto;">
+        <div id="numErrors" class="alert alert-danger" style="display:none; flex-direction: column; align-items: center; margin-bottom: 20px; width: 60%; left: 0; right: 0; margin-left: auto; margin-right: auto;">
             <div style="display:flex;">
                 <h4 style="">Errors Found: </h4>
                 <h4 id="numOfErrors" style="padding-left: 10px;"></h4>

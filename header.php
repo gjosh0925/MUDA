@@ -15,15 +15,8 @@ if(session_start() !== null){
 
 <script>
 
-    function seasonCreated(){
-        $('#seasonCreatedSuccess').show();
-        setTimeout(function() {
-            $('#seasonCreatedSuccess').slideUp(1000);
-        }, 4000);
-    }
-
-    function loggedIn(){
-        $('#loggedIn').show();
+    function showSuccessBanner(){
+        $('#successBanner').show();
         setTimeout(function() {
             $('#loggedIn').slideUp(1000);
         }, 4000);
@@ -72,12 +65,8 @@ if(session_start() !== null){
     <title>MUDA</title>
 </head>
 
-<div id="seasonCreatedSuccess" class="alert alert-success success-alert" role="alert" style="display:none;">
-    New season created successfully!
-</div>
+<div id="successBanner" class="alert alert-success success-alert" role="alert" style="display:none;">
 
-<div id="loggedIn" class="alert alert-success success-alert" role="alert" style="display:none;">
-    Logged in successfully!
 </div>
 
 <?php if ($_SERVER['REQUEST_URI'] !== '/MUDA/login.php') { ?>
