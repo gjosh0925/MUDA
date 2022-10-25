@@ -9,6 +9,7 @@ class season extends base {
     public $_PlayoffDate;
     public $_Info;
     public $_Active;
+    public $_DraftTurn;
 
     public function __construct($id = ''){
         if ($id != '') {
@@ -73,6 +74,14 @@ class season extends base {
         $this->_Active = $active;
     }
 
+    function getDraftTurn(){
+        return $this->_DraftTurn;
+    }
+
+    function setDraftTurn($draftturn){
+        $this->_DraftTurn = $draftturn;
+    }
+
     function Populate($post){
         $this->setID((isset($post['ID'])) ? $post['ID'] : $this->_ID);
         $this->setName((isset($post['Name'])) ? $post['Name'] : $this->_Name);
@@ -81,6 +90,7 @@ class season extends base {
         $this->setPlayoffDate((isset($post['PlayoffDate'])) ? $post['PlayoffDate'] : $this->_PlayoffDate);
         $this->setInfo((isset($post['Info'])) ? $post['Info'] : $this->_Info);
         $this->setActive((isset($post['Active'])) ? $post['Active'] : $this->_Active);
+        $this->setDraftTurn((isset($post['DraftTurn'])) ? $post['DraftTurn'] : $this->_DraftTurn);
         return $this;
     }
 

@@ -12,6 +12,8 @@ switch ($_POST['TODO']) {
         return userPaidStatus();
     case 'submitDraftOrder':
         return submitDraftOrder();
+    case 'submitSeasonInfo':
+        return submitSeasonInfo();
     default:
         echo "Function does not exist.\n";
         break;
@@ -20,10 +22,31 @@ switch ($_POST['TODO']) {
 function draftPlayers(){
     try {
 
+        $params = null;
+        $params['fld'] = 'DraftOrder';
+        $params['opp'] = '!=';
+        $params['val'] = '-1';
+        $captains = new user();
+        $captains = $captains->FindAllByParams($params, "DraftOrder");
+
+        $draftOrder = array();
+        foreach($captains as $captain){
+            $draftOrder[] = $captain->getNickName();
+        }
+
+        $params = null;
+        $params['fld'] = 'Active';
+        $params['val'] = '1';
+        $season = new season();
+        $season = $season->FindByParams($params);
+
         if ($_POST['pickedPlayer'] != ''){
+            error_log($_POST['TeamID']);
             $pickedPlayer = new user($_POST['pickedPlayer']);
+            error_log(print_r($pickedPlayer, true));
             $pickedPlayer->setTeamID($_POST['TeamID']);
             $pickedPlayer->MakePersistant($pickedPlayer);
+            error_log(print_r($pickedPlayer, true));
         }
 
         //select all available players
@@ -31,8 +54,7 @@ function draftPlayers(){
         $params['fld'] = 'TeamID';
         $params['val'] = '';
         $availablePlayers = new user();
-        $availablePlayers = $availablePlayers->FindAllByParams($params);
-        $reply['availablePlayers'] = $availablePlayers;
+        $availablePlayers = $availablePlayers->FindAllByParams($params); //ID limit 134
 
         //select all picked players
         $params = null;
@@ -41,10 +63,14 @@ function draftPlayers(){
         $params['val'] = '';
         $pickedPlayers = new user();
         $pickedPlayers = $pickedPlayers->FindAllByParams($params);
+
+        $reply['availablePlayers'] = $availablePlayers;
         $reply['pickedPlayers'] = $pickedPlayers;
+        $reply['draftOrder'] = $draftOrder;
+        $reply['draftOrderCount'] = count($draftOrder);
+        $reply['draftTurn'] = $season->getDraftTurn();
 
-        //error_log(utf8_encode(json_encode($reply, JSON_FORCE_OBJECT)));
-
+//        error_log(utf8_encode(json_encode($reply, JSON_FORCE_OBJECT)));
         echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
     } catch (Exception $ex){
         $reply['error'] = true;
@@ -85,12 +111,12 @@ function populateSchedule(){
 
 function userPaidStatus(){
     try {
-
         $user = new user($_POST['UserID']);
         $user->setPaid($_POST['Paid']);
         $user = $user->MakePersistant($user);
 
-        //echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
+        $reply['success'] = true;
+        echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
     } catch (Exception $ex){
         $reply['error'] = true;
     }
@@ -98,7 +124,6 @@ function userPaidStatus(){
 
 function submitDraftOrder(){
     try {
-
         $draftOrder = $_POST['NewOrder'];
         $num = 1;
         foreach ($draftOrder as $id){
@@ -107,6 +132,24 @@ function submitDraftOrder(){
             $captain->MakePersistant($captain);
             $num++;
         }
+
+        $reply['success'] = true;
+        echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
+    } catch (Exception $ex){
+        $reply['error'] = true;
+    }
+}
+
+function submitSeasonInfo(){
+    try {
+        $season = new season($_POST['SeasonID']);
+
+        $season->setName($_POST['Name']);
+        $season->setStartDate($_POST['StartDate']);
+        $season->setEndDate($_POST['EndDate']);
+        $season->setPlayoffDate($_POST['PlayoffDate']);
+        $season->setInfo($_POST['Info']);
+        $season->MakePersistant($season);
 
         $reply['success'] = true;
         echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));

@@ -84,6 +84,39 @@ $captains = $captains->FindAllByParams($params, 'DraftOrder');
             }
         });
     }
+
+    function submitSeasonInfo(){
+        var datapacket = {
+            TODO: 'submitSeasonInfo',
+            SeasonID: '<?php echo $season->getID(); ?>',
+            Name: $('input[name=season_name]').val(),
+            StartDate: $('input[name=start_date]').val(),
+            EndDate: $('input[name=end_date]').val(),
+            PlayoffDate: $('input[name=playoff_date]').val(),
+            Info: $('#seasonInfo').val()
+        };
+        $.ajax({
+            type:"POST",
+            url: SiteURL,
+            data:datapacket,
+            dataType:"json",
+            crossDomain: true,
+            success: function(reply){
+                if (reply.error === true){
+                    console.log(reply.error);
+                } else {
+                    console.log("hit");
+                    $('#successBanner').html("Season information updated successfully!");
+                    showSuccessBanner();
+                }
+            },
+            error: function(message, obj, error){
+                console.log('Message: ' + message);
+                console.log('Obj: ' + obj);
+                console.log('Error: ' + error);
+            }
+        });
+    }
 </script>
 
 <style>
@@ -113,7 +146,7 @@ $captains = $captains->FindAllByParams($params, 'DraftOrder');
 
 <div style="display:flex; justify-content: space-around;">
     <div id="seasonInfo" class="section" style="width: 35%;">
-        <h4 style="text-align:center;">Season</h4>
+        <h4 style="text-align:center;">Edit Season</h4>
         <form style="padding: 20px;">
             <label>Season Name</label>
             <input class="form-control" type="text" name="season_name" value="<?php echo $season->getName(); ?>"><br>
@@ -132,17 +165,17 @@ $captains = $captains->FindAllByParams($params, 'DraftOrder');
                 </div>
             </div>
             <label>Season Info</label>
-            <textarea class="form-control" id="" name="info"><?php echo $season->getInfo(); ?></textarea>
-            <div style="display: flex; justify-content: center; padding-top: 20px;">
-                <button id="" type="submit" class="btn btn-secondary" style="">Update Season</button>
-            </div>
+            <textarea class="form-control" id="seasonInfo" name="info"><?php echo $season->getInfo(); ?></textarea>
         </form>
+        <div style="display: flex; justify-content: center;">
+            <button class="btn btn-secondary" onclick="submitSeasonInfo();" style="">Update Season</button>
+        </div>
     </div>
     <div id="scheduleInfo" class="section" style="width: 50%;">
-        <h4 style="text-align: center;">Schedule</h4>
+        <h4 style="text-align: center;">Edit Schedule</h4>
     </div>
     <div id="draftOrder" class="section" style="width: 15%; display:flex;  flex-direction: column; align-items: center;">
-        <h4 style="text-align:center;">Draft Order</h4>
+        <h4 style="text-align:center;">Edit Draft Order</h4>
         <div id="draftOrderDiv" style="display:flex; flex-direction: column;">
             <?php
             $draftOrder = '';

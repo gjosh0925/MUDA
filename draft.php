@@ -10,12 +10,22 @@ $params['val'] = $pageUser->getID();
 $pageUserTeam = new teams();
 $pageUserTeam = $pageUserTeam->FindAllByParams($params);
 
-//get all captains
-$params = null;
-$params['fld'] = 'UserRole';
-$params['val'] = 'captain';
-$captains = new user();
-$captains = $captains->FindAllByParams($params, "DraftOrder");
+////get all captains
+//$params = null;
+//$params['fld'] = 'UserRole';
+//$params['val'] = 'captain';
+//$captains = new user();
+//$captains = $captains->FindAllByParams($params, "DraftOrder");
+//
+//$params = null;
+//$params['fld'] = 'UserRole';
+//$params['val'] = 'adminCaptain';
+//$adminCaptains = new user();
+//$adminCaptains = $adminCaptains->FindAllByParams($params, "DraftOrder");
+
+//$allCaptains = array_merge($captains, $adminCaptains);
+
+//error_log(print_r($allCaptains, true));
 
 ?>
 
@@ -41,6 +51,17 @@ $captains = $captains->FindAllByParams($params, "DraftOrder");
                 if (reply.error === true){
                     console.log(reply.error);
                 } else {
+                    console.log(reply);
+                    let draftNames = '';
+                    for(var i = 0; i < reply.draftOrderCount; i++){
+                        if ((i + 1) == reply.draftTurn){
+                            draftNames += '<p class="turn">' + reply.draftOrder[i] + '</p>'; //add id (id="draftOrder + id)
+                        } else {
+                            draftNames += '<p>' + reply.draftOrder[i] + '</p>'; //add id (id="draftOrder + id)
+                        }
+                    }
+                    $('#draftOrderDiv').html(draftNames);
+
                     $('#available-players').html('');
                     var row = '';
                     if (jQuery.isEmptyObject(reply.availablePlayers)) {
@@ -176,11 +197,6 @@ $captains = $captains->FindAllByParams($params, "DraftOrder");
 <h1 style="text-align:center;">The Draft</h1>
 
 <div id="draftOrderDiv">
-    <?php foreach ($captains as $captain) {
-        echo "<p id='draftOrder'" . $captain->getID() . ">" . $captain->getNickName() . "</p>";
-    }
-    ?>
-    <p class="turn">John Doe</p>
 </div>
 
 <div style="display: flex; flex-direction: row; flex-wrap: wrap; align-items:flex-start;">

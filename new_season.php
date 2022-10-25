@@ -112,6 +112,7 @@ if (isset($_POST['season_name'])
         $season->setPlayoffDate($_POST['playoff_date']);
         $season->setInfo($_POST['info']);
         $season->setActive('1');
+        $season->setDraftTurn('1');
         $season->MakePersistant($season);
     }
 
@@ -195,13 +196,13 @@ if (isset($_POST['season_name'])
     $params['fld'] = 'UserRole';
     $params['val'] = 'captain';
     $captains = new user();
-    $captains = $captains->FindAllByParams($params, 'random()');
+    $captains = $captains->FindAllByParams($params, 'rand()');
 
     $params = null;
     $params['fld'] = 'UserRole';
     $params['val'] = 'adminCaptain';
     $adminCaptains = new user();
-    $adminCaptains = $adminCaptains->FindAllByParams($params, 'random()');
+    $adminCaptains = $adminCaptains->FindAllByParams($params, 'rand()');
 
     $allCaptains = array_merge($captains, $adminCaptains);
 
@@ -228,6 +229,25 @@ if (isset($_POST['season_name'])
         $team->setName($captain->getNickName() . "'s Team");
         $team->setCaptainID($captain->getID());
         $team->MakePersistant($team);
+    }
+
+    //add teamID to the captains
+    $params = null;
+    $params['fld'] = 'CaptainID';
+    $params['opp'] = '!=';
+    $params['val'] = '';
+    $teams = new teams();
+    $teams = $teams->FindAllByParams($params);
+
+    foreach ($teams as $team) {
+        $params = null;
+        $params['fld'] = 'ID';
+        $params['val'] = $team->getCaptainID();
+        $captain = new user();
+        $captain = $captain->FindByParams($params);
+
+        $captain->setTeamID($team->getID());
+        $captain->MakePersistant($captain);
     }
 
     // generate schedule
