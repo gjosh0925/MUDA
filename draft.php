@@ -32,9 +32,8 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
             crossDomain: true,
             success: function(reply){
                 if (reply.error === true){
-                    console.log(reply.error);
+
                 } else {
-                    console.log(reply);
                     let draftNames = '';
                     for(var i = 0; i < reply.draftOrderCount; i++){
                         if ((i + 1) == reply.draftTurn){
@@ -50,21 +49,37 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
                     if (jQuery.isEmptyObject(reply.availablePlayers)) {
 
                     } else {
+                        // for (var i = 0; i < Object.keys(reply.availablePlayers).length; i++) {
+                        //     row += '<tr id="' + reply.availablePlayers[i]._ID + '" onclick="populatePickedPlayerModal(\'' + reply.availablePlayers[i]._ID + '\', \'' + reply.availablePlayers[i]._Buddy + '\');">'
+                        //          + '<td>' + reply.availablePlayers[i]._Nickname + '</td>'
+                        //          + '<td>' + reply.availablePlayers[i]._Throwing + '</td>'
+                        //          + '<td>' + reply.availablePlayers[i]._Cutting + '</td>'
+                        //          + '<td>' + reply.availablePlayers[i]._Speed + '</td>'
+                        //          + '<td>' + reply.availablePlayers[i]._Conditioning + '</td>'
+                        //          + '<td>' + reply.availablePlayers[i]._Experience + '</td>'
+                        //          + '<td>' + reply.availablePlayers[i]._Buddy + '</td>'
+                        //          + '<td>' + reply.availablePlayers[i]._Height + '</td>'
+                        //          + '<td>' + reply.availablePlayers[i]._Gender + '</td>'
+                        //          + '<td>' + reply.availablePlayers[i]._Absence + '</td>'
+                        //          + '<td>' + (reply.availablePlayers[i]._Playoffs == '1' ? 'Yes' : 'No') + '</td>'
+                        //          + '</tr>';
+                        // }
                         for (var i = 0; i < Object.keys(reply.availablePlayers).length; i++) {
-                            row += '<tr id="' + reply.availablePlayers[i]._ID + '" onclick="populatePickedPlayerModal(\'' + reply.availablePlayers[i]._ID + '\', \'' + reply.availablePlayers[i]._Buddy + '\');">'
-                                 + '<td>' + reply.availablePlayers[i]._Nickname + '</td>'
-                                 + '<td>' + reply.availablePlayers[i]._Throwing + '</td>'
-                                 + '<td>' + reply.availablePlayers[i]._Cutting + '</td>'
-                                 + '<td>' + reply.availablePlayers[i]._Speed + '</td>'
-                                 + '<td>' + reply.availablePlayers[i]._Conditioning + '</td>'
-                                 + '<td>' + reply.availablePlayers[i]._Experience + '</td>'
-                                 + '<td>' + reply.availablePlayers[i]._Buddy + '</td>'
-                                 + '<td>' + reply.availablePlayers[i]._Height + '</td>'
-                                 + '<td>' + reply.availablePlayers[i]._Gender + '</td>'
-                                 + '<td>' + reply.availablePlayers[i]._Absence + '</td>'
-                                 + '<td>' + (reply.availablePlayers[i]._Playoffs == '1' ? 'Yes' : 'No') + '</td>'
-                                 + '</tr>';
+                            row += '<tr id="' + reply.availablePlayers[i].id + '" onclick="populatePickedPlayerModal(\'' + reply.availablePlayers[i].id + '\', \'' + reply.availablePlayers[i].buddy + '\');">'
+                                + '<td>' + reply.availablePlayers[i].name + '</td>'
+                                + '<td>' + reply.availablePlayers[i].throwing + '</td>'
+                                + '<td>' + reply.availablePlayers[i].cutting + '</td>'
+                                + '<td>' + reply.availablePlayers[i].speed + '</td>'
+                                + '<td>' + reply.availablePlayers[i].conditioning + '</td>'
+                                + '<td>' + reply.availablePlayers[i].experience + '</td>'
+                                + '<td>' + reply.availablePlayers[i].buddy + '</td>'
+                                + '<td>' + reply.availablePlayers[i].height + '</td>'
+                                + '<td>' + reply.availablePlayers[i].gender + '</td>'
+                                + '<td>' + reply.availablePlayers[i].absence + '</td>'
+                                + '<td>' + reply.availablePlayers[i].playoffs + '</td>'
+                                + '</tr>';
                         }
+
                         $('#available-players').append(row);
                     }
 
@@ -75,25 +90,45 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
                     if (jQuery.isEmptyObject(reply.pickedPlayers)) {
 
                     } else {
+                        //for (var i = 0; i < Object.keys(reply.pickedPlayers).length; i++) {
+                        //    div += '<div>' + reply.pickedPlayers[i]._Nickname + '</div>';
+                        //
+                        //    if (reply.pickedPlayers[i]._TeamID == '<?php //echo $pageUser->getTeamID(); ?>//') {
+                        //        row += '<tr id="' + reply.pickedPlayers[i]._ID + '">'
+                        //            + '<td>' + reply.pickedPlayers[i]._Nickname + '</td>'
+                        //            + '<td>' + reply.pickedPlayers[i]._Throwing + '</td>'
+                        //            + '<td>' + reply.pickedPlayers[i]._Cutting + '</td>'
+                        //            + '<td>' + reply.pickedPlayers[i]._Speed + '</td>'
+                        //            + '<td>' + reply.pickedPlayers[i]._Conditioning + '</td>'
+                        //            + '<td>' + reply.pickedPlayers[i]._Experience + '</td>'
+                        //            + '<td>' + reply.pickedPlayers[i]._Buddy + '</td>'
+                        //            + '<td>' + reply.pickedPlayers[i]._Height + '</td>'
+                        //            + '<td>' + reply.pickedPlayers[i]._Gender + '</td>'
+                        //            + '<td>' + reply.pickedPlayers[i]._Absence + '</td>'
+                        //            + '<td>' + (reply.pickedPlayers[i]._Playoffs == '1' ? 'Yes' : 'No') + '</td>'
+                        //            + '</td>';
+                        //    }
+                        //}
                         for (var i = 0; i < Object.keys(reply.pickedPlayers).length; i++) {
-                            div += '<div>' + reply.pickedPlayers[i]._Nickname + '</div>';
+                            div += '<div>' + reply.pickedPlayers[i].name + '</div>';
 
-                            if (reply.pickedPlayers[i]._TeamID == '<?php echo $pageUser->getTeamID(); ?>') {
-                                row += '<tr id="' + reply.pickedPlayers[i]._ID + '">'
-                                    + '<td>' + reply.pickedPlayers[i]._Nickname + '</td>'
-                                    + '<td>' + reply.pickedPlayers[i]._Throwing + '</td>'
-                                    + '<td>' + reply.pickedPlayers[i]._Cutting + '</td>'
-                                    + '<td>' + reply.pickedPlayers[i]._Speed + '</td>'
-                                    + '<td>' + reply.pickedPlayers[i]._Conditioning + '</td>'
-                                    + '<td>' + reply.pickedPlayers[i]._Experience + '</td>'
-                                    + '<td>' + reply.pickedPlayers[i]._Buddy + '</td>'
-                                    + '<td>' + reply.pickedPlayers[i]._Height + '</td>'
-                                    + '<td>' + reply.pickedPlayers[i]._Gender + '</td>'
-                                    + '<td>' + reply.pickedPlayers[i]._Absence + '</td>'
-                                    + '<td>' + (reply.pickedPlayers[i]._Playoffs == '1' ? 'Yes' : 'No') + '</td>'
+                            if (reply.pickedPlayers[i].teamid == '<?php echo $pageUser->getTeamID(); ?>') {
+                                row += '<tr id="' + reply.pickedPlayers[i].id + '">'
+                                    + '<td>' + reply.pickedPlayers[i].name + '</td>'
+                                    + '<td>' + reply.pickedPlayers[i].throwing + '</td>'
+                                    + '<td>' + reply.pickedPlayers[i].cutting + '</td>'
+                                    + '<td>' + reply.pickedPlayers[i].speed + '</td>'
+                                    + '<td>' + reply.pickedPlayers[i].conditioning + '</td>'
+                                    + '<td>' + reply.pickedPlayers[i].experience + '</td>'
+                                    + '<td>' + reply.pickedPlayers[i].buddy + '</td>'
+                                    + '<td>' + reply.pickedPlayers[i].height + '</td>'
+                                    + '<td>' + reply.pickedPlayers[i].gender + '</td>'
+                                    + '<td>' + reply.pickedPlayers[i].absence + '</td>'
+                                    + '<td>' + (reply.pickedPlayers[i].playoffs == '1' ? 'Yes' : 'No') + '</td>'
                                     + '</td>';
                             }
                         }
+
                         $('#yourTeam').append(row);
                         $('#picked-players').append(div);
                     }

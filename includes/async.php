@@ -19,6 +19,65 @@ switch ($_POST['TODO']) {
         break;
 }
 
+//function draftPlayers(){
+//    try {
+//
+//        $params = null;
+//        $params['fld'] = 'DraftOrder';
+//        $params['opp'] = '!=';
+//        $params['val'] = '-1';
+//        $captains = new user();
+//        $captains = $captains->FindAllByParams($params, "DraftOrder");
+//
+//        $draftOrder = array();
+//        foreach($captains as $captain){
+//            $draftOrder[] = $captain->getNickName();
+//        }
+//
+//        $params = null;
+//        $params['fld'] = 'Active';
+//        $params['val'] = '1';
+//        $season = new season();
+//        $season = $season->FindByParams($params);
+//
+//        if ($_POST['pickedPlayer'] != ''){
+//            error_log($_POST['TeamID']);
+//            $pickedPlayer = new user($_POST['pickedPlayer']);
+//            error_log(print_r($pickedPlayer, true));
+//            $pickedPlayer->setTeamID($_POST['TeamID']);
+//            $pickedPlayer->MakePersistant($pickedPlayer);
+//            error_log(print_r($pickedPlayer, true));
+//        }
+//
+//        //select all available players
+//        $params = null;
+//        $params['fld'] = 'TeamID';
+//        $params['val'] = '';
+//        $availablePlayers = new user();
+//        $availablePlayers = $availablePlayers->FindAllByParams($params); //ID limit 134
+//
+//        //select all picked players
+//        $params = null;
+//        $params['fld'] = 'TeamID';
+//        $params['opp'] = '!=';
+//        $params['val'] = '';
+//        $pickedPlayers = new user();
+//        $pickedPlayers = $pickedPlayers->FindAllByParams($params);
+//
+//        $reply['availablePlayers'] = $availablePlayers;
+//        $reply['pickedPlayers'] = $pickedPlayers;
+//        $reply['draftOrder'] = $draftOrder;
+//        $reply['draftOrderCount'] = count($draftOrder);
+//        $reply['draftTurn'] = $season->getDraftTurn();
+//
+////        error_log(utf8_encode(json_encode($reply, JSON_FORCE_OBJECT)));
+//        echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
+//    } catch (Exception $ex){
+//        $reply['error'] = true;
+//    }
+//
+//}
+
 function draftPlayers(){
     try {
 
@@ -56,6 +115,25 @@ function draftPlayers(){
         $availablePlayers = new user();
         $availablePlayers = $availablePlayers->FindAllByParams($params); //ID limit 134
 
+        $availPlayers = array();
+        foreach($availablePlayers as $player) {
+            $availPlayer = array();
+            $availPlayer['id'] = $player->getID();
+            $availPlayer['name'] = $player->getNickname();
+            $availPlayer['throwing'] = $player->getThrowing();
+            $availPlayer['cutting'] = $player->getCutting();
+            $availPlayer['speed'] = $player->getSpeed();
+            $availPlayer['conditioning'] = $player->getConditioning();
+            $availPlayer['experience'] = $player->getExperience();
+            $availPlayer['buddy'] = $player->getBuddy();
+            $availPlayer['height'] = $player->getHeight();
+            $availPlayer['gender'] = $player->getGender();
+            $availPlayer['absence'] = $player->getAbsence();
+            $availPlayer['playoffs'] = $player->getPlayoffs();
+
+            $availPlayers[] = $availPlayer;
+        }
+
         //select all picked players
         $params = null;
         $params['fld'] = 'TeamID';
@@ -64,8 +142,32 @@ function draftPlayers(){
         $pickedPlayers = new user();
         $pickedPlayers = $pickedPlayers->FindAllByParams($params);
 
-        $reply['availablePlayers'] = $availablePlayers;
-        $reply['pickedPlayers'] = $pickedPlayers;
+        $pickPlayers = array();
+        foreach($pickedPlayers as $player) {
+            $pickPlayer = array();
+
+            $pickPlayer['id'] = $player->getID();
+            $pickPlayer['name'] = $player->getNickname();
+            $pickPlayer['throwing'] = $player->getThrowing();
+            $pickPlayer['cutting'] = $player->getCutting();
+            $pickPlayer['speed'] = $player->getSpeed();
+            $pickPlayer['conditioning'] = $player->getConditioning();
+            $pickPlayer['experience'] = $player->getExperience();
+            $pickPlayer['buddy'] = $player->getBuddy();
+            $pickPlayer['height'] = $player->getHeight();
+            $pickPlayer['gender'] = $player->getGender();
+            $pickPlayer['absence'] = $player->getAbsence();
+            $pickPlayer['playoffs'] = $player->getPlayoffs();
+            $pickPlayer['teamid'] = $player->getTeamID();
+
+            $pickPlayers[] = $pickPlayer;
+        }
+
+
+        //$reply['availablePlayers'] = $availablePlayers;
+        $reply['availablePlayers'] = $availPlayers;
+        //$reply['pickedPlayers'] = $pickedPlayers;
+        $reply['pickedPlayers'] = $pickPlayers;
         $reply['draftOrder'] = $draftOrder;
         $reply['draftOrderCount'] = count($draftOrder);
         $reply['draftTurn'] = $season->getDraftTurn();
