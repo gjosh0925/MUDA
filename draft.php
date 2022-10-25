@@ -10,23 +10,6 @@ $params['val'] = $pageUser->getID();
 $pageUserTeam = new teams();
 $pageUserTeam = $pageUserTeam->FindAllByParams($params);
 
-////get all captains
-//$params = null;
-//$params['fld'] = 'UserRole';
-//$params['val'] = 'captain';
-//$captains = new user();
-//$captains = $captains->FindAllByParams($params, "DraftOrder");
-//
-//$params = null;
-//$params['fld'] = 'UserRole';
-//$params['val'] = 'adminCaptain';
-//$adminCaptains = new user();
-//$adminCaptains = $adminCaptains->FindAllByParams($params, "DraftOrder");
-
-//$allCaptains = array_merge($captains, $adminCaptains);
-
-//error_log(print_r($allCaptains, true));
-
 ?>
 
 <script>
@@ -119,7 +102,7 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
                 }
             },
             error: function(message, obj, error){
-                console.log('Message: ' + message);
+                console.log('Message: ' + JSON.stringify(message));
                 console.log('Obj: ' + obj);
                 console.log('Error: ' + error);
             }

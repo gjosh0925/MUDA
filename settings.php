@@ -93,7 +93,7 @@ $captains = $captains->FindAllByParams($params, 'DraftOrder');
             StartDate: $('input[name=start_date]').val(),
             EndDate: $('input[name=end_date]').val(),
             PlayoffDate: $('input[name=playoff_date]').val(),
-            Info: $('#seasonInfo').val()
+            Info: $('#seasonInfoTextBox').val()
         };
         $.ajax({
             type:"POST",
@@ -165,7 +165,7 @@ $captains = $captains->FindAllByParams($params, 'DraftOrder');
                 </div>
             </div>
             <label>Season Info</label>
-            <textarea class="form-control" id="seasonInfo" name="info"><?php echo $season->getInfo(); ?></textarea>
+            <textarea class="form-control" id="seasonInfoTextBox" name="info"><?php echo $season->getInfo(); ?></textarea>
         </form>
         <div style="display: flex; justify-content: center;">
             <button class="btn btn-secondary" onclick="submitSeasonInfo();" style="">Update Season</button>
