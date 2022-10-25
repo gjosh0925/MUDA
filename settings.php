@@ -105,7 +105,6 @@ $captains = $captains->FindAllByParams($params, 'DraftOrder');
                 if (reply.error === true){
                     console.log(reply.error);
                 } else {
-                    console.log("hit");
                     $('#successBanner').html("Season information updated successfully!");
                     showSuccessBanner();
                 }
