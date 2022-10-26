@@ -14,72 +14,61 @@ switch ($_POST['TODO']) {
         return submitDraftOrder();
     case 'submitSeasonInfo':
         return submitSeasonInfo();
+    case 'getAverageStats':
+        return getAverageStats();
     default:
         echo "Function does not exist.\n";
         break;
 }
 
-//function draftPlayers(){
-//    try {
-//
-//        $params = null;
-//        $params['fld'] = 'DraftOrder';
-//        $params['opp'] = '!=';
-//        $params['val'] = '-1';
-//        $captains = new user();
-//        $captains = $captains->FindAllByParams($params, "DraftOrder");
-//
-//        $draftOrder = array();
-//        foreach($captains as $captain){
-//            $draftOrder[] = $captain->getNickName();
-//        }
-//
-//        $params = null;
-//        $params['fld'] = 'Active';
-//        $params['val'] = '1';
-//        $season = new season();
-//        $season = $season->FindByParams($params);
-//
-//        if ($_POST['pickedPlayer'] != ''){
-//            error_log($_POST['TeamID']);
-//            $pickedPlayer = new user($_POST['pickedPlayer']);
-//            error_log(print_r($pickedPlayer, true));
-//            $pickedPlayer->setTeamID($_POST['TeamID']);
-//            $pickedPlayer->MakePersistant($pickedPlayer);
-//            error_log(print_r($pickedPlayer, true));
-//        }
-//
-//        //select all available players
-//        $params = null;
-//        $params['fld'] = 'TeamID';
-//        $params['val'] = '';
-//        $availablePlayers = new user();
-//        $availablePlayers = $availablePlayers->FindAllByParams($params); //ID limit 134
-//
-//        //select all picked players
-//        $params = null;
-//        $params['fld'] = 'TeamID';
-//        $params['opp'] = '!=';
-//        $params['val'] = '';
-//        $pickedPlayers = new user();
-//        $pickedPlayers = $pickedPlayers->FindAllByParams($params);
-//
-//        $reply['availablePlayers'] = $availablePlayers;
-//        $reply['pickedPlayers'] = $pickedPlayers;
-//        $reply['draftOrder'] = $draftOrder;
-//        $reply['draftOrderCount'] = count($draftOrder);
-//        $reply['draftTurn'] = $season->getDraftTurn();
-//
-////        error_log(utf8_encode(json_encode($reply, JSON_FORCE_OBJECT)));
-//        echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
-//    } catch (Exception $ex){
-//        $reply['error'] = true;
-//    }
-//
-//}
-
 function draftPlayers(){
     try {
+
+        $params = null;
+        $params['fld'] = 'Active';
+        $params['val'] = '1';
+        $season = new season();
+        $season = $season->FindByParams($params);
+
+        $params = null;
+        $params['fld'] = 'DraftOrder';
+        $params['opp'] = '!=';
+        $params['val'] = '-1';
+        $draftOrder = new user();
+        $draftOrder = $draftOrder->FindAllByParams($params, 'DraftOrder');
+
+        if ($_POST['pickedPlayer'] != ''){
+            //if player was picked, assign player to that team and then change draft order by one
+            $pickedPlayer = new user($_POST['pickedPlayer']);
+            $pickedPlayer->setTeamID($_POST['TeamID']);
+            $pickedPlayer->MakePersistant($pickedPlayer);
+
+            if ($season->getDraftTurn() == count($draftOrder)) {
+                //if all captains have picked a player, we need to switch the captains order
+                $params = null;
+                $params['fld'] = 'DraftOrder';
+                $params['opp'] = '!=';
+                $params['val'] = '-1';
+                $draftOrder = new user();
+                $draftOrder = $draftOrder->FindAllByParams($params, 'DraftOrder');
+
+                $capNum = count($draftOrder);
+
+                foreach($draftOrder as $captain) {
+                    $captain->setDraftOrder($capNum);
+                    $captain->MakePersistant($captain);
+                    $capNum--;
+                }
+
+                $season->setDraftTurn('1');
+                $season->MakePersistant($season);
+            } else {
+                $turn = ($season->getDraftTurn() + 1);
+                $season->setDraftTurn($turn);
+                $season->MakePersistant($season);
+
+            }
+        }
 
         $params = null;
         $params['fld'] = 'DraftOrder';
@@ -91,21 +80,6 @@ function draftPlayers(){
         $draftOrder = array();
         foreach($captains as $captain){
             $draftOrder[] = $captain->getNickName();
-        }
-
-        $params = null;
-        $params['fld'] = 'Active';
-        $params['val'] = '1';
-        $season = new season();
-        $season = $season->FindByParams($params);
-
-        if ($_POST['pickedPlayer'] != ''){
-            error_log($_POST['TeamID']);
-            $pickedPlayer = new user($_POST['pickedPlayer']);
-            error_log(print_r($pickedPlayer, true));
-            $pickedPlayer->setTeamID($_POST['TeamID']);
-            $pickedPlayer->MakePersistant($pickedPlayer);
-            error_log(print_r($pickedPlayer, true));
         }
 
         //select all available players
@@ -164,15 +138,12 @@ function draftPlayers(){
         }
 
 
-        //$reply['availablePlayers'] = $availablePlayers;
         $reply['availablePlayers'] = $availPlayers;
-        //$reply['pickedPlayers'] = $pickedPlayers;
         $reply['pickedPlayers'] = $pickPlayers;
         $reply['draftOrder'] = $draftOrder;
         $reply['draftOrderCount'] = count($draftOrder);
         $reply['draftTurn'] = $season->getDraftTurn();
 
-//        error_log(utf8_encode(json_encode($reply, JSON_FORCE_OBJECT)));
         echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
     } catch (Exception $ex){
         $reply['error'] = true;
@@ -258,4 +229,69 @@ function submitSeasonInfo(){
     } catch (Exception $ex){
         $reply['error'] = true;
     }
+}
+
+function getAverageStats(){
+    try{
+
+        $params = null;
+        $params['fld'] = 'ID';
+        $params['opp'] = '!=';
+        $params['val'] = '';
+        $teams = new teams();
+        $teams = $teams->FindAllByParams($params);
+
+        $averageStats = array();
+        foreach($teams as $team){
+            $stat = array();
+
+            $stat['teamName'] = $team->getName();
+
+            $params = null;
+            $params['fld'] = 'TeamID';
+            $params['val'] = $team->getID();
+            $players = new user();
+            $players = $players->FindAllByParams($params);
+
+            $totalThrowing = 0;
+            foreach($players as $player) {
+                $totalThrowing += $player->getThrowing();
+            }
+            $stat['throwing'] = $totalThrowing / count($players);
+
+            $totalCutting = 0;
+            foreach($players as $player) {
+                $totalCutting += $player->getCutting();
+            }
+            $stat['cutting'] = $totalCutting / count($players);
+
+            $totalSpeed = 0;
+            foreach($players as $player) {
+                $totalSpeed += $player->getSpeed();
+            }
+            $stat['speed'] = $totalSpeed / count($players);
+
+            $totalConditioning = 0;
+            foreach($players as $player) {
+                $totalConditioning += $player->getConditioning();
+            }
+            $stat['conditioning'] = $totalConditioning / count($players);
+
+            $totalExperience = 0;
+            foreach($players as $player) {
+                $totalExperience += $player->getExperience();
+            }
+            $stat['experience'] = $totalExperience / count($players);
+
+            $averageStats[] = $stat;
+        }
+
+        $reply['averageStats'] = $averageStats;
+        echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
+    } catch (Exception $ex){
+        $reply['error'] = true;
+    }
+
+
+
 }
