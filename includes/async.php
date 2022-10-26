@@ -292,6 +292,31 @@ function getAverageStats(){
         $reply['error'] = true;
     }
 
+}
+
+function generateSchedule(){
+    $params = null;
+    $params['fld'] = 'Active';
+    $params['val'] = '1';
+    $season = new season();
+    $season = $season->FindByParams($params);
+
+    $params = null;
+    $params['fld'] = 'ID';
+    $params['opp'] = '!=';
+    $params['val'] = '';
+    $teams = new teams();
+    $teams = $teams->FindAllByParams($params);
+
+    $start = date_create($season->getStartDate());
+    $end = date_create($season->getEndDate());
+    $totalDays = date_diff($start, $end);
+    echo $totalDays->format("%R%a days");
+
+    $dow = 'Tuesday'; //days a week
+    $numFields = 4;
+    $gad = 2; //games a day
+    $numTeams = count($teams);
 
 
 }
