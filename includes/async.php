@@ -18,6 +18,8 @@ switch ($_POST['TODO']) {
         return getAverageStats();
     case 'generateSchedule':
         return generateSchedule();
+    case 'addGameToSchedule':
+        return addGameToSchedule();
     default:
         echo "Function does not exist.\n";
         break;
@@ -319,6 +321,25 @@ function generateSchedule(){
         $numTeams = count($teams);
 
         $reply = '';
+        echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
+    } catch (Exception $ex){
+        $reply['error'] = true;
+    }
+}
+
+function addGameToSchedule(){
+    try{
+
+        $schedule = new schedule;
+        $schedule->setTeamOneID($_POST['TeamOne']);
+        $schedule->setTeamTwoID($_POST['TeamTwo']);
+        $schedule->setDate($_POST['Date'] . ' ' . $_POST['Time']);
+        $schedule->setField($_POST['Field']);
+        $schedule->setTeamOneScore('-1');
+        $schedule->setTeamTwoScore('-1');
+        $schedule->MakePersistant($schedule);
+
+        $reply['success'] = true;
         echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
     } catch (Exception $ex){
         $reply['error'] = true;

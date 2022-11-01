@@ -19,12 +19,20 @@ $params = null;
 $params['fld'] = 'ID';
 $params['opp'] = '!=';
 $params['val'] = '';
-$schedule = new schedule();
-$schedule = $schedule->FindAllByParams($params);
+$schedules = new schedule();
+$schedules = $schedules->FindAllByParams($params);
+
+$params = null;
+$params['fld'] = 'ID';
+$params['opp'] = '!=';
+$params['val'] = '';
+$teams = new teams();
+$teams = $teams->FindAllByParams($params);
 
 ?>
 
 <script>
+
     function updateDraftOrder(elem){
         let input = $(elem).val();
         let clone = '';
@@ -123,6 +131,37 @@ $schedule = $schedule->FindAllByParams($params);
             }
         });
     }
+
+    function addGameToSchedule(){
+        var datapacket = {
+            TODO: 'addGameToSchedule',
+            Date: $('input[name=new_game_date]').val(),
+            Time: $('input[name=new_game_time]').val(),
+            Field: $('input[name=new_game_field]').val(),
+            TeamOne: $('#new_game_teamOne').val(),
+            TeamTwo: $('#new_game_teamTwo').val()
+        };
+        $.ajax({
+            type:"POST",
+            url: SiteURL,
+            data:datapacket,
+            dataType:"json",
+            crossDomain: true,
+            success: function(reply){
+                if (reply.error === true){
+                    console.log(reply.error);
+                } else {
+                    window.location = 'settings.php';
+                }
+            },
+            error: function(message, obj, error){
+                console.log('Message: ' + message);
+                console.log('Obj: ' + obj);
+                console.log('Error: ' + error);
+            }
+        });
+    }
+
 </script>
 
 <style>
@@ -144,6 +183,21 @@ $schedule = $schedule->FindAllByParams($params);
         margin: 10px;
         background-color: #00b2a9;
         color: white;
+    }
+
+    td, tr {
+        border: 2px solid #0c2340;
+    }
+
+    th {
+        background-color: #00b2a9;
+        color: #0c2340;
+        cursor: pointer;
+        border-bottom: 3px solid #0c2340 !important;
+    }
+
+    table {
+        border: 3px solid #0c2340 !important;
     }
 
 </style>
@@ -179,7 +233,7 @@ $schedule = $schedule->FindAllByParams($params);
     </div>
     <div id="scheduleInfo" class="section" style="width: 50%;">
         <h4 style="text-align: center;">Edit Schedule</h4>
-        <?php //if (count($schedule) == 0) {?>
+        <?php //if (count($schedules) == 0) {?>
 <!--                <div style="display:flex; justify-content:center;">-->
 <!--                    <button onclick="window.location = 'create_schedule.php';" class="btn btn-primary">Create Schedule</button>-->
 <!--                </div>-->
@@ -187,11 +241,43 @@ $schedule = $schedule->FindAllByParams($params);
 <!--            <p>Schedule Generated!</p>-->
         <?php //} ?>
 
-        <table>
-            <thead>
+        <?php if (count($schedules) !== 0) { ?>
 
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Field</th>
+                    <th>Team 1</th>
+                    <th>Team 2</th>
+                    <th>Score</th>
+                </tr>
             </thead>
+            <tbody>
+                <?php $row = '';
+                foreach($schedules as $schedule){
+                    $teamOne = new teams($schedule->getTeamOneID());
+                    $teamTwo = new teams($schedule->getTeamTwoID());
+                    $row .= '<tr>'
+                        . '<td>' . $schedule->getDate() . '</td>'
+                        . '<td>' . $schedule->getField() . '</td>'
+                        . '<td>' . $teamOne->getName() . '</td>'
+                        . '<td>' . $teamTwo->getName() . '</td>';
+                    if ($schedule->getTeamOneScore() == '-1' || $schedule->getTeamTwoScore() == '-1') {
+                        $row .= '<td></td>';
+                    } else {
+                        $row .= '<td>' . $schedule->getTeamOneScore() . '-' . $schedule->getTeamTwoScore() . '</td>';
+                    }
+                    $row .= '</tr>';
+                }
+                echo $row; ?>
+            </tbody>
         </table>
+
+        <?php } ?>
+        <div style="display:flex; justify-content: center;">
+            <button onclick="$('#addGameModal').modal('show');" class="btn btn-secondary">Add Game to Schedule</button>
+        </div>
     </div>
     <div id="draftOrder" class="section" style="width: 15%; display:flex;  flex-direction: column; align-items: center;">
         <h4 style="text-align:center;">Edit Draft Order</h4>
@@ -208,3 +294,58 @@ $schedule = $schedule->FindAllByParams($params);
         <button class="btn btn-secondary" style="margin-bottom: 10px;" onclick="submitDraftOrder();">Update Order</button>
     </div>
 </div>
+
+<div class="modal fade" id="addGameModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add new Game</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="display:flex; flex-wrap: wrap; justify-content: space-around;">
+                <div>
+                    <label>Date</label>
+                    <input class="form-control" type="date" name="new_game_date"><br>
+                </div>
+                <div>
+                    <label>Time</label>
+                    <input class="form-control" type="time" name="new_game_time"><br>
+                </div>
+                <div>
+                    <label>Field</label>
+                    <input class="form-control" type="number" name="new_game_field" min="1" max="10"><br>
+                </div>
+                <div>
+                    <label>Team 1</label>
+                    <div class="input-group mb-3">
+                        <select class="custom-select" id="new_game_teamOne">
+                            <?php
+                            $options = '<option disabled selected>Choose team</option>';
+                            foreach ($teams as $team) {
+                                $options .= '<option value="' . $team->getID() . '">' . $team->getName() . '</option>';
+                            }
+                            echo $options;
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label>Team 2</label>
+                    <div class="input-group mb-3">
+                        <select class="custom-select" id="new_game_teamTwo">
+                            <?php echo $options; ?>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content: space-between;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="pickPlayer" type="button" class="btn btn-primary" onclick="addGameToSchedule();">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php include_once 'footer.php'; ?>
