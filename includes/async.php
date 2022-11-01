@@ -163,23 +163,44 @@ function populateSchedule(){
         $params['opp'] = '!=';
         $params['val'] = '';
         $schedules = new schedule();
-        $schedules = $schedules->FindAllByParams($params);
+        $schedules = $schedules->FindAllByParams($params, 'Date, Field');
 
-        $teamOne = array();
-        $teamTwo = array();
+//        $teamOne = array();
+//        $teamTwo = array();
+//        foreach($schedules as $schedule){
+//            $one = new teams($schedule->getTeamOneID());
+//            $two = new teams($schedule->getTeamTwoID());
+//
+//            $teamOne[] = $one->getName();
+//            $teamTwo[] = $two->getName();
+//        }
+//
+//
+//        $reply['schedules'] = $schedules;
+//        $reply['teamOneName'] = $teamOne;
+//        $reply['teamTwoName'] = $teamTwo;
+
+        $theSchedule = array();
         foreach($schedules as $schedule){
-            $one = new teams($schedule->getTeamOneID());
-            $two = new teams($schedule->getTeamTwoID());
+            $sched = array();
+            $teamOne = new teams($schedule->getTeamOneID());
+            $teamTwo = new teams($schedule->getTeamTwoID());
 
-            $teamOne[] = $one->getName();
-            $teamTwo[] = $two->getName();
+            $score = '';
+            if ($schedule->getTeamOneScore() !== '-1' && $schedule->getTeamTwoScore() !== '-1'){
+                $score = $schedule->getTeamOneScore() . '-' . $schedule->getTeamTwoScore();
+            }
+
+            $sched['Date'] = date('n/j/Y g:ia',strtotime($schedule->getDate()));
+            $sched['Field'] = $schedule->getField();
+            $sched['TeamOne'] = $teamOne->getName();
+            $sched['TeamTwo'] = $teamTwo->getName();
+            $sched['Score'] = $score;
+
+            $theSchedule[] = $sched;
         }
 
-
-        $reply['schedules'] = $schedules;
-        $reply['teamOneName'] = $teamOne;
-        $reply['teamTwoName'] = $teamTwo;
-
+        $reply['schedules'] = $theSchedule;
         echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
     } catch (Exception $ex){
         $reply['error'] = true;

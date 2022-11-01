@@ -20,7 +20,7 @@ $params['fld'] = 'ID';
 $params['opp'] = '!=';
 $params['val'] = '';
 $schedules = new schedule();
-$schedules = $schedules->FindAllByParams($params);
+$schedules = $schedules->FindAllByParams($params, 'Date, Field');
 
 $params = null;
 $params['fld'] = 'ID';
@@ -61,6 +61,8 @@ $teams = $teams->FindAllByParams($params);
                 $(val).val(i + 1);
             });
         }
+
+        submitDraftOrder();
     }
 
     function submitDraftOrder(){
@@ -88,8 +90,6 @@ $teams = $teams->FindAllByParams($params);
                     console.log(reply.error);
                 } else {
                     // seasonCreated();
-                    $('#successBanner').html("Draft order updated successfully!");
-                    showSuccessBanner();
                 }
             },
             error: function(message, obj, error){
@@ -120,8 +120,7 @@ $teams = $teams->FindAllByParams($params);
                 if (reply.error === true){
                     console.log(reply.error);
                 } else {
-                    $('#successBanner').html("Season information updated successfully!");
-                    showSuccessBanner();
+
                 }
             },
             error: function(message, obj, error){
@@ -209,27 +208,27 @@ $teams = $teams->FindAllByParams($params);
         <h4 style="text-align:center;">Edit Season</h4>
         <form style="padding: 20px;">
             <label>Season Name</label>
-            <input class="form-control" type="text" name="season_name" value="<?php echo $season->getName(); ?>"><br>
+            <input class="form-control" type="text" onchange="submitSeasonInfo();" name="season_name" value="<?php echo $season->getName(); ?>"><br>
             <div style="display:flex; justify-content: space-between; flex-wrap: wrap;">
                 <div style="display:flex; flex-direction: column">
                     <label>Start Date</label>
-                    <input class="form-control" type="date" name="start_date" value="<?php echo $season->getStartDate(); ?>"><br>
+                    <input class="form-control" type="date" onchange="submitSeasonInfo();" name="start_date" value="<?php echo $season->getStartDate(); ?>"><br>
                 </div>
                 <div style="display:flex; flex-direction: column">
                     <label>End Date</label>
-                    <input class="form-control" type="date" name="end_date" value="<?php echo $season->getEndDate(); ?>"><br>
+                    <input class="form-control" type="date" onchange="submitSeasonInfo();" name="end_date" value="<?php echo $season->getEndDate(); ?>"><br>
                 </div>
                 <div style="display:flex; flex-direction: column">
                     <label>Playoff Date</label>
-                    <input class="form-control" type="date" name="playoff_date" value="<?php echo $season->getPlayoffDate(); ?>"><br>
+                    <input class="form-control" type="date" onchange="submitSeasonInfo();" name="playoff_date" value="<?php echo $season->getPlayoffDate(); ?>"><br>
                 </div>
             </div>
             <label>Season Info</label>
-            <textarea class="form-control" id="seasonInfoTextBox" name="info"><?php echo $season->getInfo(); ?></textarea>
+            <textarea class="form-control" id="seasonInfoTextBox" onchange="submitSeasonInfo();" name="info"><?php echo $season->getInfo(); ?></textarea>
         </form>
-        <div style="display: flex; justify-content: center;">
-            <button class="btn btn-secondary" onclick="submitSeasonInfo();" style="">Update Season</button>
-        </div>
+<!--        <div style="display: flex; justify-content: center;">-->
+<!--            <button class="btn btn-secondary" onclick="submitSeasonInfo();" style="">Update Season</button>-->
+<!--        </div>-->
     </div>
     <div id="scheduleInfo" class="section" style="width: 50%;">
         <h4 style="text-align: center;">Edit Schedule</h4>
@@ -259,7 +258,7 @@ $teams = $teams->FindAllByParams($params);
                     $teamOne = new teams($schedule->getTeamOneID());
                     $teamTwo = new teams($schedule->getTeamTwoID());
                     $row .= '<tr>'
-                        . '<td>' . $schedule->getDate() . '</td>'
+                        . '<td>' . date('n/j/Y g:ia',strtotime($schedule->getDate())) . '</td>'
                         . '<td>' . $schedule->getField() . '</td>'
                         . '<td>' . $teamOne->getName() . '</td>'
                         . '<td>' . $teamTwo->getName() . '</td>';
@@ -291,7 +290,7 @@ $teams = $teams->FindAllByParams($params);
             echo $draftOrder;
             ?>
         </div>
-        <button class="btn btn-secondary" style="margin-bottom: 10px;" onclick="submitDraftOrder();">Update Order</button>
+<!--        <button class="btn btn-secondary" style="margin-bottom: 10px;" onclick="submitDraftOrder();">Update Order</button>-->
     </div>
 </div>
 
