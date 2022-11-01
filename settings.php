@@ -15,6 +15,13 @@ $params['val'] = '-1';
 $captains = new user();
 $captains = $captains->FindAllByParams($params, 'DraftOrder');
 
+$params = null;
+$params['fld'] = 'ID';
+$params['opp'] = '!=';
+$params['val'] = '';
+$schedule = new schedule();
+$schedule = $schedule->FindAllByParams($params);
+
 ?>
 
 <script>
@@ -172,6 +179,19 @@ $captains = $captains->FindAllByParams($params, 'DraftOrder');
     </div>
     <div id="scheduleInfo" class="section" style="width: 50%;">
         <h4 style="text-align: center;">Edit Schedule</h4>
+        <?php //if (count($schedule) == 0) {?>
+<!--                <div style="display:flex; justify-content:center;">-->
+<!--                    <button onclick="window.location = 'create_schedule.php';" class="btn btn-primary">Create Schedule</button>-->
+<!--                </div>-->
+        <?php //} else { ?>
+<!--            <p>Schedule Generated!</p>-->
+        <?php //} ?>
+
+        <table>
+            <thead>
+
+            </thead>
+        </table>
     </div>
     <div id="draftOrder" class="section" style="width: 15%; display:flex;  flex-direction: column; align-items: center;">
         <h4 style="text-align:center;">Edit Draft Order</h4>

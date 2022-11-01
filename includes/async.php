@@ -16,6 +16,8 @@ switch ($_POST['TODO']) {
         return submitSeasonInfo();
     case 'getAverageStats':
         return getAverageStats();
+    case 'generateSchedule':
+        return generateSchedule();
     default:
         echo "Function does not exist.\n";
         break;
@@ -295,28 +297,30 @@ function getAverageStats(){
 }
 
 function generateSchedule(){
-    $params = null;
-    $params['fld'] = 'Active';
-    $params['val'] = '1';
-    $season = new season();
-    $season = $season->FindByParams($params);
+    try{
 
-    $params = null;
-    $params['fld'] = 'ID';
-    $params['opp'] = '!=';
-    $params['val'] = '';
-    $teams = new teams();
-    $teams = $teams->FindAllByParams($params);
+        $season = new season($_POST['SeasonID']);
 
-    $start = date_create($season->getStartDate());
-    $end = date_create($season->getEndDate());
-    $totalDays = date_diff($start, $end);
-    echo $totalDays->format("%R%a days");
+        $params = null;
+        $params['fld'] = 'ID';
+        $params['opp'] = '!=';
+        $params['val'] = '';
+        $teams = new teams();
+        $teams = $teams->FindAllByParams($params);
 
-    $dow = 'Tuesday'; //days a week
-    $numFields = 4;
-    $gad = 2; //games a day
-    $numTeams = count($teams);
+        $start = date_create($season->getStartDate());
+        $end = date_create($season->getEndDate());
+        $totalDays = date_diff($start, $end);
+        echo $totalDays->format("%R%a days");
 
+        $dow = $_POST['Days']; //days a week in array form
+        $numFields = $_POST['Fields'];
+        $gad = 2; //games a day
+        $numTeams = count($teams);
 
+        $reply = '';
+        echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
+    } catch (Exception $ex){
+        $reply['error'] = true;
+    }
 }

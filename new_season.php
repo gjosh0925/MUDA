@@ -164,6 +164,7 @@ if (isset($_POST['season_name'])
 
                 if (isset($_POST['captain'][$i])) {
                     $player->setUserRole('captain');
+                    $player->setPass('MUDACaptain!');
                 } else {
                     $player->setUserRole('player');
                 }
@@ -270,13 +271,13 @@ if (isset($_POST['season_name'])
 
     $(function () {
 
-        // $('form').bind("keypress", function(e) {
-        //     if (e.keyCode == 13) {
-        //         e.preventDefault();
-        //         //isStep2Done();
-        //         return false;
-        //     }
-        // });
+        $('form').bind("keypress", function(e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                //isStep2Done();
+                return false;
+            }
+        });
 
         //player uploader
         $("#upload").bind("click", function () {

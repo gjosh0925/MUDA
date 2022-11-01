@@ -1,5 +1,6 @@
 <?php
- include_once 'header.php';
+
+include_once 'header.php';
 
 if (isset($_POST['email']) && isset($_POST['password'])) {
     function validate($data){
