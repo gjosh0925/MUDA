@@ -165,21 +165,6 @@ function populateSchedule(){
         $schedules = new schedule();
         $schedules = $schedules->FindAllByParams($params, 'Date, Field');
 
-//        $teamOne = array();
-//        $teamTwo = array();
-//        foreach($schedules as $schedule){
-//            $one = new teams($schedule->getTeamOneID());
-//            $two = new teams($schedule->getTeamTwoID());
-//
-//            $teamOne[] = $one->getName();
-//            $teamTwo[] = $two->getName();
-//        }
-//
-//
-//        $reply['schedules'] = $schedules;
-//        $reply['teamOneName'] = $teamOne;
-//        $reply['teamTwoName'] = $teamTwo;
-
         $theSchedule = array();
         foreach($schedules as $schedule){
             $sched = array();

@@ -12,7 +12,23 @@ if (isset($_GET['teamid'])) {
     $params['fld'] = 'TeamID';
     $params['val'] = $_GET['teamid'];
     $players = new user();
-    $players = $players->FindAllByParams($params);
+    $players = $players->FindAllByParams($params, 'Nickname');
+
+    $params = null;
+    $params['fld'] = 'ID';
+    $params['opp'] = '!=';
+    $params['val'] = '';
+    $schedules = new schedule();
+    $schedules = $schedules->FindAllByParams($params, 'Date, Field');
+
+    $team = new teams($_GET['teamid']);
+
+    $params = null;
+    $params['fld'] = 'ID';
+    $params['val'] = $team->getCaptainID();
+    $captain = new user();
+    $captain = $captain->FindByParams($params);
+
 }
 
 
@@ -22,37 +38,37 @@ if (isset($_GET['teamid'])) {
 
     h1 {text-align: center;}
 
-    code {
-        font-family: Consolas,"courier new";
-        color: crimson;
-        background-color: #f1f1f1;
-        padding: 2px;
-        font-size: 105%;
-    }
+    /*code {*/
+    /*    font-family: Consolas,"courier new";*/
+    /*    color: crimson;*/
+    /*    background-color: #f1f1f1;*/
+    /*    padding: 2px;*/
+    /*    font-size: 105%;*/
+    /*}*/
 
-    table, th, td {
-        border: 1px solid black;
-        border-radius: 10px;
+    /*table, th, td {*/
+    /*    border: 1px solid black;*/
+    /*    border-radius: 10px;*/
 
-        padding-top: 10px;
-        padding-bottom: 20px;
-        padding-left: 30px;
-        padding-right: 40px;
-        border-spacing: 100px;
+    /*    padding-top: 10px;*/
+    /*    padding-bottom: 20px;*/
+    /*    padding-left: 30px;*/
+    /*    padding-right: 40px;*/
+    /*    border-spacing: 100px;*/
 
-        color: white;
-        font-size: 105%;
-    }
+    /*    color: white;*/
+    /*    font-size: 105%;*/
+    /*}*/
 
-    tr{
-        style: width:150%;
-        style: height:200px;
-    }
+    /*tr{*/
+    /*    style: width:150%;*/
+    /*    style: height:200px;*/
+    /*}*/
 
-    table.center {
-        margin-left: auto;
-        margin-right: auto;
-    }
+    /*table.center {*/
+    /*    margin-left: auto;*/
+    /*    margin-right: auto;*/
+    /*}*/
 
     .teamNames {
         border: 4px solid #0c2340;
@@ -64,6 +80,45 @@ if (isset($_GET['teamid'])) {
         color: white;
         text-align: center;
         width: 15%;
+    }
+
+    td, tr {
+        border: 2px solid #0c2340;
+    }
+
+    th {
+        background-color: #00b2a9;
+        color: #0c2340;
+        cursor: pointer;
+        border-bottom: 3px solid #0c2340 !important;
+    }
+
+    table {
+        border: 3px solid #0c2340 !important;
+    }
+
+    .players{
+        display:flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+        border: 3px solid #0c2340;
+        border-radius: 10px;
+        margin: 10px;
+        background-color: #00b2a9;
+        color: white;
+        width: 45%;
+    }
+
+    .section{
+        border: 3px solid #0c2340;
+        border-radius: 20px;
+        margin: 20px;
+    }
+
+    h3{
+        margin: 10px;
     }
 
 </style>
@@ -79,40 +134,64 @@ if (isset($_GET['teamid'])) {
     </div>
 
 <?php } else { ?>
-    <?php $team = new teams($_GET['teamid']); ?>
     <div>
         <button class="btn btn-secondary" style="float:left; margin: 20px;" onclick="window.location.href='teams.php'"><i class="fa-solid fa-arrow-left"></i>Back</button>
-        <h1>Team <?php echo $team->getName(); ?></h1>
+        <h1 style="margin-bottom: 40px;">Team <?php echo $team->getName(); ?></h1>
     </div>
 
-    <div style="display: flex;flex-direction: column;">
-        <h3>Players</h3>
-        <?php foreach ($players as $player){
-            if ($team->getCaptainID() == $player->getID()){
-                echo "<p>". "Team Captain: ", $player->getNickname(). "</p>";
-            }
-            else{
-                echo "<p>". $player->getNickname(). "</p>";
-            }
-        } ?>
+    <div style="display: flex; justify-content: space-around;">
+        <div style="display: flex; flex-direction: column; width: 40%;">
+            <div class="section">
+                <h3>Team Captain</h3>
+                <p class="players"><?php echo $captain->getNickname(); ?></p>
+            </div>
+
+            <div class="section" style="display: flex; flex-direction: row; flex-wrap: wrap;">
+                <h3 style="width: 100%;">Players</h3>
+                <?php foreach ($players as $player){
+                    if ($team->getCaptainID() !== $player->getID()){
+                        echo "<p class='players'>". $player->getNickname(). "</p>";
+                    }
+                } ?>
+            </div>
+        </div>
+        <div>
+            <h3>Schedule</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Field</th>
+                        <th>Team 1</th>
+                        <th>Team 2</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php $row = '';
+                foreach ($schedules as $schedule) {
+                    if ($schedule->getTeamOneID() == $team->getID() || $schedule->getTeamTwoID() == $team->getID()) {
+                        $teamOne = new teams($schedule->getTeamOneID());
+                        $teamTwo = new teams($schedule->getTeamTwoID());
+                        $row .= '<tr>'
+                            . '<td>' . date('n/j/Y g:ia',strtotime($schedule->getDate())) . '</td>'
+                            . '<td>' . $schedule->getField() . '</td>'
+                            . '<td>' . $teamOne->getName() . '</td>'
+                            . '<td>' . $teamTwo->getName() . '</td>';
+                        if ($schedule->getTeamOneScore() == '-1' || $schedule->getTeamTwoScore() == '-1') {
+                            $row .= '<td></td>';
+                        } else {
+                            $row .= '<td>' . $schedule->getTeamOneScore() . '-' . $schedule->getTeamTwoScore() . '</td>';
+                        }
+                        $row .= '</tr>';
+                    }
+                }
+                echo $row;?>
+                </tbody>
+            </table>
+        </div>
     </div>
 <?php } ?>
-
-
-<!--<table class="center"; style= "width:100%;">-->
-<!--    <tr style = "height:200px;">-->
-<!--        <th style="background-color:Crimson;"><a href="">Team Red</a></th>-->
-<!--        <th style="background-color:DodgerBlue"><a href="">Team Blue</a></th>-->
-<!--        <th style="background-color:ForestGreen;"><a href="">Team Green</a></th>-->
-<!--    </tr>-->
-<!--    <tr style = "height:200px;">-->
-<!--        <th style="background-color:DarkOrange;"><a href="">Team Orange</a></th>-->
-<!--        <th style="background-color:Yellow;"><a href="">Team Yellow</a></th>-->
-<!--        <th style="background-color:Purple;"><a href="">Team Purple</a></th>-->
-<!--    </tr>-->
-<!--</table>-->
-
-<!--<h3 onclick="window.location.href = 'teams.php?teamid=1234'">Test Team</h3>-->
 
 
 <?php include_once 'footer.php'; ?>
