@@ -162,8 +162,8 @@ $users = $users->FindAllByParams($params);
     <thead>
         <tr>
             <th scope="col">Edit</th>
-            <th scope="col">Team Name</th>
             <th scope="col">Name</th>
+            <th scope="col">Team Name</th>
             <th scope="col">Phone Number</th>
             <th scope="col">Jersey Size</th>
             <th scope="col">Received Jersey</th>
@@ -182,8 +182,8 @@ $users = $users->FindAllByParams($params);
                 }
                 echo '<tr id="' . $user->getID() . '">'
                     . '<td><button onclick="getUserInfo($(this));" class="btn btn-secondary"><i class="fa-solid fa-pen-to-square"></i></button></td>'
-                    . '<td>' . $team->getName() . '</td>'
                     . '<td>' . $user->getNickName() . '</td>'
+                    . '<td>' . $team->getName() . '</td>'
                     . '<td>' . $user->getPhone() . '</td>'
                     . '<td>' . $user->getJersey() . '</td>'
                     . '<td><div class="form-check" style="display: flex; justify-content: center;"><input onchange="" class="form-check-input" style="width: 20px; height: 20px;" type="checkbox" ' . $jersey . '></div></td>'
