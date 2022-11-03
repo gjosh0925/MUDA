@@ -20,6 +20,10 @@ switch ($_POST['TODO']) {
         return generateSchedule();
     case 'addGameToSchedule':
         return addGameToSchedule();
+    case 'getUserInfo':
+        return getUserInfo();
+    case 'updateUserInfo':
+        return updateUserInfo();
     default:
         echo "Function does not exist.\n";
         break;
@@ -344,6 +348,70 @@ function addGameToSchedule(){
         $schedule->setTeamOneScore('-1');
         $schedule->setTeamTwoScore('-1');
         $schedule->MakePersistant($schedule);
+
+        $reply['success'] = true;
+        echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
+    } catch (Exception $ex){
+        $reply['error'] = true;
+    }
+}
+
+function getUserInfo(){
+    try{
+
+        $user = new user($_POST['UserID']);
+
+        $info = array();
+        $info['UserID'] = $user->getID();
+        $info['Nickname'] = $user->getNickname();
+        $info['Email'] = $user->getEmail();
+        $info['Phone'] = $user->getPhone();
+        $info['Gender'] = $user->getGender();
+        $info['DOB'] = $user->getDOB();
+        $info['UserRole'] = $user->getUserRole();
+        $info['Jersey'] = $user->getJersey();
+        $info['Absences'] = $user->getAbsence();
+        $info['Playoffs'] = $user->getPlayoffs();
+        $info['Buddy'] = $user->getBuddy();
+        $info['Throwing'] = $user->getThrowing();
+        $info['Cutting'] = $user->getCutting();
+        $info['Speed'] = $user->getSpeed();
+        $info['Conditioning'] = $user->getConditioning();
+        $info['Experience'] = $user->getExperience();
+        $info['Height'] = $user->getHeight();
+        $info['Comment'] = $user->getComments();
+
+
+        $reply['userInfo'] = $info;
+        echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
+    } catch (Exception $ex){
+        $reply['error'] = true;
+    }
+}
+
+function updateUserInfo(){
+    try{
+        $user = new user($_POST['UserID']);
+
+        $user->setNickname($_POST['Nickname']);
+        $user->setEmail($_POST['Email']);
+        $user->setPhone($_POST['Phone']);
+        $user->setGender($_POST['Gender']);
+        $user->setDOB($_POST['DOB']);
+        $user->setUserRole($_POST['UserRole']);
+        $user->setJersey($_POST['Jersey']);
+        $user->setAbsence($_POST['Absences']);
+        $user->setPlayoffs($_POST['Playoffs']);
+        $user->setBuddy($_POST['Buddy']);
+        $user->setThrowing($_POST['Throwing']);
+        $user->setCutting($_POST['Cutting']);
+        $user->setSpeed($_POST['Speed']);
+        $user->setConditioning($_POST['Conditioning']);
+        $user->setExperience($_POST['Experience']);
+        $user->setHeight($_POST['Height']);
+        $user->setComments($_POST['Comments']);
+
+        $user->MakePersistant($user);
 
         $reply['success'] = true;
         echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
