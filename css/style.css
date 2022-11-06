@@ -14,8 +14,18 @@ body {
     border: 2px solid #0c2340;
 }
 
+.custom-select {
+    border-radius: 5px;
+    border: 2px solid #0c2340;
+}
+
 .form-control:focus {
     /*border-radius: 5px;*/
+    border: 2px solid #0c2340;
+    box-shadow: 0px 0px 10px #0c2340;
+}
+
+.custom-select:focus {
     border: 2px solid #0c2340;
     box-shadow: 0px 0px 10px #0c2340;
 }
@@ -43,15 +53,30 @@ div.info-blurb {
 }
 
 div.tble1-spacing {
-    padding-top: 5%;
+    padding-top: 0%;
     padding-right: 1%;
     text-align: left;
 }
 
 div.tble2-spacing {
-    padding-top: 5%;
+    padding-top: 0%;
     padding-left: 1%;
     text-align: left;
+}
+.dropdown-spacing{
+    padding-right: 22%;
+}
+
+.column {
+    float: left;
+    width: 33.33%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
 }
 
 

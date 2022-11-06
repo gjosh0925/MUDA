@@ -13,6 +13,17 @@ if(session_start() !== null){
 
 ?>
 
+<script>
+
+    function showSuccessBanner(){
+        $('#successBanner').show();
+        setTimeout(function() {
+            $('#successBanner').slideUp(1000);
+        }, 4000);
+    }
+
+</script>
+
 <style>
     .loginlogout:hover{
         cursor: pointer;
@@ -23,6 +34,21 @@ if(session_start() !== null){
         font-size: 20px;
     }
 
+    .success-alert {
+        position: absolute !important;
+        z-index: 1;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        width: 25%;
+        height: 10%;
+        font-size: 24px;
+        top: 90px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 </style>
 
 <!DOCTYPE html>
@@ -39,6 +65,9 @@ if(session_start() !== null){
     <title>MUDA</title>
 </head>
 
+<div id="successBanner" class="alert alert-success success-alert" role="alert" style="display:none;">
+
+</div>
 
 <?php if ($_SERVER['REQUEST_URI'] !== '/MUDA/login.php') { ?>
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #00b2a9; height: 80px;">
@@ -53,15 +82,18 @@ if(session_start() !== null){
                 </li>
                 <?php if (isset($pageUser)) { ?>
                     <li class="nav-item">
-                        <a class="nav-link links" href="playerpage.php">Player Page</a>
+                        <a class="nav-link links" href="playerpage.php">Players</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link links" href="draft.php">Draft</a>
                     </li>
                 <?php } ?>
-                <?php if (isset($pageUser) && $pageUser->getUserRole() == "admin") { ?>
+                <?php if (isset($pageUser) && $pageUser->getUserRole() == "admin" || isset($pageUser) && $pageUser->getUserRole() == "adminPlaying" || isset($pageUser) && $pageUser->getUserRole() == "adminCaptain") { ?>
                     <li class="nav-item">
                         <a class="nav-link links" href="new_season.php">New Season</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link links" href="settings.php">Settings</a>
                     </li>
                 <?php } ?>
             </ul>
@@ -69,6 +101,7 @@ if(session_start() !== null){
             <?php if (!isset($pageUser)) { ?>
                 <span class="navbar-text loginlogout links" onclick="window.location='login.php'" style="padding-right: 40px; color: rgba(0,0,0,.5);">Login</span>
             <?php } else { ?>
+                <span class="navbar-text links" style="margin-right: 20px;">Welcome <?php echo $pageUser->getNickname(); ?></span>
                 <span class="navbar-text loginlogout links" onclick="window.location='logout.php'" style="padding-right: 40px; color: rgba(0,0,0,.5);">Logout</span>
             <?php } ?>
         </div>

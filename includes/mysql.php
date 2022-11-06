@@ -6,7 +6,7 @@ global $config;
 
 function DataConnection($whichdb = null){
     global $config, $conn;
-    $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbName']);
+    $conn = new mysqli($config['servername'] . ":" . $config['portnum'], $config['username'], $config['password'], $config['dbName']);
 
     if (mysqli_connect_errno()){
         printf("Can't connect to MySQL server. Errorcode: %s\n", mysqli_connect_error());
@@ -32,7 +32,7 @@ function data_query($query){
     return $conn->query($query);
 }
 
-function DB_Go($function, $obj, $arg1=''){
+function DB_Go($function, $obj, $arg1 = '', $arg2 = ''){
     switch($function) {
         case 'find':
             return FindObject($obj, $arg1);
@@ -40,8 +40,12 @@ function DB_Go($function, $obj, $arg1=''){
             return PersistObject($obj);
         case 'findall':
             return FindAllObjects($obj, $arg1);
+        case 'FindByParams':
+            return FindByParams($obj, $arg1);
         case 'FindAllByParams':
-            return FindAllByParams($obj, $arg1, $arg2 = 'ID');
+            return FindAllByParams($obj, $arg1, $arg2);
+        case 'delete':
+            return DeleteObject($obj);
         default:
             return 'Function does not exist.';
     }
@@ -96,7 +100,7 @@ function PersistObject($obj){
         }
         $query .= ");";
         $result = data_query($query);
-
+//        error_log($query);
         if(!$result) {
             error_log(data_error(null));
         }
@@ -104,6 +108,43 @@ function PersistObject($obj){
     }
 
     return $obj;
+}
+
+function FindByParams($obj, $params) {
+    $fld = $params["fld"];
+    $val = $params["val"];
+    $fld2 = isset($params["fld2"]) ? $params["fld2"] : "";
+    $val2 = isset($params["val2"]) ? $params["val2"] : "";
+    $fld3 = isset($params["fld3"]) ? $params["fld3"] : "";
+    $val3 = isset($params["val3"]) ? $params["val3"] : "";
+    $opp = isset($params["opp"]) ? $params["opp"] : "=";
+    $opp2 = isset($params["opp2"]) ? $params["opp2"] : "=";
+    $opp3 = isset($params["opp3"]) ? $params["opp3"] : "=";
+
+    $tablename = get_class($obj);
+    $query = "";
+
+    if ($fld3 != ""){
+        $query = sprintf("select * from %s where %s %s '%s' and %s %s '%s' and %s %s '%s'",
+            data_real_escape_string($tablename),
+            data_real_escape_string($fld), data_real_escape_string($opp), data_real_escape_string($val),
+            data_real_escape_string($fld2), data_real_escape_string($opp2), data_real_escape_string($val2),
+            data_real_escape_string($fld3), data_real_escape_string($opp3), data_real_escape_string($val3));
+    } else if ($fld2 != ""){
+        $query = sprintf("select * from %s where %s %s '%s' and %s %s '%s'",
+            data_real_escape_string($tablename),
+            data_real_escape_string($fld), data_real_escape_string($opp), data_real_escape_string($val),
+            data_real_escape_string($fld2), data_real_escape_string($opp2), data_real_escape_string($val2));
+    } else {
+        $query = sprintf("select * from %s where %s %s '%s'",
+            data_real_escape_string($tablename),
+            data_real_escape_string($fld), data_real_escape_string($opp), data_real_escape_string($val));
+    }
+
+    $result = data_query($query);
+
+    $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+    return $obj->Populate($row);
 }
 
 function FindAllByParams($obj, $params, $orderby){
@@ -160,7 +201,8 @@ function login(){
     if (!empty($row)) {
         if ($row['Email'] === $_POST['email'] && $row['Pass'] === $_POST['password']) {
             $_SESSION['PageUserID'] = $row['ID'];
-            header("Location: index.php");
+            header("Location: index.php?success=logged_in");
+            $_SESSION['success'] = '1';
             exit();
         }else{
             session_destroy();
@@ -172,6 +214,12 @@ function login(){
         header("Location: login.php?error=Incorect Email or Password");
         exit();
     }
+}
+
+function DeleteObject($obj){
+    $tablename = get_class($obj);
+    $query = sprintf("delete from %s where ID = '%s';", data_real_escape_string($tablename), data_real_escape_string($obj->getID()));
+    $result = data_query($query);
 }
 
 function logout(){
