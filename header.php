@@ -49,6 +49,10 @@ if(session_start() !== null){
         justify-content: center;
         align-items: center;
     }
+
+    nav > a {
+    }
+
 </style>
 
 <!DOCTYPE html>
