@@ -6,7 +6,7 @@ global $pageUser;
 
 if (!isset($pageUser)){
     header("Location: index.php");
-} else if ($pageUser->getUserRole() !== 'admin' || $pageUser->getUserRole() !== 'adminCaptain' || $pageUser->getUserRole() !== 'adminPlaying'){
+} else if ($pageUser->getUserRole == 'captain') {
     header("Location: index.php");
 }
 
