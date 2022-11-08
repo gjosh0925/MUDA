@@ -50,9 +50,6 @@ if(session_start() !== null){
         align-items: center;
     }
 
-    nav > a {
-    }
-
 </style>
 
 <!DOCTYPE html>
