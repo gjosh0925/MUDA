@@ -3,6 +3,10 @@
 include_once 'header.php';
 global $pageUser;
 
+if (!isset($pageUser)){
+    header("Location: index.php");
+}
+
 //find the page users team ID
 $params = null;
 $params['fld'] = 'CaptainID';

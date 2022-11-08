@@ -1,4 +1,11 @@
-<?php include_once 'header.php';
+<?php
+
+include_once 'header.php';
+global $pageUser;
+
+if (!isset($pageUser)){
+    header("Location: index.php");
+}
 
 $params = null;
 $params['fld'] = 'ID';

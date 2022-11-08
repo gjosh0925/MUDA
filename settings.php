@@ -1,6 +1,13 @@
 <?php
 
 include_once 'header.php';
+global $pageUser;
+
+if (!isset($pageUser)){
+    header("Location: index.php");
+} else if ($pageUser->getUserRole() == 'captain') {
+    header("Location: index.php");
+}
 
 $params = null;
 $params['fld'] = 'Active';

@@ -49,6 +49,7 @@ if(session_start() !== null){
         justify-content: center;
         align-items: center;
     }
+
 </style>
 
 <!DOCTYPE html>

@@ -2,6 +2,14 @@
 
 include_once 'header.php';
 
+global $pageUser;
+
+if (!isset($pageUser)){
+    header("Location: index.php");
+} else if ($pageUser->getUserRole() == 'captain') {
+    header("Location: index.php");
+}
+
 //getting all of the admins
 $params = null;
 $params['fld'] = 'UserRole';
