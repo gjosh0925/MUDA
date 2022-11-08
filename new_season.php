@@ -167,6 +167,7 @@ if (isset($_POST['season_name'])
                 $player->setHeight($_POST['height'][$i]);
                 $player->setComments($_POST['comments'][$i]);
                 $player->setPaid('0');
+                $player->setJerseyReceived('0');
 
                 $player->setDraftOrder('-1');
 

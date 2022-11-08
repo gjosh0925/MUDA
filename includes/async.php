@@ -24,6 +24,8 @@ switch ($_POST['TODO']) {
         return getUserInfo();
     case 'updateUserInfo':
         return updateUserInfo();
+    case 'userJerseyStatus':
+        return userJerseyStatus();
     default:
         echo "Function does not exist.\n";
         break;
@@ -412,6 +414,19 @@ function updateUserInfo(){
         $user->setComments($_POST['Comments']);
 
         $user->MakePersistant($user);
+
+        $reply['success'] = true;
+        echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
+    } catch (Exception $ex){
+        $reply['error'] = true;
+    }
+}
+
+function userJerseyStatus(){
+    try {
+        $user = new user($_POST['UserID']);
+        $user->setJerseyReceived($_POST['Received']);
+        $user = $user->MakePersistant($user);
 
         $reply['success'] = true;
         echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));

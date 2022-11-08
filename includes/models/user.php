@@ -25,6 +25,7 @@ class user extends base {
     public $_Comments;
     public $_DraftOrder;
     public $_Paid;
+    public $_JerseyReceived;
 
     public function __construct($id = ''){
         if ($id != ''){
@@ -225,6 +226,14 @@ class user extends base {
         $this->_Paid = $paid;
     }
 
+    function getJerseyReceived(){
+        return $this->_JerseyReceived;
+    }
+
+    function setJerseyReceived($jerseyreceived){
+        $this->_JerseyReceived = $jerseyreceived;
+    }
+
     function Populate($post){
         $this->setID((isset($post['ID'])) ? $post['ID'] : $this->_ID);
         $this->setEmail((isset($post['Email'])) ? $post['Email'] : $this->_Email);
@@ -250,6 +259,7 @@ class user extends base {
         $this->setComments((isset($post['Comments'])) ? $post['Comments'] : $this->_Comments);
         $this->setDraftOrder((isset($post['DraftOrder'])) ? $post['DraftOrder'] : $this->_DraftOrder);
         $this->setPaid((isset($post['Paid'])) ? $post['Paid'] : $this->_Paid);
+        $this->setJerseyReceived((isset($post['JerseyReceived'])) ? $post['JerseyReceived'] : $this->_JerseyReceived);
         return $this;
     }
 }

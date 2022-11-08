@@ -136,6 +136,31 @@ $users = $users->FindAllByParams($params);
 
     }
 
+    function userJerseyReceived(elem){
+        let received = '';
+        if (elem.is(':checked')) {
+            received = '1';
+        } else {
+            received = '0';
+        }
+        let id = $(elem).parent().parent().parent().attr('id');
+
+        var datapacket = {
+            TODO: 'userJerseyStatus',
+            UserID: id,
+            Received: received
+        };
+        $.ajax({
+            type:"POST",
+            url: SiteURL,
+            data:datapacket,
+            dataType:"json",
+            crossDomain: true,
+
+        });
+
+    }
+
 </script>
 
 <style>
@@ -187,13 +212,16 @@ $users = $users->FindAllByParams($params);
                 if($user->getPaid() == '1'){
                     $paid = 'checked';
                 }
+                if ($user->getJerseyReceived() == '1'){
+                    $jersey = 'checked';
+                }
                 echo '<tr id="' . $user->getID() . '">'
                     . '<td><button onclick="getUserInfo($(this));" class="btn btn-secondary"><i class="fa-solid fa-pen-to-square"></i></button></td>'
                     . '<td>' . $user->getNickName() . '</td>'
                     . '<td>' . $team->getName() . '</td>'
                     . '<td>' . $user->getPhone() . '</td>'
                     . '<td>' . $user->getJersey() . '</td>'
-                    . '<td><div class="form-check" style="display: flex; justify-content: center;"><input onchange="" class="form-check-input" style="width: 20px; height: 20px;" type="checkbox" ' . $jersey . '></div></td>'
+                    . '<td><div class="form-check" style="display: flex; justify-content: center;"><input onchange="userJerseyReceived($(this));" class="form-check-input" style="width: 20px; height: 20px;" type="checkbox" ' . $jersey . '></div></td>'
                     . '<td><div class="form-check" style="display: flex; justify-content: center;"><input onchange="userPaidStatus($(this));" class="form-check-input" style="width: 20px; height: 20px;" type="checkbox" ' . $paid . '></div></td>'
                     . '</tr>';
             }
