@@ -69,7 +69,7 @@ if(session_start() !== null){
 
 </div>
 
-<?php if ($_SERVER['REQUEST_URI'] !== '/MUDA/login.php') { ?>
+<?php if (!str_contains($_SERVER['REQUEST_URI'],'/MUDA/login.php')) { ?>
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #00b2a9; height: 80px;">
         <img src="images/muda_logo_black_horizontal.png" width="18%" style="position:relative;">
         <div class="collapse navbar-collapse" id="navbarText">
