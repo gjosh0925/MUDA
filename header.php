@@ -50,6 +50,10 @@ if(session_start() !== null){
         align-items: center;
     }
 
+    .show{
+        padding:20px 0px 20px 40px;
+    }
+
 </style>
 
 <!DOCTYPE html>
@@ -73,7 +77,10 @@ if(session_start() !== null){
 <?php if (!str_contains($_SERVER['REQUEST_URI'],'/MUDA/login.php')) { ?>
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #00b2a9; height: 80px;">
         <img src="images/muda_logo_black_horizontal.png" width="18%" style="position:relative;">
-        <div class="collapse navbar-collapse" id="navbarText">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" style="background-color: #00b2a9" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
                     <a class="nav-link links" href="index.php">Home</a>
@@ -108,4 +115,3 @@ if(session_start() !== null){
         </div>
     </nav>
 <?php } ?>
-
