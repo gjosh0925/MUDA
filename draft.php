@@ -314,7 +314,11 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
 
 <script>
 
-    function getRandomColor() {
+    function getRandomColor(num) {
+        var defaultColors = ['Blue', 'Red', 'Green', 'Yellow', 'Purple', 'Orange', 'Pink', 'Gray'];
+        if (num <= 8) {
+            return defaultColors[num];
+        }
         var letters = '0123456789ABCDEF';
         var color = '#';
         for (var i = 0; i < 6; i++) {
@@ -346,7 +350,7 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
                     };
                     let stats = '';
                     for(var i = 0; i < Object.keys(reply.averageStats).length; i++){
-                        data.datasets.push({label: reply.averageStats[i].teamName, backgroundColor: getRandomColor(),
+                        data.datasets.push({label: reply.averageStats[i].teamName, backgroundColor: getRandomColor(i),
                             data:
                                 [reply.averageStats[i].throwing,
                                     reply.averageStats[i].cutting,
