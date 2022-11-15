@@ -57,7 +57,7 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
                     } else {
 
                         for (var i = 0; i < Object.keys(reply.availablePlayers).length; i++) {
-                            if (reply.draftTurn == <?php echo $pageUser->getDraftOrder(); ?>){
+                            if (reply.draftTurnID == '<?php echo $pageUser->getID(); ?>'){
                                 row += '<tr id="' + reply.availablePlayers[i].id + '" onclick="populatePickedPlayerModal(\'' + reply.availablePlayers[i].id + '\', \'' + reply.availablePlayers[i].buddy + '\');">';
                             } else {
                                 row += '<tr id="' + reply.availablePlayers[i].id + '" onclick="showNotYourTurn();">';

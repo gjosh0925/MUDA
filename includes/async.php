@@ -90,6 +90,9 @@ function draftPlayers(){
         $draftOrder = array();
         foreach($captains as $captain){
             $draftOrder[] = $captain->getNickName();
+            if ($captain->getDraftOrder() == $season->getDraftTurn()) {
+                $captainTurn = $captain;
+            }
         }
 
         //select all available players
@@ -153,6 +156,7 @@ function draftPlayers(){
         $reply['draftOrder'] = $draftOrder;
         $reply['draftOrderCount'] = count($draftOrder);
         $reply['draftTurn'] = $season->getDraftTurn();
+        $reply['draftTurnID'] = $captainTurn->getID();
 
         echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
     } catch (Exception $ex){
