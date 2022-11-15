@@ -74,7 +74,7 @@ if(session_start() !== null){
 
 </div>
 
-<?php if (!str_contains($_SERVER['REQUEST_URI'],'/MUDA/login.php')) { ?>
+<?php if (basename($_SERVER["SCRIPT_FILENAME"], '.php') !== 'login') { ?>
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #00b2a9; height: 80px; z-index:1;">
         <img src="images/muda_logo_black_horizontal.png" width="18%" style="position:relative;">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
