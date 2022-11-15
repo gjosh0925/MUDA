@@ -260,8 +260,8 @@ $users = $users->FindAllByParams($params);
 
                 <div id="right_side" style="width: 45%">
                     <label>User Role</label>
-                    <div class="input-group mb-3">
-                        <select class="custom-select" id="user_userrole">
+                    <div class="input-group mb-3" style="pointer-events:none;">
+                        <select class="custom-select" id="user_userrole" style="background-color:#edeced; border:2px dashed;">
                             <option value="player" selected>Player</option>
                             <option value="captain">Captain</option>
                             <option value="adminPlaying">League Coordinator Player</option>
