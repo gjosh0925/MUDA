@@ -26,6 +26,8 @@ switch ($_POST['TODO']) {
         return updateUserInfo();
     case 'userJerseyStatus':
         return userJerseyStatus();
+    case 'hasPlayerPicked':
+        return hasPlayerPicked();
     default:
         echo "Function does not exist.\n";
         break;
@@ -433,6 +435,21 @@ function userJerseyStatus(){
         $user = $user->MakePersistant($user);
 
         $reply['success'] = true;
+        echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
+    } catch (Exception $ex){
+        $reply['error'] = true;
+    }
+}
+
+function hasPlayerPicked(){
+    try{
+        $params = null;
+        $params['fld'] = 'Active';
+        $params['val'] = '1';
+        $season = new season();
+        $season = $season->FindByParams($params);
+
+        $reply['draftTurn'] = $season->getDraftTurn();
         echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
     } catch (Exception $ex){
         $reply['error'] = true;

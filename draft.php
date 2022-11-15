@@ -19,10 +19,43 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
 <script>
     $(function(){
         getDraftablePlayers();
-
-        getAverageStats();
     });
 
+    let turn = '';
+
+    function hasPlayerPicked(){
+        var datapacket = {
+            TODO: 'hasPlayerPicked',
+            draftTurn: turn
+        };
+
+        console.log(turn);
+        $.ajax({
+            type:"POST",
+            url: SiteURL,
+            data:datapacket,
+            dataType:"json",
+            crossDomain: true,
+            success: function(reply){
+                if (reply.error === true){
+
+                } else {
+                    if (reply.draftTurn !== turn){
+                        getDraftablePlayers();
+                    }
+                }
+            },
+            error: function(message, obj, error){
+                console.log('Message: ' + JSON.stringify(message));
+                console.log('Obj: ' + obj);
+                console.log('Error: ' + error);
+            }
+        });
+    }
+
+    setInterval(function(){
+        hasPlayerPicked();
+    }, 10000);
 
     function getDraftablePlayers(player = ''){
         var datapacket = {
@@ -40,6 +73,8 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
                 if (reply.error === true){
 
                 } else {
+                    turn = reply.draftTurn;
+
                     let draftNames = '';
                     for(var i = 0; i < reply.draftOrderCount; i++){
                         if ((i + 1) == reply.draftTurn){
@@ -113,6 +148,7 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
                     $('#playersLeft').html('Players Left: ');
                     $('#playersLeft').append($('#available-players tr').length);
                 }
+                getAverageStats();
             },
             error: function(message, obj, error){
                 console.log('Message: ' + JSON.stringify(message));
