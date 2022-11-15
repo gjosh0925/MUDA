@@ -29,7 +29,6 @@ $pageUserTeam = $pageUserTeam->FindAllByParams($params);
             draftTurn: turn
         };
 
-        console.log(turn);
         $.ajax({
             type:"POST",
             url: SiteURL,
