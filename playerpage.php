@@ -34,7 +34,6 @@ $users = $users->FindAllByParams($params);
                 if (reply.error === true){
                     console.log(reply.error);
                 } else {
-                    console.log(reply);
                     $('#userID').html(reply.userInfo.UserID);
                     $('input[name=user_nickname]').val(reply.userInfo.Nickname);
                     $('input[name=user_email]').val(reply.userInfo.Email);
@@ -193,7 +192,9 @@ $users = $users->FindAllByParams($params);
 <table id='playerTable' class="table sortable" style="width: 98%; margin: 1%;">
     <thead>
         <tr>
-            <th scope="col">Edit</th>
+            <?php if ($pageUser->getUserRole() == 'admin' || $pageUser->getUserRole() == 'adminCaptain' || $pageUser->getUserRole() == 'adminPlaying') { ?>
+                <th scope="col">Edit</th>
+            <?php } ?>
             <th scope="col">Name</th>
             <th scope="col">Team Name</th>
             <th scope="col">Phone Number</th>
@@ -215,9 +216,11 @@ $users = $users->FindAllByParams($params);
                 if ($user->getJerseyReceived() == '1'){
                     $jersey = 'checked';
                 }
-                echo '<tr id="' . $user->getID() . '">'
-                    . '<td><button onclick="getUserInfo($(this));" class="btn btn-secondary"><i class="fa-solid fa-pen-to-square"></i></button></td>'
-                    . '<td>' . $user->getNickName() . '</td>'
+                echo '<tr id="' . $user->getID() . '">';
+                if ($pageUser->getUserRole() == 'admin' || $pageUser->getUserRole() == 'adminCaptain' || $pageUser->getUserRole() == 'adminPlaying') {
+                    echo '<td><button onclick="getUserInfo($(this));" class="btn btn-secondary"><i class="fa-solid fa-pen-to-square"></i></button></td>';
+                }
+                echo '<td>' . $user->getNickName() . '</td>'
                     . '<td>' . $team->getName() . '</td>'
                     . '<td>' . $user->getPhone() . '</td>'
                     . '<td>' . $user->getJersey() . '</td>'
