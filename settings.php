@@ -141,11 +141,14 @@ $teams = $teams->FindAllByParams($params);
     function addGameToSchedule(){
         var datapacket = {
             TODO: 'addGameToSchedule',
+            ID: $('#modalScheduleID').html(),
             Date: $('input[name=new_game_date]').val(),
             Time: $('input[name=new_game_time]').val(),
             Field: $('input[name=new_game_field]').val(),
             TeamOne: $('#new_game_teamOne').val(),
-            TeamTwo: $('#new_game_teamTwo').val()
+            TeamTwo: $('#new_game_teamTwo').val(),
+            ScoreOne: $('input[name=new_game_scoreOne]').val(),
+            ScoreTwo: $('input[name=new_game_scoreTwo]').val()
         };
         $.ajax({
             type:"POST",
@@ -166,6 +169,63 @@ $teams = $teams->FindAllByParams($params);
                 console.log('Error: ' + error);
             }
         });
+    }
+
+    function populateScheduleModal(id){
+        var datapacket = {
+            TODO: 'populateScheduleModal',
+            ID: id
+        };
+        $.ajax({
+            type:"POST",
+            url: SiteURL,
+            data:datapacket,
+            dataType:"json",
+            crossDomain: true,
+            success: function(reply){
+                if (reply.error === true){
+                    console.log(reply.error);
+                } else {
+                    let score1 = '';
+                    let score2 = '';
+                    if (reply.scoreOne !== '-1'){
+                        score1 = reply.scoreOne;
+                    }
+                    if (reply.scoreTwo !== '-1'){
+                        score2 = reply.scoreTwo;
+                    }
+                    $('input[name=new_game_date]').val(reply.date);
+                    $('input[name=new_game_time]').val(reply.time);
+                    $('input[name=new_game_field]').val(reply.field);
+                    $('#new_game_teamOne').val(reply.teamOne);
+                    $('#new_game_teamTwo').val(reply.teamTwo);
+                    $('input[name=new_game_scoreOne]').val(score1);
+                    $('input[name=new_game_scoreTwo]').val(score2);
+                    $('#modalScheduleTitle').html('Edit Game');
+                    $('#modalScheduleID').html(reply.ID);
+                }
+                $('#addGameModal').modal('show');
+            },
+            error: function(message, obj, error){
+                console.log('Message: ' + message);
+                console.log('Obj: ' + obj);
+                console.log('Error: ' + error);
+            }
+        });
+    }
+
+    function populateNewScheduleModal(){
+        $('input[name=new_game_date]').val('');
+        $('input[name=new_game_time]').val('');
+        $('input[name=new_game_field]').val('');
+        $('#new_game_teamOne').val('');
+        $('#new_game_teamTwo').val('');
+        $('#modalScheduleID').html('');
+        $('input[name=new_game_scoreOne]').val('');
+        $('input[name=new_game_scoreTwo]').val('');
+        $('#modalScheduleTitle').html('Add new Game');
+
+        $('#addGameModal').modal('show');
     }
 
 </script>
@@ -249,9 +309,10 @@ $teams = $teams->FindAllByParams($params);
 
         <?php if (count($schedules) !== 0) { ?>
 
-        <table class="table">
+        <table class="table sortable" style="margin:20px; width:95%;">
             <thead>
                 <tr>
+                    <th>Edit</th>
                     <th>Date</th>
                     <th>Field</th>
                     <th>Team 1</th>
@@ -264,17 +325,22 @@ $teams = $teams->FindAllByParams($params);
                 foreach($schedules as $schedule){
                     $teamOne = new teams($schedule->getTeamOneID());
                     $teamTwo = new teams($schedule->getTeamTwoID());
+                    $score1 = '';
+                    $score2 = '';
+                    if ($schedule->getTeamOneScore() !== '-1') {
+                        $score1 = $schedule->getTeamOneScore();
+                    }
+                    if ($schedule->getTeamTwoScore() !== '-1') {
+                        $score2 = $schedule->getTeamTwoScore();
+                    }
                     $row .= '<tr>'
+                        . '<td><button onclick="populateScheduleModal(\'' . $schedule->getID() . '\')" class="btn btn-secondary"><i class="fa-solid fa-pen-to-square"></i></button></td>'
                         . '<td>' . date('n/j/Y g:ia',strtotime($schedule->getDate())) . '</td>'
                         . '<td>' . $schedule->getField() . '</td>'
                         . '<td>' . $teamOne->getName() . '</td>'
-                        . '<td>' . $teamTwo->getName() . '</td>';
-                    if ($schedule->getTeamOneScore() == '-1' || $schedule->getTeamTwoScore() == '-1') {
-                        $row .= '<td></td>';
-                    } else {
-                        $row .= '<td>' . $schedule->getTeamOneScore() . '-' . $schedule->getTeamTwoScore() . '</td>';
-                    }
-                    $row .= '</tr>';
+                        . '<td>' . $teamTwo->getName() . '</td>'
+                        . '<td>' . $score1 . '-' . $score2 . '</td>'
+                    . '</tr>';
                 }
                 echo $row; ?>
             </tbody>
@@ -282,7 +348,7 @@ $teams = $teams->FindAllByParams($params);
 
         <?php } ?>
         <div style="display:flex; justify-content: center;">
-            <button onclick="$('#addGameModal').modal('show');" class="btn btn-secondary">Add Game to Schedule</button>
+            <button id="submitScheduleButton" onclick="populateNewScheduleModal();" class="btn btn-secondary" style="margin-bottom: 20px;">Add Game to Schedule</button>
         </div>
     </div>
     <div id="draftOrder" class="section" style="width: 15%; display:flex;  flex-direction: column; align-items: center;">
@@ -305,12 +371,13 @@ $teams = $teams->FindAllByParams($params);
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add new Game</h5>
+                <h5 class="modal-title" id="modalScheduleTitle">Add new Game</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body" style="display:flex; flex-wrap: wrap; justify-content: space-around;">
+                <p id="modalScheduleID" style="display:none;"></p>
                 <div>
                     <label>Date</label>
                     <input class="form-control" type="date" name="new_game_date"><br>
@@ -332,6 +399,7 @@ $teams = $teams->FindAllByParams($params);
                             foreach ($teams as $team) {
                                 $options .= '<option value="' . $team->getID() . '">' . $team->getName() . '</option>';
                             }
+                            //$options .= '<option value="playoff">Playoffs</option>';
                             echo $options;
                             ?>
                         </select>
@@ -344,6 +412,14 @@ $teams = $teams->FindAllByParams($params);
                             <?php echo $options; ?>
                         </select>
                     </div>
+                </div>
+                <div>
+                    <label>Team 1 Score</label>
+                    <input class="form-control" type="number" name="new_game_scoreOne"><br>
+                </div>
+                <div>
+                    <label>Team 2 Score</label>
+                    <input class="form-control" type="number" name="new_game_scoreTwo"><br>
                 </div>
             </div>
             <div class="modal-footer" style="justify-content: space-between;">

@@ -28,6 +28,8 @@ switch ($_POST['TODO']) {
         return userJerseyStatus();
     case 'hasPlayerPicked':
         return hasPlayerPicked();
+    case 'populateScheduleModal':
+        return populateScheduleModal();
     default:
         echo "Function does not exist.\n";
         break;
@@ -347,14 +349,25 @@ function generateSchedule(){
 
 function addGameToSchedule(){
     try{
-
-        $schedule = new schedule;
+        if ($_POST['ID'] != '') {
+            $schedule = new schedule($_POST['ID']);
+        } else {
+            $schedule = new schedule();
+        }
         $schedule->setTeamOneID($_POST['TeamOne']);
         $schedule->setTeamTwoID($_POST['TeamTwo']);
         $schedule->setDate($_POST['Date'] . ' ' . $_POST['Time']);
         $schedule->setField($_POST['Field']);
-        $schedule->setTeamOneScore('-1');
-        $schedule->setTeamTwoScore('-1');
+        if($_POST['ScoreOne'] != ''){
+            $schedule->setTeamOneScore($_POST['ScoreOne']);
+        } else {
+            $schedule->setTeamOneScore('-1');
+        }
+        if($_POST['ScoreTwo'] != ''){
+            $schedule->setTeamTwoScore($_POST['ScoreTwo']);
+        } else {
+            $schedule->setTeamTwoScore('-1');
+        }
         $schedule->MakePersistant($schedule);
 
         $reply['success'] = true;
@@ -450,6 +463,27 @@ function hasPlayerPicked(){
         $season = $season->FindByParams($params);
 
         $reply['draftTurn'] = $season->getDraftTurn();
+        echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
+    } catch (Exception $ex){
+        $reply['error'] = true;
+    }
+}
+
+function populateScheduleModal(){
+    try{
+        $schedule = new schedule($_POST['ID']);
+        $schedDate = date_create($schedule->getDate());
+        $date = date_format($schedDate,"Y-m-d");
+        $time = date_format($schedDate,"H:i:s");
+
+        $reply['ID'] = $schedule->getID();
+        $reply['date'] = $date;
+        $reply['time'] = $time;
+        $reply['field'] = $schedule->getField();
+        $reply['teamOne'] = $schedule->getTeamOneID();
+        $reply['teamTwo'] = $schedule->getTeamTwoID();
+        $reply['scoreOne'] = $schedule->getTeamOneScore();
+        $reply['scoreTwo'] = $schedule->getTeamTwoScore();
         echo utf8_encode(json_encode($reply, JSON_FORCE_OBJECT));
     } catch (Exception $ex){
         $reply['error'] = true;
