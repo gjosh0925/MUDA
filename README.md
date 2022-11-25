@@ -12,7 +12,7 @@ Step 9 - Within the includes folder create a file called evironment.php and add 
         $config['servername'] = 'localhost';<br>
         $config['username'] = 'root';<br>
         $config['password'] = '';<br>
-        $config['dbName'] = 'muda';<br>
+        $config['dbName'] = 'muda';<br><br>
         $config['system_path'] = "(File path to the MUDA folder)";<br>
         $config['system_url'] = "http://localhost:63342/MUDA/";<br>
         $config['portnum'] = '3306';<br>
