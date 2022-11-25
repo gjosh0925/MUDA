@@ -8,7 +8,7 @@ Step 6 - Install Xampp and activate the MYSQL Database button<br>
 Step 7 - Install PhpStorm or any IDE of your choosing<br>
 Step 8 - Download the files from the Github (https://github.com/gjosh0925/MUDA) and open the file up in PHP<br>
 Step 9 - Within the includes folder create a file called evironment.php and add this code (This is used to call the database)<br>
-        <?php<br>
+        <br><?php<br>
         $config['servername'] = 'localhost';<br>
         $config['username'] = 'root';<br>
         $config['password'] = '';<br>
@@ -16,9 +16,11 @@ Step 9 - Within the includes folder create a file called evironment.php and add 
         $config['system_path'] = "(File path to the MUDA folder)";<br>
         $config['system_url'] = "http://localhost:63342/MUDA/";<br>
         $config['portnum'] = '3306';<br>
+        <br>
 Step 10 - Within the js folder create a file called environment.js add this code (Used to make asynchronous calls)<br>
-        var MainSiteURL = "http://localhost:63342/MUDA/";<br>
+<br>var MainSiteURL = "http://localhost:63342/MUDA/";<br>
         var SiteURL = MainSiteURL + 'includes/async.php';<br>
+<br>
 Step 11 - Within the XAMPP file folder (if you chose the default path, it should be in your c: drive) open the php folder and go to the php.ini file<br>
 Step 12 - Find max_input_vars and change the max amount to 8000 and delete the semicolon on the front (if it’s there, it comments out the line)<br>
 Step 13 - Save the document afterwards<br>
