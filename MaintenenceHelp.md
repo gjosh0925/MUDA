@@ -81,8 +81,21 @@ A search function that can comb through the player names to find the exact perso
 Adding pictures to the season details<br>
 Editing team name after teams have been created<br>
 Ability to be able to pay through the website and being able to automatically check that person off after they have paid (maybe by referencing the email?)<br>
-Add link for paypal and such<br>
+Add an option for players to pay their dues with links to paypal, venmo, etc.<br>
 Making the player page to where it only displays the players for that specific captain<br>
 If that is not possible, resort to making a search function<br>
 Any functionality that can improve something already created<br>
+Adding a favorite button to the draft page<br>
+Have a template csv file for uploading the players into the new season<br>
+Send out emails when the captains are chose for them to create a password<br>
+Add an option to add a new player to the database<br>
+Make finding errors in the csv upload easier to find by adding an alert icon to the top of the row<br>
+Change how the schedule is displayed<br>
+Remove "Your team" box for admin's and replace with something else, maybe draft order, since admin's do not have a team but could still want to regulate the draft<br>
+Make the website more mobile friendly <br>
+Have a new page that shows the stats of past seasons<br>
+Add a playoff bracket generator that can be filled in with who won each game<br>
+Add an option for randomly choosing the spirit player<br>
+Go through all of the options on different browsers and make sure everything is working as expected (not a future implementation but something to consider)<br>
+Change how a user edits the draft order (drag and drop)<br>
 
